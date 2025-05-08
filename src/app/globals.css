@@ -4,33 +4,33 @@
 
 @layer base {
   :root {
-    --background: 0 0% 96.1%; /* #F5F5F5 */
-    --foreground: 0 0% 50.2%; /* #808080 */
+    --background: 220 26% 96%; /* #f1f5f9 */
+    --foreground: 215 41% 11%; /* #0f172a */
 
-    --card: 0 0% 100%; /* White for cards */
-    --card-foreground: 0 0% 50.2%; /* #808080 on cards */
+    --card: 0 0% 100%; /* white */
+    --card-foreground: 215 41% 11%; /* #0f172a */
 
-    --popover: 0 0% 100%; /* White for popovers */
-    --popover-foreground: 0 0% 50.2%; /* #808080 on popovers */
+    --popover: 0 0% 100%; /* white */
+    --popover-foreground: 215 41% 11%; /* #0f172a */
 
-    --primary: 180 100% 25.1%; /* #008080 Teal for interactive elements */
-    --primary-foreground: 0 0% 100%; /* White text on Teal */
+    --primary: 226 70% 39%; /* #1e40af */
+    --primary-foreground: 0 0% 100%; /* white */
 
-    --secondary: 0 0% 90%; /* A slightly darker gray than background for secondary elements */
-    --secondary-foreground: 180 100% 25.1%; /* Teal text on secondary elements */
+    --secondary: 203 95% 32%; /* #0369a1 */
+    --secondary-foreground: 0 0% 100%; /* white */
 
-    --muted: 0 0% 92%; /* Lighter gray for muted elements */
-    --muted-foreground: 0 0% 55%; /* Slightly darker gray for muted text */
+    --muted: 215 28% 90%; /* #e2e8f0 for muted backgrounds */
+    --muted-foreground: 215 16% 47%; /* #64748b for muted text */
 
-    --accent: 180 90% 30%; /* Teal for highlights, slightly brighter for hover */
-    --accent-foreground: 0 0% 100%; /* White text on Teal */
+    --accent: 38 92% 51%; /* #f59e0b */
+    --accent-foreground: 0 0% 100%; /* white */
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 72% 51%; /* #dc2626 */
+    --destructive-foreground: 0 0% 100%; /* white */
 
-    --border: 0 0% 87%; /* A soft gray for borders */
-    --input: 0 0% 100%; /* White background for inputs, with border defining edges */
-    --ring: 180 100% 25.1%; /* Teal for focus rings */
+    --border: 215 28% 83%; /* #e2e8f0 for borders */
+    --input: 215 28% 83%; /* #e2e8f0 for input borders */
+    --ring: 226 70% 39%; /* #1e40af for focus rings */
 
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
@@ -38,6 +38,12 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+
+    /* Custom colors from BPL theme, can be used via specific classes like text-custom-green */
+    --custom-green: 145 73% 36%; /* #16a34a */
+    --custom-amber: 32 96% 44%; /* #d97706 */
+    --custom-red: 0 72% 51%; /* #dc2626 */
+
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 0 0% 50.2%;
@@ -50,33 +56,37 @@
   }
 
   .dark {
-    --background: 200 10% 10%; 
-    --foreground: 0 0% 85%; 
+    --background: 215 41% 11%; /* #0f172a */
+    --foreground: 220 26% 96%; /* #f1f5f9 */
 
-    --card: 200 10% 15%; 
-    --card-foreground: 0 0% 85%;
+    --card: 215 30% 15%; /* Darker card background */
+    --card-foreground: 220 26% 96%; /* #f1f5f9 */
 
-    --popover: 200 10% 15%;
-    --popover-foreground: 0 0% 85%;
+    --popover: 215 30% 15%;
+    --popover-foreground: 220 26% 96%;
 
-    --primary: 180 100% 35%; 
-    --primary-foreground: 0 0% 100%; 
+    --primary: 226 70% 49%; /* Brighter primary for dark mode */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 200 10% 20%; 
-    --secondary-foreground: 180 100% 35%; 
+    --secondary: 203 95% 42%; /* Brighter secondary for dark mode */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 200 10% 22%; 
-    --muted-foreground: 0 0% 65%; 
+    --muted: 215 25% 25%; /* Darker muted background */
+    --muted-foreground: 215 16% 55%; /* Lighter muted text */
 
-    --accent: 180 90% 40%; 
-    --accent-foreground: 0 0% 100%; 
+    --accent: 38 92% 61%; /* Brighter accent for dark mode */
+    --accent-foreground: 215 41% 11%; /* Dark text on accent */
 
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 72% 61%; /* Brighter destructive */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 200 10% 25%;
-    --input: 200 10% 18%; 
-    --ring: 180 100% 35%; 
+    --border: 215 20% 30%; /* Darker border */
+    --input: 215 20% 30%; /* Darker input border */
+    --ring: 226 70% 49%;
+
+    --custom-green: 145 73% 46%;
+    --custom-amber: 32 96% 54%;
+    --custom-red: 0 72% 61%;
 
     --chart-1: 180 70% 50%;
     --chart-2: 160 60% 45%;
@@ -101,6 +111,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-foreground;
   }
 }
 
@@ -117,4 +131,14 @@
 
 .animate-fadeInUp {
   animation: fadeInUp 0.5s ease-out forwards;
+}
+
+@keyframes pulse-scale {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.animate-pulse-scale {
+  animation: pulse-scale 2s infinite;
 }

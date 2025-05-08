@@ -1,8 +1,11 @@
-import type {Metadata} from 'next';
-import {Geist, Geist_Mono} from 'next/font/google';
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
-import Link from 'next/link';
+import { BplHeader } from '@/components/bpl/bpl-header';
+import { BplNavbar } from '@/components/bpl/bpl-navbar';
+import { BplFooter } from '@/components/bpl/bpl-footer';
+
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -15,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'StyleSpot',
-  description: 'Analyze your style with AI',
+  title: 'Brick & Bolt Premier League | Construction Champions',
+  description: 'Track performance, celebrate achievements, and compete for the top spot in our construction championship.',
 };
 
 export default function RootLayout({
@@ -26,20 +29,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans bg-background text-foreground`}>
         <div className="min-h-screen flex flex-col">
-          <header className="bg-card border-b shadow-sm sticky top-0 z-50">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex items-center justify-between h-16">
-                <Link href="/" className="text-2xl font-bold text-primary">
-                  StyleSpot
-                </Link>
-              </div>
-            </div>
-          </header>
+          <BplHeader />
+          <BplNavbar />
           <main className="flex-grow">
             {children}
           </main>
+          <BplFooter />
           <Toaster />
         </div>
       </body>
