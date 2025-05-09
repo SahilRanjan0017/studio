@@ -29,16 +29,25 @@ export function BplHeader() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex flex-col md:flex-row items-center justify-between py-4 md:py-6">
           <div className="flex items-center gap-4 mb-4 md:mb-0">
-            <Image
-              src="https://picsum.photos/60/60"
+            {/* <Image
+              // src="https://picsum.photos/60/60"
+              src="https://media.licdn.com/dms/image/v2/D560BAQFxsfYjPCJTDA/company-logo_200_200/company-logo_200_200/0/1712045497210/bricknbolt_logo?e=2147483647&v=beta&t=WTM8-vDChfkD7HvCfOEVZNcN_cEt8gwty5SZrz4noqY"
               alt="BPL Logo"
               width={60}
               height={60}
               className="rounded-full bg-white p-1"
               data-ai-hint="company logo"
-            />
+            /> */}
+            <img
+  src="https://media.licdn.com/dms/image/v2/D560BAQFxsfYjPCJTDA/company-logo_200_200/company-logo_200_200/0/1712045497210/bricknbolt_logo?e=2147483647&v=beta&t=WTM8-vDChfkD7HvCfOEVZNcN_cEt8gwty5SZrz4noqY"
+  alt="BPL Logo"
+  width={60}
+  height={60}
+  className="rounded-full bg-white p-1"
+  data-ai-hint="company logo"
+/>
             <div>
-              <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight">
+              <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight ">
                 Brick & Bolt Premier League
               </h1>
               <p className="text-sm opacity-90">Construction Champions 2025</p>

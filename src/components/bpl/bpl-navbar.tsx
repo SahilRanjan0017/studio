@@ -14,13 +14,11 @@ import { useState } from 'react';
 const navLinks = [
   { href: "#", label: "Dashboard", active: true },
   { href: "#leaderboard", label: "Leaderboard" },
-  { href: "#project-tracker", label: "Project Tracker" },
-  { href: "#team-analytics", label: "Team Analytics" },
   { href: "#rules", label: "Rules" },
 ];
 
 const cities = [
-  { value: "all", label: "All Cities" },
+  { value: "all", label: "Pan India" },
   { value: "bangalore", label: "Bangalore" },
   { value: "chennai", label: "Chennai" },
   { value: "hyderabad", label: "Hyderabad" },

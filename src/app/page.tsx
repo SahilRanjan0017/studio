@@ -2,7 +2,7 @@
 import { DashboardTitleBlock } from '@/components/bpl/dashboard-title-block';
 import { ScoreboardSection } from '@/components/bpl/scoreboard-section';
 import { LeaderboardTable } from '@/components/bpl/leaderboard-table';
-import { CrnTrackingSection } from '@/components/bpl/crn-tracking-section';
+// import { CrnTrackingSection } from '@/components/bpl/crn-tracking-section';
 import { ActivityFeedSection } from '@/components/bpl/activity-feed-section';
 
 export default function BplDashboardPage() {
@@ -25,7 +25,7 @@ export default function BplDashboardPage() {
           </div>
         </div>
         
-        <CrnTrackingSection />
+        {/* <CrnTrackingSection /> */}
 
       </div>
     </div>

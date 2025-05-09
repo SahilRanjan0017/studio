@@ -26,10 +26,10 @@ export function ScoreboardSection() {
 
   // Dummy data - replace with actual data fetching and processing
   const statsData = [
-    { title: "Active Projects", value: 128, icon: <Building size={24} />, iconBgColor: "bg-custom-green", changeText: "+12 from last month", changeType: "positive" as const },
-    { title: "Green Projects", value: 84, icon: <CheckCircle2 size={24} />, iconBgColor: "bg-custom-green", changeText: "65% of total", changeType: "positive" as const },
-    { title: "Amber Projects", value: 32, icon: <AlertTriangle size={24} />, iconBgColor: "bg-custom-amber", changeText: "25% of total", changeType: "neutral" as const },
-    { title: "Red Projects", value: 12, icon: <XCircle size={24} />, iconBgColor: "bg-custom-red", changeText: "-4 from last month", changeType: "negative" as const },
+    { title: "Active Projects", value: 634, icon: <Building size={24} />, iconBgColor: "bg-custom-green", changeText: "+40 from last month", changeType: "positive" as const },
+    { title: "Green Projects", value: 233, icon: <CheckCircle2 size={24} />, iconBgColor: "bg-custom-green", changeText: "36.75% of total", changeType: "positive" as const },
+    { title: "Amber Projects", value: 175, icon: <AlertTriangle size={24} />, iconBgColor: "bg-custom-amber", changeText: "27.60% of total", changeType: "neutral" as const },
+    { title: "Red Projects", value: 226, icon: <XCircle size={24} />, iconBgColor: "bg-custom-red", changeText: "35.64% of total", changeType: "negative" as const },
   ];
 
   return (

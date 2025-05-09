@@ -29,28 +29,28 @@ const crnData = [
   },
 ];
 
-export function CrnTrackingSection() {
-  return (
-    <section id="project-tracker" className="mb-8">
-      <DashboardTitleBlock 
-        title="CRN Project Tracking" 
-        subtitle="Monitor the health and progress of individual construction projects."
-        icon={<ListChecks size={32} />}
-      />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {crnData.map((crn, index) => (
-          <CrnTrackingCard
-            key={index}
-            crnId={crn.crnId}
-            status={crn.status}
-            customerName={crn.customerName}
-            spmName={crn.spmName}
-            stage={crn.stage}
-            details={crn.details}
-            progressValue={crn.progressValue}
-          />
-        ))}
-      </div>
-    </section>
-  );
-}
+// export function CrnTrackingSection() {
+//   return (
+//     <section id="project-tracker" className="mb-8">
+//       <DashboardTitleBlock 
+//         title="CRN Project Tracking" 
+//         subtitle="Monitor the health and progress of individual construction projects."
+//         icon={<ListChecks size={32} />}
+//       />
+//       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//         {crnData.map((crn, index) => (
+//           <CrnTrackingCard
+//             key={index}
+//             crnId={crn.crnId}
+//             status={crn.status}
+//             customerName={crn.customerName}
+//             spmName={crn.spmName}
+//             stage={crn.stage}
+//             details={crn.details}
+//             progressValue={crn.progressValue}
+//           />
+//         ))}
+//       </div>
+//     </section>
+//   );
+// }
