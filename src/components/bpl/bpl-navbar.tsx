@@ -17,18 +17,9 @@ const navLinks = [
   { href: "#rules", label: "Rules" },
 ];
 
-const cities = [
-  { value: "all", label: "Pan India" },
-  { value: "bangalore", label: "Bangalore" },
-  { value: "chennai", label: "Chennai" },
-  { value: "hyderabad", label: "Hyderabad" },
-  { value: "pune", label: "Pune" },
-  { value: "delhi", label: "Delhi NCR" },
-];
-
 export function BplNavbar() {
   const [activeLink, setActiveLink] = useState("Dashboard");
-  const [selectedCity, setSelectedCity] = useState("all");
+  const [cityFilter, setCityFilter] = useState("pan_india");
 
   return (
     <nav className="bg-card shadow-md sticky top-0 z-40">
@@ -51,23 +42,22 @@ export function BplNavbar() {
               </li>
             ))}
           </ul>
-          <div className="flex items-center gap-2">
-            <label htmlFor="city-select" className="text-sm font-medium text-muted-foreground sr-only md:not-sr-only">
-              Filter by City:
-            </label>
-            <Select value={selectedCity} onValueChange={setSelectedCity}>
-              <SelectTrigger id="city-select" className="w-auto md:w-[180px] h-9">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <label htmlFor="city-filter" className="text-sm font-medium text-muted-foreground whitespace-nowrap">Filter by City:</label>
+            <Select value={cityFilter} onValueChange={setCityFilter}>
+            <SelectTrigger id="city-filter" className="w-full sm:w-[180px] bg-card h-9">
                 <SelectValue placeholder="Select City" />
-              </SelectTrigger>
-              <SelectContent>
-                {cities.map((city) => (
-                  <SelectItem key={city.value} value={city.value}>
-                    {city.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value="pan_india">Pan India</SelectItem>
+                <SelectItem value="BLR_A">BLR_A</SelectItem>
+                <SelectItem value="BLR_B">BLR_B</SelectItem>
+                <SelectItem value="CHN">CHN</SelectItem>
+                <SelectItem value="NCR">NCR</SelectItem>
+                <SelectItem value="HYD">HYD</SelectItem>
+            </SelectContent>
             </Select>
-          </div>
+        </div>
         </div>
       </div>
     </nav>
