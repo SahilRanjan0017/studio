@@ -24,31 +24,52 @@ if (supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('http')) {
 
 export const supabase = supabaseInstance;
 
-export async function fetchCities(): Promise<string[]> {
+export async function fetchCities(): Promise<{ cities: string[]; error: string | null }> {
   if (!supabase) {
     console.error("Supabase client is not initialized for fetchCities.");
-    return [];
+    return { cities: [], error: "Supabase client not initialized." };
   }
-  const { data, error } = await supabase
+  // Corrected query to select city column
+  const { data, error: supabaseError } = await supabase
     .from('project_performance_view')
-    .select('city', { count: 'exact', head: false });
+    .select('city');
 
-  if (error) {
-    console.error('Error fetching cities:', error);
-    return [];
+  if (supabaseError) {
+    let errorMessage = 'Error fetching cities.';
+    if (typeof supabaseError === 'object' && supabaseError !== null) {
+        if ('message' in supabaseError && supabaseError.message && typeof supabaseError.message === 'string') {
+            errorMessage = supabaseError.message;
+        } else if (Object.keys(supabaseError).length === 0) {
+            errorMessage = 'Error fetching cities: An empty error object was returned. This might be due to RLS (Row Level Security) policies or network issues.';
+        } else {
+            try {
+                errorMessage = `Error fetching cities: ${JSON.stringify(supabaseError)}`;
+            } catch {
+                errorMessage = 'Error fetching cities: Non-serializable error object.';
+            }
+        }
+    }
+    console.error('Error details from Supabase (fetchCities):', supabaseError);
+    console.error(errorMessage); // Log the processed message
+    return { cities: [], error: errorMessage };
+  }
+
+  if (!data) {
+    return { cities: [], error: null }; // No data, but no error
   }
   // Get unique, non-null cities
-  return [...new Set(data?.map(item => item.city).filter(Boolean) as string[])].sort();
+  const uniqueCities = [...new Set(data.map(item => item.city).filter(city => typeof city === 'string' && city.trim() !== '') as string[])].sort();
+  return { cities: uniqueCities, error: null };
 }
 
 
 export async function fetchProjectData(
-  city: string, // 'Pan India' or specific city
+  city: string,
   role: LeaderboardRole
-): Promise<LeaderboardEntry[]> {
+): Promise<{ data: LeaderboardEntry[]; error: string | null }> {
   if (!supabase) {
     console.error("Supabase client is not initialized for fetchProjectData.");
-    return [];
+    return { data: [], error: "Supabase client not initialized." };
   }
 
   let query = supabase.from('project_performance_view').select<string, ProjectPerformanceData>(`
@@ -67,15 +88,30 @@ export async function fetchProjectData(
     query = query.eq('city', city);
   }
 
-  const { data: rawData, error } = await query;
+  const { data: rawData, error: supabaseError } = await query;
 
-  if (error) {
-    console.error('Error fetching project performance data:', error);
-    return [];
+  if (supabaseError) {
+    let errorMessage = 'Error fetching project performance data.';
+    if (typeof supabaseError === 'object' && supabaseError !== null) {
+        if ('message' in supabaseError && supabaseError.message && typeof supabaseError.message === 'string') {
+            errorMessage = supabaseError.message;
+        } else if (Object.keys(supabaseError).length === 0) {
+            errorMessage = 'Error fetching project performance data: An empty error object was returned. This might be due to RLS (Row Level Security) policies or network issues.';
+        } else {
+            try {
+                errorMessage = `Error fetching project performance data: ${JSON.stringify(supabaseError)}`;
+            } catch {
+                errorMessage = 'Error fetching project performance data: Non-serializable error object.';
+            }
+        }
+    }
+    console.error('Error details from Supabase (fetchProjectData):', supabaseError); 
+    console.error(errorMessage); 
+    return { data: [], error: errorMessage };
   }
 
   if (!rawData) {
-    return [];
+    return { data: [], error: null };
   }
 
   const aggregatedData: Record<string, {
@@ -85,7 +121,6 @@ export async function fetchProjectData(
     total_cumulative_score: number;
     total_score_change: number;
     statuses: string[];
-    // Add fields for CSAT and delay days if needed for aggregation
   }> = {};
 
   rawData.forEach(item => {
@@ -95,13 +130,8 @@ export async function fetchProjectData(
     if (role === 'SPM' && item.spm_name) keyName = item.spm_name;
     else if (role === 'TL' && item.tl_name) keyName = item.tl_name;
     else if (role === 'OM') {
-      // OM logic: For example, if OMs are also in tl_name or spm_name with a specific identifier,
-      // or if OM is an aggregation of an entire city or multiple TLs.
-      // This part needs clarification based on how OMs are represented in the data.
-      // As a placeholder, let's assume OMs might be represented in tl_name for certain entries.
-      // Or, if an OM's performance is the sum of all projects in their city:
-      keyName = item.city ? `OM-${item.city}` : null; // Example: OM for a city
-      personCity = item.city; // Group by city for OM
+      keyName = item.city ? `OM-${item.city}` : null; 
+      personCity = item.city; 
     }
     
     if (!keyName) return;
@@ -127,11 +157,10 @@ export async function fetchProjectData(
 
   const leaderboard: LeaderboardEntry[] = Object.values(aggregatedData)
     .map(agg => {
-      let overallStatus: LeaderboardEntry['status'] = 'Green'; // Default
+      let overallStatus: LeaderboardEntry['status'] = 'Green';
       if (agg.statuses.includes('Red')) overallStatus = 'Red';
       else if (agg.statuses.includes('Amber')) overallStatus = 'Amber';
       else if (agg.statuses.length === 0) overallStatus = 'N/A';
-
 
       return {
         name: agg.name,
@@ -140,7 +169,7 @@ export async function fetchProjectData(
         status: overallStatus,
         runs: agg.total_cumulative_score,
         trend: agg.total_score_change,
-        rank: 0, // Rank will be assigned after sorting
+        rank: 0, 
       };
     })
     .sort((a, b) => b.runs - a.runs)
@@ -149,5 +178,5 @@ export async function fetchProjectData(
       rank: index + 1,
     }));
 
-  return leaderboard;
+  return { data: leaderboard, error: null };
 }

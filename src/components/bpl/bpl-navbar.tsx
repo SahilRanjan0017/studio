@@ -13,6 +13,7 @@ import {
 import { useState, useEffect } from 'react';
 import { supabase, fetchCities } from '@/lib/supabase'; 
 import { LayoutDashboard, ListOrdered, MapPinned, Award, BookOpen, CheckSquare } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const navLinksConfig = [
   { href: "/dashboard", label: "Dashboard", icon: <LayoutDashboard size={18}/> },
@@ -27,16 +28,26 @@ export function BplNavbar() {
   const pathname = usePathname();
   const [cityFilter, setCityFilter] = useState("Pan India");
   const [availableCities, setAvailableCities] = useState<string[]>([]);
+  const { toast } = useToast();
 
   useEffect(() => {
     async function loadCities() {
-      const cities = await fetchCities();
-      setAvailableCities(cities);
+      const result = await fetchCities();
+      if (result.error) {
+        console.error("Failed to load cities for navbar:", result.error);
+        toast({
+          title: "Error Loading Cities",
+          description: "Could not load city filter options. Please try refreshing.",
+          variant: "destructive",
+        });
+      } else {
+        setAvailableCities(result.cities);
+      }
     }
     if (supabase) {
       loadCities();
     }
-  }, []);
+  }, [toast]);
 
   // Determine active link based on current path
   const activeLabel = navLinksConfig.find(link => pathname.startsWith(link.href))?.label || "Dashboard";

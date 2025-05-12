@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import { fetchProjectData, type LeaderboardEntry, type LeaderboardRole } from '@/lib/supabase';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { fetchCities, supabase } from '@/lib/supabase';
+import { useToast } from '@/hooks/use-toast';
 
 const roleConfig = {
   SPM: { icon: <User size={16} />, label: "SPM" },
@@ -27,16 +28,26 @@ export function LeaderboardTable() {
   const [error, setError] = useState<string | null>(null);
   const [selectedCity, setSelectedCity] = useState<string>("Pan India");
   const [availableCities, setAvailableCities] = useState<string[]>([]);
+  const { toast } = useToast();
 
   useEffect(() => {
     async function loadCities() {
-      const cities = await fetchCities();
-      setAvailableCities(cities);
+      const result = await fetchCities();
+      if (result.error) {
+        console.error("Failed to load cities for filter:", result.error);
+        toast({
+          title: "Error Loading Cities",
+          description: result.error,
+          variant: "destructive",
+        });
+      } else {
+        setAvailableCities(result.cities);
+      }
     }
-    if (supabase) { // Ensure supabase client is initialized
+    if (supabase) { 
       loadCities();
     }
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     async function loadData() {
@@ -47,15 +58,17 @@ export function LeaderboardTable() {
       }
       setLoading(true);
       setError(null);
-      try {
-        const data = await fetchProjectData(selectedCity, activeRole);
-        setLeaderboardData(data);
-      } catch (e: any) {
-        console.error("Failed to fetch leaderboard data:", e);
-        setError(e.message || "Failed to fetch data.");
-      } finally {
-        setLoading(false);
+      
+      const result = await fetchProjectData(selectedCity, activeRole);
+
+      if (result.error) {
+        console.error("Failed to fetch leaderboard data in component:", result.error);
+        setError(result.error);
+        setLeaderboardData([]);
+      } else {
+        setLeaderboardData(result.data);
       }
+      setLoading(false);
     }
     loadData();
   }, [activeRole, selectedCity]);
@@ -64,10 +77,11 @@ export function LeaderboardTable() {
     if (status === 'Green') return 'bg-custom-green text-custom-green-foreground';
     if (status === 'Amber') return 'bg-custom-amber text-custom-amber-foreground';
     if (status === 'Red') return 'bg-custom-red text-custom-red-foreground';
-    return 'bg-muted text-muted-foreground'; // Default for N/A or other statuses
+    return 'bg-muted text-muted-foreground'; 
   };
   
   const getInitials = (name: string) => {
+    if (!name) return 'N/A';
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
 
@@ -103,7 +117,7 @@ export function LeaderboardTable() {
         </div>
       </CardHeader>
       <CardContent className="pt-6 px-2 sm:px-6">
-        {error && <div className="text-center py-4 text-red-600 bg-red-100 border border-red-300 rounded-md p-3">{error}</div>}
+        {error && <div className="text-center py-4 text-destructive bg-destructive/10 border border-destructive/30 rounded-md p-3">{error}</div>}
         
         {loading ? (
           <div className="space-y-4">
@@ -188,31 +202,3 @@ export function LeaderboardTable() {
     </Card>
   );
 }
-
-// Helper to define foreground colors for custom backgrounds if not already in theme
-// These are examples; adjust HSL values based on your actual custom background colors for good contrast
-const customColorForegrounds = {
-  '--custom-green-foreground': '0 0% 100%', // White text on green
-  '--custom-amber-foreground': '0 0% 0%',   // Black text on amber
-  '--custom-red-foreground': '0 0% 100%',     // White text on red
-};
-
-// Add these to your globals.css if needed, or use Tailwind's text-white, text-black appropriately
-// e.g. .bg-custom-green { background-color: hsl(var(--custom-green)); color: hsl(var(--custom-green-foreground)); }
-// Tailwind's text-primary-foreground, etc., work with theme colors. For one-off custom BGs, specific text colors are needed.
-// The Badge component itself does not automatically apply foreground color based on its custom background class.
-// So, getStatusBadgeClass should return classes like `bg-custom-green text-white`.
-
-// In globals.css, you might have:
-// :root {
-//   ...
-//   --custom-green: 145 73% 36%;
-//   --custom-green-foreground: 0 0% 100%; /* white */
-//   --custom-amber: 32 96% 44%;
-//   --custom-amber-foreground: 215 41% 11%; /* dark */
-//   --custom-red: 0 72% 51%;
-//   --custom-red-foreground: 0 0% 100%; /* white */
-//   ...
-// }
-// Then use `text-custom-green-foreground` etc. if defined in tailwind.config.ts
-// For simplicity, I'm using direct text color classes in getStatusBadgeClass like text-white.
