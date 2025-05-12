@@ -4,6 +4,7 @@ import { ScoreboardSection } from '@/components/bpl/scoreboard-section';
 import { LeaderboardTable } from '@/components/bpl/leaderboard-table';
 // import { CrnTrackingSection } from '@/components/bpl/crn-tracking-section';
 import { ActivityFeedSection } from '@/components/bpl/activity-feed-section';
+import { SupabaseDashboard } from '@/components/bpl/supabase-dashboard';
 
 export default function BplDashboardPage() {
   return (
@@ -26,6 +27,9 @@ export default function BplDashboardPage() {
         </div>
         
         {/* <CrnTrackingSection /> */}
+
+        {/* Supabase Dashboard Section */}
+        <SupabaseDashboard />
 
       </div>
     </div>
