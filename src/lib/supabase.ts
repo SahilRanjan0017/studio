@@ -10,26 +10,34 @@ let supabaseInstance: SupabaseClient | null = null;
 if (supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('http')) {
   try {
     supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
+    // console.log("Supabase client initialized successfully."); // Optional: for successful initialization
   } catch (error) {
     console.error("Error creating Supabase client:", error);
+    // console.error("Attempted Supabase URL:", supabaseUrl); // Be cautious logging URLs if they might contain sensitive info, though NEXT_PUBLIC_ ones are usually safe.
+    // console.error("Supabase Anon Key presence:", supabaseAnonKey ? "Present" : "Missing");
   }
 } else {
-  if (!supabaseUrl || !supabaseUrl.startsWith('http')) {
-    console.warn("Supabase URL is not defined or invalid. Please check your .env file for NEXT_PUBLIC_SUPABASE_URL.");
+  let warningMessage = "Supabase client not initialized. ";
+  if (!supabaseUrl) {
+    warningMessage += "NEXT_PUBLIC_SUPABASE_URL is not defined. ";
+  } else if (!supabaseUrl.startsWith('http')) {
+    warningMessage += `NEXT_PUBLIC_SUPABASE_URL is invalid (does not start with http(s)): ${supabaseUrl}. `;
   }
   if (!supabaseAnonKey) {
-    console.warn("Supabase Anon Key is not defined. Please check your .env file for NEXT_PUBLIC_SUPABASE_ANON_KEY.");
+    warningMessage += "NEXT_PUBLIC_SUPABASE_ANON_KEY is not defined. ";
   }
+  console.warn(warningMessage + "Please check your .env.local file and ensure the Next.js development server was restarted after changes.");
 }
 
 export const supabase = supabaseInstance;
 
 export async function fetchCities(): Promise<{ cities: string[]; error: string | null }> {
   if (!supabase) {
-    console.error("Supabase client is not initialized for fetchCities.");
-    return { cities: [], error: "Supabase client not initialized." };
+    const errorMsg = "Supabase client is not initialized. Cannot fetch cities. Check environment variables and Supabase setup.";
+    console.error(errorMsg);
+    return { cities: [], error: errorMsg };
   }
-  // Corrected query to select city column
+
   const { data, error: supabaseError } = await supabase
     .from('project_performance_view')
     .select('city');
@@ -37,11 +45,11 @@ export async function fetchCities(): Promise<{ cities: string[]; error: string |
   if (supabaseError) {
     let errorMessage = 'Error fetching cities.';
     if (typeof supabaseError === 'object' && supabaseError !== null) {
-        if ('message' in supabaseError && supabaseError.message && typeof supabaseError.message === 'string') {
+        if (Object.keys(supabaseError).length === 0) {
+            errorMessage = 'Error fetching cities: An empty error object was returned. This might be due to RLS policies, network issues, or the view returning no cities.';
+        } else if ('message' in supabaseError && typeof supabaseError.message === 'string') {
             errorMessage = supabaseError.message;
-        } else if (Object.keys(supabaseError).length === 0) {
-            errorMessage = 'Error fetching cities: An empty error object was returned. This might be due to RLS (Row Level Security) policies or network issues.';
-        } else {
+        }  else {
             try {
                 errorMessage = `Error fetching cities: ${JSON.stringify(supabaseError)}`;
             } catch {
@@ -50,14 +58,14 @@ export async function fetchCities(): Promise<{ cities: string[]; error: string |
         }
     }
     console.error('Error details from Supabase (fetchCities):', supabaseError);
-    console.error(errorMessage); // Log the processed message
+    console.error(errorMessage);
     return { cities: [], error: errorMessage };
   }
 
   if (!data) {
-    return { cities: [], error: null }; // No data, but no error
+    return { cities: [], error: null }; 
   }
-  // Get unique, non-null cities
+  
   const uniqueCities = [...new Set(data.map(item => item.city).filter(city => typeof city === 'string' && city.trim() !== '') as string[])].sort();
   return { cities: uniqueCities, error: null };
 }
@@ -68,8 +76,9 @@ export async function fetchProjectData(
   role: LeaderboardRole
 ): Promise<{ data: LeaderboardEntry[]; error: string | null }> {
   if (!supabase) {
-    console.error("Supabase client is not initialized for fetchProjectData.");
-    return { data: [], error: "Supabase client not initialized." };
+    const errorMsg = "Supabase client is not initialized. Cannot fetch project data. Check environment variables and Supabase setup.";
+    console.error(errorMsg);
+    return { data: [], error: errorMsg };
   }
 
   let query = supabase.from('project_performance_view').select<string, ProjectPerformanceData>(`
@@ -93,10 +102,10 @@ export async function fetchProjectData(
   if (supabaseError) {
     let errorMessage = 'Error fetching project performance data.';
     if (typeof supabaseError === 'object' && supabaseError !== null) {
-        if ('message' in supabaseError && supabaseError.message && typeof supabaseError.message === 'string') {
+        if (Object.keys(supabaseError).length === 0) { // Specifically checking for an empty error object
+            errorMessage = 'Error fetching project performance data: An empty error object was returned from Supabase. This could be due to Row Level Security (RLS) policies, network issues, or the queried view/table (project_performance_view) returning no data matching the criteria (e.g., date filters in the view definition).';
+        } else if ('message' in supabaseError && typeof supabaseError.message === 'string') {
             errorMessage = supabaseError.message;
-        } else if (Object.keys(supabaseError).length === 0) {
-            errorMessage = 'Error fetching project performance data: An empty error object was returned. This might be due to RLS (Row Level Security) policies or network issues.';
         } else {
             try {
                 errorMessage = `Error fetching project performance data: ${JSON.stringify(supabaseError)}`;
@@ -160,7 +169,7 @@ export async function fetchProjectData(
       let overallStatus: LeaderboardEntry['status'] = 'Green';
       if (agg.statuses.includes('Red')) overallStatus = 'Red';
       else if (agg.statuses.includes('Amber')) overallStatus = 'Amber';
-      else if (agg.statuses.length === 0) overallStatus = 'N/A';
+      else if (agg.statuses.length === 0) overallStatus = 'N/A'; // If no projects or no status, default N/A
 
       return {
         name: agg.name,
@@ -172,7 +181,7 @@ export async function fetchProjectData(
         rank: 0, 
       };
     })
-    .sort((a, b) => b.runs - a.runs)
+    .sort((a, b) => b.runs - a.runs) // Higher runs = better rank
     .map((entry, index) => ({
       ...entry,
       rank: index + 1,

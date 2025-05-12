@@ -136,6 +136,7 @@ export function LeaderboardTable() {
         ) : !error && leaderboardData.length === 0 ? (
           <div className="text-center py-10 text-muted-foreground">
             No {activeRole} data available for {selectedCity === "Pan India" ? "Pan India" : selectedCity}.
+            <p className="text-xs mt-2">(This could be due to data filters, RLS policies, or the data view in Supabase returning no results for the current selection.)</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -153,7 +154,7 @@ export function LeaderboardTable() {
               </TableHeader>
               <TableBody>
                 {leaderboardData.map((player) => (
-                  <TableRow key={player.rank + player.name}>
+                  <TableRow key={player.name}>
                     <TableCell className="text-center">
                       <div className={cn(
                         "w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-xs mx-auto",
