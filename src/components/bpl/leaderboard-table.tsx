@@ -73,12 +73,12 @@ export function LeaderboardTable() {
     loadData();
   }, [activeRole, selectedCity]);
 
-  const getStatusBadgeClass = (status: LeaderboardEntry['status']): string => {
-    if (status === 'Green') return 'bg-custom-green text-custom-green-foreground';
-    if (status === 'Amber') return 'bg-custom-amber text-custom-amber-foreground';
-    if (status === 'Red') return 'bg-custom-red text-custom-red-foreground';
-    return 'bg-muted text-muted-foreground'; 
-  };
+  // const getStatusBadgeClass = (status: LeaderboardEntry['status']): string => {
+  //   if (status === 'Green') return 'bg-custom-green text-custom-green-foreground';
+  //   if (status === 'Amber') return 'bg-custom-amber text-custom-amber-foreground';
+  //   if (status === 'Red') return 'bg-custom-red text-custom-red-foreground';
+  //   return 'bg-muted text-muted-foreground'; 
+  // };
   
   const getInitials = (name: string) => {
     if (!name) return 'N/A';
@@ -147,7 +147,7 @@ export function LeaderboardTable() {
                   <TableHead>Name</TableHead>
                   <TableHead className="hidden md:table-cell">City</TableHead>
                   <TableHead className="text-center">Projects</TableHead>
-                  <TableHead className="text-center">Status</TableHead>
+                  {/* <TableHead className="text-center">Status</TableHead> */}
                   <TableHead className="text-right">Runs</TableHead>
                   <TableHead className="text-right hidden sm:table-cell">Trend</TableHead>
                 </TableRow>
@@ -178,11 +178,11 @@ export function LeaderboardTable() {
                     </TableCell>
                     <TableCell className="hidden md:table-cell text-sm">{player.city || 'N/A'}</TableCell>
                     <TableCell className="text-center text-sm">{player.projects}</TableCell>
-                    <TableCell className="text-center">
+                    {/* <TableCell className="text-center">
                        <Badge className={cn("text-xs py-0.5 px-2 font-medium", getStatusBadgeClass(player.status))}>
                           {player.status}
                        </Badge>
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell className="text-right font-bold text-base text-foreground">{player.runs}</TableCell>
                     <TableCell className="text-right hidden sm:table-cell">
                       <span className={cn(
