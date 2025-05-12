@@ -1,157 +1,218 @@
 // @/components/bpl/leaderboard-table.tsx
 'use client';
 
-import { useState } from 'react';
-import { Trophy, ArrowUp, ArrowDown } from 'lucide-react';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Trophy, ArrowUp, ArrowDown, User, Users, Shield } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'; // ShadCN Avatar
-import { Badge } from '@/components/ui/badge'; // ShadCN Badge
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { fetchProjectData, type LeaderboardEntry, type LeaderboardRole } from '@/lib/supabase';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { fetchCities, supabase } from '@/lib/supabase';
 
-type Player = {
-  rank: number;
-  name: string;
-  initials: string;
-  role: string;
-  city: string;
-  projects: number;
-  status: 'Green' | 'Amber' | 'Red';
-  runs: number;
-  trend: number;
-};
-
-const spmData: Player[] = [
-  { rank: 1, name: "Vijayraj S", initials: "VS", role: "SPM", city: "Chennai", projects: 11, status: "Green", runs: 96, trend: 11 },
-  { rank: 2, name: "Praveen Sivakumar", initials: "PS", role: "SPM", city: "Chennai", projects: 11, status: "Green", runs: 92, trend: 10 },
-  { rank: 3, name: "Mohammed Basil", initials: "MB", role: "SPM", city: "Chennai", projects: 8, status: "Green", runs: 90, trend: 9 },
-  { rank: 4, name: "Sai Ram D", initials: "SRD", role: "SPM", city: "Chennai", projects: 9, status: "Green", runs: 85, trend: 8 },
-  { rank: 5, name: "Jallel N", initials: "JN", role: "SPM", city: "Chennai", projects: 10, status: "Green", runs: 85, trend: 7 },
-  { rank: 6, name: "Yudhish Kumar", initials: "SRD", role: "SPM", city: "Hydrabad", projects: 9, status: "Green", runs: 84, trend: 6 },
-  { rank: 7, name: "Khaja Fateh Mohd", initials: "SRD", role: "SPM", city: "Hydrabad", projects: 11, status: "Green", runs: 80, trend: 5 },
-  { rank: 8, name: "Mulla Reddy", initials: "SRD", role: "SPM", city: "Hydrabad", projects: 11, status: "Green", runs: 79, trend: 4 },
-  { rank: 9, name: "Jegannathan Gunasekaran", initials: "SRD", role: "Chennai", city: "Chennai", projects: 7, status: "Green", runs: 78, trend: 3 },
-  { rank: 10, name: "Aman S", initials: "SRD", role: "SPM", city: "NCR", projects: 8, status: "Green", runs: 74, trend: 2 },
-  { rank: 11, name: "Voora Tarun Kumar", initials: "SRD", role: "SPM", city: "Hydrabad", projects: 9, status: "Green", runs: 70, trend: 1 },
-
-];
-
-const tlData: Player[] = [ // Dummy data for TL
-  { rank: 1, name: "Raghumaran R", initials: "RR", role: "TL", city: "Chennai", projects: 27, status: "Green", runs: 90, trend: 8 },
-  { rank: 2, name: "Jonathan Emmanuel", initials: "JE", role: "TL", city: "Chennai", projects: 26, status: "Green", runs: 85, trend: 5 },
-  { rank: 3, name: "Vankalaya Sai", initials: "VS", role: "TL", city: "Hydrabad", projects: 28, status: "Green", runs: 80, trend: 4 },
-  { rank: 4, name: "Koduganti Akhil", initials: "KA", role: "TL", city: "Hydrabad", projects: 27, status: "Green", runs: 75, trend: 3 },
-  { rank: 5, name: "Rajesh Kumar", initials: "RK", role: "TL", city: "Hydrabad", projects: 41, status: "Green", runs: 70, trend: 2 },
-
-
-];
-
-const omData: Player[] = [ // Dummy data for OM
-  { rank: 1, name: "Manikandan", initials: "OM", role: "OM", city: "Chennai", projects: 125, status: "Green", runs: 70, trend: 8 },
-  { rank: 2, name: "Akash", initials: "OM", role: "OM", city: "Bangalore", projects: 286, status: "Green", runs: 65, trend: 6 },
-  { rank: 3, name: "Sai Mahesh", initials: "OM", role: "OM", city: "Hydrabad", projects: 108, status: "Green", runs: 60, trend: 5 },
-
-];
-
-const roleDataMap = {
-  spm: spmData,
-  tl: tlData,
-  om: omData,
+const roleConfig = {
+  SPM: { icon: <User size={16} />, label: "SPM" },
+  TL: { icon: <Users size={16} />, label: "TL" },
+  OM: { icon: <Shield size={16} />, label: "OM" },
 };
 
 export function LeaderboardTable() {
-  const [activeTab, setActiveTab] = useState<'spm' | 'tl' | 'om'>('spm');
-  const currentData = roleDataMap[activeTab];
+  const [activeRole, setActiveRole] = useState<LeaderboardRole>('SPM');
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedCity, setSelectedCity] = useState<string>("Pan India");
+  const [availableCities, setAvailableCities] = useState<string[]>([]);
 
-  const getStatusBadgeVariant = (status: Player['status']): "default" | "destructive" | "outline" => {
-    if (status === 'Green') return 'default'; // default will use primary color (blueish), consider custom variant or class
-    if (status === 'Amber') return 'outline'; // orange-like, often used for warnings
-    if (status === 'Red') return 'destructive';
-    return 'default';
+  useEffect(() => {
+    async function loadCities() {
+      const cities = await fetchCities();
+      setAvailableCities(cities);
+    }
+    if (supabase) { // Ensure supabase client is initialized
+      loadCities();
+    }
+  }, []);
+
+  useEffect(() => {
+    async function loadData() {
+      if (!supabase) {
+        setError("Supabase client not initialized. Check .env variables.");
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchProjectData(selectedCity, activeRole);
+        setLeaderboardData(data);
+      } catch (e: any) {
+        console.error("Failed to fetch leaderboard data:", e);
+        setError(e.message || "Failed to fetch data.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, [activeRole, selectedCity]);
+
+  const getStatusBadgeClass = (status: LeaderboardEntry['status']): string => {
+    if (status === 'Green') return 'bg-custom-green text-custom-green-foreground';
+    if (status === 'Amber') return 'bg-custom-amber text-custom-amber-foreground';
+    if (status === 'Red') return 'bg-custom-red text-custom-red-foreground';
+    return 'bg-muted text-muted-foreground'; // Default for N/A or other statuses
   };
   
-  const getStatusBadgeClass = (status: Player['status']): string => {
-    if (status === 'Green') return 'bg-custom-green text-white';
-    if (status === 'Amber') return 'bg-custom-amber text-white';
-    if (status === 'Red') return 'bg-custom-red text-white';
-    return '';
-  }
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  };
+
+  const DisplayName = useMemo(() => {
+    if (selectedCity === "Pan India") {
+      return `Displaying ${activeRole} rankings for Pan India.`;
+    }
+    return `Displaying ${activeRole} rankings for ${selectedCity}.`;
+  }, [activeRole, selectedCity]);
 
 
   return (
-    <Card className="shadow-xl animate-fadeInUp mb-8">
+    <Card className="shadow-lg rounded-lg">
       <CardHeader className="border-b pb-4">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center gap-3 mb-4 md:mb-0">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex items-center gap-3">
             <Trophy size={28} className="text-accent" />
-            <h3 className="text-2xl font-semibold text-primary">BPL Leaderboard</h3>
+            <div>
+              <CardTitle className="text-xl font-semibold text-primary">BPL Leaderboard</CardTitle>
+              <p className="text-sm text-muted-foreground">{DisplayName}</p>
+            </div>
           </div>
-          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'spm' | 'tl' | 'om')} className="w-full md:w-auto">
-            <TabsList className="grid w-full grid-cols-3 md:w-auto">
-              <TabsTrigger value="spm">SPM</TabsTrigger>
-              <TabsTrigger value="tl">TL</TabsTrigger>
-              <TabsTrigger value="om">OM</TabsTrigger>
+          <Tabs value={activeRole} onValueChange={(value) => setActiveRole(value as LeaderboardRole)} className="w-full sm:w-auto">
+            <TabsList className="grid w-full grid-cols-3">
+              {(Object.keys(roleConfig) as LeaderboardRole[]).map(roleKey => (
+                <TabsTrigger key={roleKey} value={roleKey} className="flex items-center gap-2 px-2 sm:px-3 py-1.5">
+                  {React.cloneElement(roleConfig[roleKey].icon, { className: "hidden sm:inline" })}
+                  {roleConfig[roleKey].label}
+                </TabsTrigger>
+              ))}
             </TabsList>
           </Tabs>
         </div>
       </CardHeader>
-      <CardContent className="pt-6">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[80px]">Rank</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead className="hidden md:table-cell">City</TableHead>
-                <TableHead className="text-center hidden sm:table-cell">Projects</TableHead>
-                <TableHead className="text-center">Status</TableHead>
-                <TableHead className="text-right">Runs</TableHead>
-                <TableHead className="text-right hidden sm:table-cell">Trend</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {currentData.map((player) => (
-                <TableRow key={player.rank}>
-                  <TableCell>
-                    <div className={cn(
-                      "w-8 h-8 rounded-full flex items-center justify-center font-bold text-white",
-                      player.rank <= 3 ? "bg-accent" : "bg-primary"
-                    )}>
-                      {player.rank}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar className="w-10 h-10">
-                        <AvatarFallback className="bg-muted text-muted-foreground font-semibold">{player.initials}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <div className="font-semibold text-foreground">{player.name}</div>
-                        <div className="text-xs text-muted-foreground">{player.role}</div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">{player.city}</TableCell>
-                  <TableCell className="text-center hidden sm:table-cell">{player.projects}</TableCell>
-                  <TableCell className="text-center">
-                     <Badge variant={getStatusBadgeVariant(player.status)} className={cn("text-xs", getStatusBadgeClass(player.status))}>
-                        {player.status}
-                     </Badge>
-                  </TableCell>
-                  <TableCell className="text-right font-bold text-lg text-foreground">{player.runs}</TableCell>
-                  <TableCell className="text-right hidden sm:table-cell">
-                    <span className={`flex items-center justify-end gap-1 text-sm ${player.trend >= 0 ? 'text-custom-green' : 'text-custom-red'}`}>
-                      {player.trend >= 0 ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
-                      {Math.abs(player.trend)}
-                    </span>
-                  </TableCell>
+      <CardContent className="pt-6 px-2 sm:px-6">
+        {error && <div className="text-center py-4 text-red-600 bg-red-100 border border-red-300 rounded-md p-3">{error}</div>}
+        
+        {loading ? (
+          <div className="space-y-4">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="flex items-center space-x-4 p-2">
+                <Skeleton className="h-10 w-10 rounded-full" />
+                <div className="space-y-2 flex-grow">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-3 w-1/2" />
+                </div>
+                <Skeleton className="h-8 w-16" />
+                <Skeleton className="h-8 w-12" />
+              </div>
+            ))}
+          </div>
+        ) : !error && leaderboardData.length === 0 ? (
+          <div className="text-center py-10 text-muted-foreground">
+            No {activeRole} data available for {selectedCity === "Pan India" ? "Pan India" : selectedCity}.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[60px] text-center">Rank</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead className="hidden md:table-cell">City</TableHead>
+                  <TableHead className="text-center">Projects</TableHead>
+                  <TableHead className="text-center">Status</TableHead>
+                  <TableHead className="text-right">Runs</TableHead>
+                  <TableHead className="text-right hidden sm:table-cell">Trend</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {leaderboardData.map((player) => (
+                  <TableRow key={player.rank + player.name}>
+                    <TableCell className="text-center">
+                      <div className={cn(
+                        "w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-xs mx-auto",
+                        player.rank <= 3 ? "bg-accent" : "bg-primary"
+                      )}>
+                        {player.rank}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar className="w-9 h-9">
+                          <AvatarFallback className="bg-muted text-muted-foreground font-semibold text-xs">
+                            {getInitials(player.name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="font-semibold text-foreground text-sm">{player.name}</div>
+                          <div className="text-xs text-muted-foreground">{roleConfig[activeRole].label}</div>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell text-sm">{player.city || 'N/A'}</TableCell>
+                    <TableCell className="text-center text-sm">{player.projects}</TableCell>
+                    <TableCell className="text-center">
+                       <Badge className={cn("text-xs py-0.5 px-2 font-medium", getStatusBadgeClass(player.status))}>
+                          {player.status}
+                       </Badge>
+                    </TableCell>
+                    <TableCell className="text-right font-bold text-base text-foreground">{player.runs}</TableCell>
+                    <TableCell className="text-right hidden sm:table-cell">
+                      <span className={cn(
+                        "flex items-center justify-end gap-1 text-xs",
+                        player.trend > 0 ? 'text-custom-green' : player.trend < 0 ? 'text-custom-red' : 'text-muted-foreground'
+                      )}>
+                        {player.trend > 0 ? <ArrowUp size={14} /> : player.trend < 0 ? <ArrowDown size={14} /> : null}
+                        {player.trend !== 0 ? Math.abs(player.trend) : '-'}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
 }
+
+// Helper to define foreground colors for custom backgrounds if not already in theme
+// These are examples; adjust HSL values based on your actual custom background colors for good contrast
+const customColorForegrounds = {
+  '--custom-green-foreground': '0 0% 100%', // White text on green
+  '--custom-amber-foreground': '0 0% 0%',   // Black text on amber
+  '--custom-red-foreground': '0 0% 100%',     // White text on red
+};
+
+// Add these to your globals.css if needed, or use Tailwind's text-white, text-black appropriately
+// e.g. .bg-custom-green { background-color: hsl(var(--custom-green)); color: hsl(var(--custom-green-foreground)); }
+// Tailwind's text-primary-foreground, etc., work with theme colors. For one-off custom BGs, specific text colors are needed.
+// The Badge component itself does not automatically apply foreground color based on its custom background class.
+// So, getStatusBadgeClass should return classes like `bg-custom-green text-white`.
+
+// In globals.css, you might have:
+// :root {
+//   ...
+//   --custom-green: 145 73% 36%;
+//   --custom-green-foreground: 0 0% 100%; /* white */
+//   --custom-amber: 32 96% 44%;
+//   --custom-amber-foreground: 215 41% 11%; /* dark */
+//   --custom-red: 0 72% 51%;
+//   --custom-red-foreground: 0 0% 100%; /* white */
+//   ...
+// }
+// Then use `text-custom-green-foreground` etc. if defined in tailwind.config.ts
+// For simplicity, I'm using direct text color classes in getStatusBadgeClass like text-white.

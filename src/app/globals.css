@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    --background: 220 26% 96%; /* #f1f5f9 */
-    --foreground: 215 41% 11%; /* #0f172a */
+    --background: 220 26% 96%; /* #f1f5f9 - Light Gray */
+    --foreground: 215 41% 11%; /* #0f172a - Dark Blue/Black */
 
     --card: 0 0% 100%; /* white */
     --card-foreground: 215 41% 11%; /* #0f172a */
@@ -13,23 +13,23 @@
     --popover: 0 0% 100%; /* white */
     --popover-foreground: 215 41% 11%; /* #0f172a */
 
-    --primary: 226 70% 39%; /* #1e40af */
+    --primary: 226 70% 39%; /* #1e40af - Blue */
     --primary-foreground: 0 0% 100%; /* white */
 
-    --secondary: 203 95% 32%; /* #0369a1 */
+    --secondary: 203 95% 32%; /* #0369a1 - Lighter Blue */
     --secondary-foreground: 0 0% 100%; /* white */
 
     --muted: 215 28% 90%; /* #e2e8f0 for muted backgrounds */
     --muted-foreground: 215 16% 47%; /* #64748b for muted text */
 
-    --accent: 38 92% 51%; /* #f59e0b */
+    --accent: 38 92% 51%; /* #f59e0b - Orange/Yellow */
     --accent-foreground: 0 0% 100%; /* white */
 
     --destructive: 0 72% 51%; /* #dc2626 */
     --destructive-foreground: 0 0% 100%; /* white */
 
-    --border: 215 28% 83%; /* #e2e8f0 for borders */
-    --input: 215 28% 83%; /* #e2e8f0 for input borders */
+    --border: 215 28% 83%; /* #cbd5e1 for borders */
+    --input: 215 28% 83%; /* #cbd5e1 for input borders */
     --ring: 226 70% 39%; /* #1e40af for focus rings */
 
     --chart-1: 12 76% 61%;
@@ -39,10 +39,13 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
 
-    /* Custom colors from BPL theme, can be used via specific classes like text-custom-green */
+    /* Custom colors from BPL theme */
     --custom-green: 145 73% 36%; /* #16a34a */
-    --custom-amber: 32 96% 44%; /* #d97706 */
+    --custom-green-foreground: 0 0% 100%; /* white */
+    --custom-amber: 38 96% 50%;  /* #f59e0b - similar to accent but can be distinct */
+    --custom-amber-foreground: 215 41% 11%; /* dark text on amber */
     --custom-red: 0 72% 51%; /* #dc2626 */
+    --custom-red-foreground: 0 0% 100%; /* white */
 
 
     --sidebar-background: 0 0% 98%;
@@ -59,34 +62,37 @@
     --background: 215 41% 11%; /* #0f172a */
     --foreground: 220 26% 96%; /* #f1f5f9 */
 
-    --card: 215 30% 15%; /* Darker card background */
-    --card-foreground: 220 26% 96%; /* #f1f5f9 */
+    --card: 215 30% 15%; 
+    --card-foreground: 220 26% 96%;
 
     --popover: 215 30% 15%;
     --popover-foreground: 220 26% 96%;
 
-    --primary: 226 70% 49%; /* Brighter primary for dark mode */
+    --primary: 226 70% 49%; 
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 203 95% 42%; /* Brighter secondary for dark mode */
+    --secondary: 203 95% 42%; 
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 215 25% 25%; /* Darker muted background */
-    --muted-foreground: 215 16% 55%; /* Lighter muted text */
+    --muted: 215 25% 25%; 
+    --muted-foreground: 215 16% 55%;
 
-    --accent: 38 92% 61%; /* Brighter accent for dark mode */
-    --accent-foreground: 215 41% 11%; /* Dark text on accent */
+    --accent: 38 92% 61%; 
+    --accent-foreground: 215 41% 11%;
 
-    --destructive: 0 72% 61%; /* Brighter destructive */
+    --destructive: 0 72% 61%; 
     --destructive-foreground: 0 0% 100%;
 
-    --border: 215 20% 30%; /* Darker border */
-    --input: 215 20% 30%; /* Darker input border */
+    --border: 215 20% 30%; 
+    --input: 215 20% 30%; 
     --ring: 226 70% 49%;
 
     --custom-green: 145 73% 46%;
-    --custom-amber: 32 96% 54%;
+    --custom-green-foreground: 0 0% 100%;
+    --custom-amber: 38 96% 60%;
+    --custom-amber-foreground: 215 41% 11%;
     --custom-red: 0 72% 61%;
+    --custom-red-foreground: 0 0% 100%;
 
     --chart-1: 180 70% 50%;
     --chart-2: 160 60% 45%;
@@ -111,7 +117,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, var(--font-geist-sans);
   }
   h1, h2, h3, h4, h5, h6 {
     @apply text-foreground;

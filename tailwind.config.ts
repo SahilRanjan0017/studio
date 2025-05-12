@@ -50,9 +50,18 @@ export default {
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
   			},
-        'custom-green': 'hsl(var(--custom-green))',
-        'custom-amber': 'hsl(var(--custom-amber))',
-        'custom-red': 'hsl(var(--custom-red))',
+        'custom-green': {
+          DEFAULT: 'hsl(var(--custom-green))',
+          foreground: 'hsl(var(--custom-green-foreground))'
+        },
+        'custom-amber': {
+          DEFAULT: 'hsl(var(--custom-amber))',
+          foreground: 'hsl(var(--custom-amber-foreground))'
+        },
+        'custom-red': {
+          DEFAULT: 'hsl(var(--custom-red))',
+          foreground: 'hsl(var(--custom-red-foreground))'
+        },
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',
@@ -70,7 +79,7 @@ export default {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		fontFamily: {
-        sans: ['var(--font-geist-sans)', 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
+        sans: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif', 'var(--font-geist-sans)'],
         mono: ['var(--font-geist-mono)'],
       },
       keyframes: {
