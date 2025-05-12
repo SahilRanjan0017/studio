@@ -1,22 +1,42 @@
+
 // @/components/bpl/supabase-dashboard.tsx
 'use client';
 
-import { createClient } from '@supabase/supabase-js';
-import React, { useState, useEffect } from 'react';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input'; // Using ShadCN input for consistency
 
-// Ensure you have your Supabase URL and Anon Key in your .env.local file
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+// Ensure you have your Supabase URL and Anon Key in your .env.local or .env file
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn("Supabase URL or Anon Key is not defined. Please check your .env.local file.");
+let supabaseInstance: SupabaseClient | null | undefined = undefined; // undefined: not initialized, null: initialization failed, SupabaseClient: success
+
+function getSupabaseClient(): SupabaseClient | null {
+  if (supabaseInstance !== undefined) {
+    return supabaseInstance;
+  }
+
+  if (supabaseUrl && supabaseAnonKey && typeof supabaseUrl === 'string' && supabaseUrl.trim() !== '' && typeof supabaseAnonKey === 'string' && supabaseAnonKey.trim() !== '') {
+    if (supabaseUrl.startsWith('http://') || supabaseUrl.startsWith('https://')) {
+      try {
+        supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
+      } catch (e) {
+        console.error('Failed to create Supabase client during lazy initialization:', e);
+        supabaseInstance = null;
+      }
+    } else {
+      console.warn(`Invalid Supabase URL format during lazy initialization: "${supabaseUrl}". Must start with http:// or https://.`);
+      supabaseInstance = null;
+    }
+  } else {
+    console.warn("Supabase URL or Anon Key is not defined or is empty for lazy initialization. Please check your .env file for NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.");
+    supabaseInstance = null;
+  }
+  return supabaseInstance;
 }
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 interface PerformanceData {
   crn_id: string;
@@ -35,6 +55,8 @@ interface PerformanceData {
 }
 
 export function SupabaseDashboard() {
+  const supabase = useMemo(() => getSupabaseClient(), []);
+
   const [city, setCity] = useState<string>('');
   const [tlName, setTlName] = useState<string>('');
   const [spmName, setSpmName] = useState<string>('');
@@ -48,22 +70,26 @@ export function SupabaseDashboard() {
 
   useEffect(() => {
     const fetchFilterOptions = async () => {
+      if (!supabase) {
+        setLoading(false);
+        return;
+      }
       try {
         const { data: citiesData, error: citiesError } = await supabase
           .from('project_performance_view')
-          .select('city', { count: 'exact', head: false });
+          .select('city'); 
         if (citiesError) throw citiesError;
         setAvailableCities([...new Set(citiesData?.map(item => item.city).filter(Boolean) as string[])].sort());
 
         const { data: tlsData, error: tlsError } = await supabase
           .from('project_performance_view')
-          .select('tl_name', { count: 'exact', head: false });
+          .select('tl_name'); 
         if (tlsError) throw tlsError;
         setAvailableTLs([...new Set(tlsData?.map(item => item.tl_name).filter(Boolean) as string[])].sort());
 
         const { data: spmsData, error: spmsError } = await supabase
           .from('project_performance_view')
-          .select('spm_name', { count: 'exact', head: false });
+          .select('spm_name'); 
         if (spmsError) throw spmsError;
         setAvailableSPMs([...new Set(spmsData?.map(item => item.spm_name).filter(Boolean) as string[])].sort());
 
@@ -72,15 +98,16 @@ export function SupabaseDashboard() {
         setError('Failed to load filter options. Please ensure the view "project_performance_view" exists and is accessible.');
       }
     };
-    if(supabaseUrl && supabaseAnonKey) {
+    
+    if (supabase) {
       fetchFilterOptions();
     }
-  }, []);
+  }, [supabase]);
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!supabaseUrl || !supabaseAnonKey) {
-        setError("Supabase client is not configured.");
+      if (!supabase) {
+        // Error state will be handled by the main return block
         setLoading(false);
         return;
       }
@@ -100,6 +127,9 @@ export function SupabaseDashboard() {
         if (spmName) {
           query = query.eq('spm_name', spmName);
         }
+        
+        query = query.order('record_date', { ascending: false })
+                     .order('cumulative_score', { ascending: false, nullsFirst: false });
 
         const { data: resultData, error: queryError } = await query;
 
@@ -116,17 +146,22 @@ export function SupabaseDashboard() {
       }
     };
 
-    fetchData();
-  }, [city, tlName, spmName]);
+    if (supabase) {
+      fetchData();
+    } else {
+      setLoading(false);
+    }
+  }, [city, tlName, spmName, supabase]);
 
-  if (!supabaseUrl || !supabaseAnonKey) {
+  if (!supabase) {
      return (
-      <Card className="mt-8">
+      <Card className="mt-8 shadow-xl animate-fadeInUp">
         <CardHeader>
-          <CardTitle>Supabase Configuration Error</CardTitle>
+          <CardTitle className="text-2xl font-semibold text-primary">Supabase Configuration Error</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-destructive">Supabase URL or Anon Key is not defined. Please check your environment variables.</p>
+          <p className="text-destructive">Supabase client could not be initialized. Please check your environment variables (<code>.env</code> file) for <code>NEXT_PUBLIC_SUPABASE_URL</code> and <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code>.</p>
+          <p className="text-sm text-muted-foreground mt-2">Ensure the URL is valid (starts with 'http://' or 'https://') and the key is not empty. The application may not function correctly until this is resolved.</p>
         </CardContent>
       </Card>
     );
@@ -186,11 +221,11 @@ export function SupabaseDashboard() {
           </div>
         </div>
 
-        {loading && <p className="text-center text-primary">Loading data...</p>}
+        {loading && <p className="text-center text-primary py-4">Loading data...</p>}
         {error && <p className="text-center text-destructive p-4 border border-destructive rounded-md bg-destructive/10">{error}</p>}
         
         {!loading && !error && data.length === 0 && (
-          <p className="text-center text-muted-foreground">No data available for the selected filters.</p>
+          <p className="text-center text-muted-foreground py-4">No data available for the selected filters.</p>
         )}
 
         {!loading && !error && data.length > 0 && (
@@ -213,13 +248,13 @@ export function SupabaseDashboard() {
               </TableHeader>
               <TableBody>
                 {data.map((row, index) => (
-                  <TableRow key={index}>
+                  <TableRow key={row.crn_id || index}>
                     <TableCell className="font-medium">{row.crn_id}</TableCell>
                     <TableCell>{row.city}</TableCell>
                     <TableCell>{row.tl_name}</TableCell>
                     <TableCell>{row.spm_name}</TableCell>
                     <TableCell>{row.rag_profile}</TableCell>
-                    <TableCell className="text-right">{row.avg_bnb_csat !== null ? row.avg_bnb_csat : 'N/A'}</TableCell>
+                    <TableCell className="text-right">{row.avg_bnb_csat !== null ? Number(row.avg_bnb_csat).toFixed(2) : 'N/A'}</TableCell>
                     <TableCell className="text-right">{row.total_delay_days !== null ? row.total_delay_days : 'N/A'}</TableCell>
                     <TableCell>{row.prev_rag_status}</TableCell>
                     <TableCell>{row.current_rag_status}</TableCell>
@@ -235,3 +270,4 @@ export function SupabaseDashboard() {
     </Card>
   );
 }
+
