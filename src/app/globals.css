@@ -69,7 +69,7 @@
     --popover-foreground: 220 26% 96%;
 
     --primary: 14 86% 60%; /* Brighter New Orange for dark mode */
-    --primary-foreground: 215 41% 11%; /* Dark text for contrast */
+    --primary-foreground: 0 0% 100%; /* white */
 
     --secondary: 14 75% 70%; /* Lighter Secondary New Orange for dark mode */
     --secondary-foreground: 215 41% 11%; /* Dark text for contrast */
