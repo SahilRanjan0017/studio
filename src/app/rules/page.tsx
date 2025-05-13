@@ -1,7 +1,7 @@
 // src/app/rules/page.tsx
 import { DashboardTitleBlock } from '@/components/bpl/dashboard-title-block';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen, TrendingUp, TrendingDown, CheckCircle, FolderCheck, MessageSquare } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'; // Corrected CardDescription import
+import { BookOpen, TrendingUp, TrendingDown, CheckCircle, FolderCheck, MessageSquare, AlertCircle, Users } from 'lucide-react'; // Added AlertCircle, Users
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const scoringRules = [
@@ -12,16 +12,11 @@ const scoringRules = [
   { event: "🟠 Amber → 🔴 Red", runs: "-4 Runs", description: "Status worsened", icon: <TrendingDown className="text-custom-red" /> },
   { event: "🟢 Green → 🟠 Amber", runs: "-2 Runs", description: "Slight decline", icon: <TrendingDown className="text-custom-amber" /> },
   { event: "🟢 New Projects (Stays Green for 45 days from 1 May 2025)", runs: "+6 Runs", description: "Rewarded for maintaining green status in the first 45 days", icon: <CheckCircle className="text-custom-green" /> },
-  { event: "🟢 New Projects → 🟠 Amber", runs: "0 Runs", description: "No reward for early drop in status", icon: <AlertCircle className="text-custom-amber" /> }, // Assuming AlertCircle or similar
-  { event: "✅ Customer Delight Meeting (SPM-led)", runs: "+6 Runs", description: "Customer engagement milestone", icon: <Users className="text-primary" /> }, // Users or Smile
+  { event: "🟢 New Projects → 🟠 Amber", runs: "0 Runs", description: "No reward for early drop in status", icon: <AlertCircle className="text-custom-amber" /> },
+  { event: "✅ Customer Delight Meeting (SPM-led)", runs: "+6 Runs", description: "Customer engagement milestone", icon: <Users className="text-primary" /> },
   { event: "📝 Customer Testimonial Received", runs: "+6 Runs", description: "Positive client feedback", icon: <MessageSquare className="text-primary" /> },
   { event: "📁 Project Handed Over (HO)", runs: "+6 Runs", description: "Project successfully handed over", icon: <FolderCheck className="text-primary" /> },
 ];
-
-// Dummy icons for placeholders, replace if better ones exist or if not needed
-const AlertCircle = ({ className }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>;
-const Users = ({ className }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>;
-
 
 export default function RulesPage() {
   return (
