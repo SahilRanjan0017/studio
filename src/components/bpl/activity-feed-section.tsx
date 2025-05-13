@@ -8,9 +8,10 @@ import { supabase } from '@/lib/supabase';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils'; // Import cn from lib/utils
 
 interface Activity {
-  id: string; // crn_id + some unique part if multiple entries per crn_id possible, or use index as key
+  id: string; 
   crn_id: string;
   score_change: number;
   prev_rag_status: string | null;
@@ -34,14 +35,14 @@ export function ActivityFeedSection() {
         return;
       }
       
-      // The view 'project_performance_view' is expected to be filtered for st.score_date = current_date
-      // as per the user-provided view definition.
-      // We only need to filter for score_change != 0.
+      const today = new Date().toISOString().split('T')[0];
+
       const { data, error: dbError } = await supabase
         .from('project_performance_view')
-        .select('crn_id, score_change, prev_rag_status, current_rag_status, city')
+        .select('crn_id, score_change, prev_rag_status, current_rag_status, city, score_date')
         .neq('score_change', 0)
-        .order('crn_id', { ascending: true }); // Arbitrary order, can be by time if available
+        .eq('score_date', today) // Filter for current date
+        .order('crn_id', { ascending: true }); 
 
       if (dbError) {
         console.error('Error fetching activity feed:', dbError);
@@ -49,7 +50,7 @@ export function ActivityFeedSection() {
         setActivities([]);
       } else if (data) {
         const mappedActivities = data.map((item, index) => ({
-          id: `${item.crn_id}-${index}`, // Simple unique ID
+          id: `${item.crn_id}-${index}`, 
           crn_id: item.crn_id,
           score_change: item.score_change || 0,
           prev_rag_status: item.prev_rag_status || 'N/A',
@@ -124,7 +125,7 @@ export function ActivityFeedSection() {
             <p>No significant score changes today.</p>
           </div>
         ) : (
-          <ScrollArea className="h-[calc(100%-0rem)] pr-3 -mr-3"> {/* Adjust height if needed */}
+          <ScrollArea className="h-[calc(100%-0rem)] pr-3 -mr-3"> 
             <ul className="divide-y divide-border">
               {activities.map(renderActivityItem)}
             </ul>
@@ -134,12 +135,3 @@ export function ActivityFeedSection() {
     </Card>
   );
 }
-
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
-
-// Dummy types, replace with actual imports if you have them elsewhere
-type ClassValue = string | number | boolean | undefined | null | Record<string, any> | ClassValue[];
-declare function twMerge(...classLists: ClassValue[]): string;
-declare function clsx(...inputs: ClassValue[]): string;
