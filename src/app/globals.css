@@ -13,49 +13,49 @@
     --popover: 0 0% 100%; /* white */
     --popover-foreground: 215 41% 11%; /* #0f172a */
 
-    --primary: 35 85% 55%; /* Professional Orange */
+    --primary: 14 86% 55%; /* #ee582b - New Primary Orange */
     --primary-foreground: 0 0% 100%; /* white */
 
-    --secondary: 30 75% 65%; /* Softer, Lighter Orange */
-    --secondary-foreground: 30 100% 10%; /* Dark Brown/Black */
+    --secondary: 14 75% 65%; /* Softer, Lighter version of new Primary Orange */
+    --secondary-foreground: 215 41% 11%; /* Dark Blue/Black, for contrast on lighter orange */
 
     --muted: 215 28% 90%; /* #e2e8f0 for muted backgrounds */
     --muted-foreground: 215 16% 47%; /* #64748b for muted text */
 
-    --accent: 38 92% 51%; /* #f59e0b - Vibrant Orange (Kept from original) */
+    --accent: 14 92% 51%; /* Vibrant variant of new Primary Orange */
     --accent-foreground: 0 0% 100%; /* white */
 
-    --destructive: 0 72% 51%; /* #dc2626 */
+    --destructive: 0 72% 51%; /* #dc2626 - kept for semantic error states */
     --destructive-foreground: 0 0% 100%; /* white */
 
     --border: 215 28% 83%; /* #cbd5e1 for borders */
     --input: 215 28% 83%; /* #cbd5e1 for input borders */
-    --ring: 35 85% 55%; /* Match Primary Orange for focus rings */
+    --ring: 14 86% 55%; /* Match New Primary Orange for focus rings */
 
-    --chart-1: 35 85% 55%; /* Primary Orange */
-    --chart-2: 35 80% 65%; /* Lighter Orange */
-    --chart-3: 35 75% 75%; /* Even Lighter Orange */
-    --chart-4: 35 90% 45%; /* Darker Orange */
-    --chart-5: 35 70% 50%; /* Muted Orange */
+    --chart-1: 14 86% 55%; /* New Primary Orange */
+    --chart-2: 14 80% 65%; /* Lighter Orange */
+    --chart-3: 14 75% 75%; /* Even Lighter Orange */
+    --chart-4: 14 90% 45%; /* Darker Orange */
+    --chart-5: 14 70% 50%; /* Muted Orange */
     --radius: 0.5rem;
 
     /* Custom colors from BPL theme - RAG status colors should remain semantic */
     --custom-green: 145 73% 36%; /* #16a34a */
     --custom-green-foreground: 0 0% 100%; /* white */
-    --custom-amber: 38 96% 50%;  /* #f59e0b - similar to accent but can be distinct */
+    --custom-amber: 38 96% 50%;  /* #f59e0b - Standard amber, kept for semantics */
     --custom-amber-foreground: 215 41% 11%; /* dark text on amber */
-    --custom-red: 0 72% 51%; /* #dc2626 */
+    --custom-red: 0 72% 51%; /* #dc2626 - Standard red, kept for semantics */
     --custom-red-foreground: 0 0% 100%; /* white */
 
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 0 0% 50.2%;
-    --sidebar-primary: 35 85% 55%; /* Match new primary */
+    --sidebar-primary: 14 86% 55%; /* Match new primary */
     --sidebar-primary-foreground: 0 0% 100%; /* white */
-    --sidebar-accent: 35 80% 70%; /* Lighter shade of primary for sidebar accent bg */
-    --sidebar-accent-foreground: 35 85% 45%; /* Darker orange for text on light orange accent */
+    --sidebar-accent: 14 80% 70%; /* Lighter shade of new primary for sidebar accent bg */
+    --sidebar-accent-foreground: 14 86% 45%; /* Darker orange for text on light orange accent */
     --sidebar-border: 0 0% 87%;
-    --sidebar-ring: 35 85% 55%; /* Match new primary */
+    --sidebar-ring: 14 86% 55%; /* Match new primary */
   }
 
   .dark {
@@ -68,24 +68,24 @@
     --popover: 215 30% 15%;
     --popover-foreground: 220 26% 96%;
 
-    --primary: 35 85% 60%; /* Brighter Orange for dark mode */
-    --primary-foreground: 30 100% 10%; /* Dark Brown/Black */
+    --primary: 14 86% 60%; /* Brighter New Orange for dark mode */
+    --primary-foreground: 215 41% 11%; /* Dark text for contrast */
 
-    --secondary: 30 75% 70%; /* Lighter Secondary Orange for dark mode */
-    --secondary-foreground: 30 100% 10%; /* Dark Brown/Black */
+    --secondary: 14 75% 70%; /* Lighter Secondary New Orange for dark mode */
+    --secondary-foreground: 215 41% 11%; /* Dark text for contrast */
 
     --muted: 215 25% 25%; 
     --muted-foreground: 215 16% 55%;
 
-    --accent: 38 92% 61%; /* Brighter Accent Orange for dark mode */
-    --accent-foreground: 20 100% 10%; /* Dark Brown/Black */
+    --accent: 14 92% 61%; /* Brighter Accent New Orange for dark mode */
+    --accent-foreground: 215 41% 11%; /* Dark text for contrast */
 
     --destructive: 0 72% 61%; 
     --destructive-foreground: 0 0% 100%;
 
     --border: 215 20% 30%; 
     --input: 215 20% 30%; 
-    --ring: 35 85% 60%; /* Match dark primary orange */
+    --ring: 14 86% 60%; /* Match dark primary new orange */
 
     /* Custom RAG colors - remain semantic */
     --custom-green: 145 73% 46%;
@@ -95,20 +95,20 @@
     --custom-red: 0 72% 61%;
     --custom-red-foreground: 0 0% 100%;
 
-    --chart-1: 35 85% 60%; /* Primary Orange Dark */
-    --chart-2: 35 80% 70%;
-    --chart-3: 35 75% 80%;
-    --chart-4: 35 90% 50%;
-    --chart-5: 35 70% 55%;
+    --chart-1: 14 86% 60%; /* Primary New Orange Dark */
+    --chart-2: 14 80% 70%;
+    --chart-3: 14 75% 80%;
+    --chart-4: 14 90% 50%;
+    --chart-5: 14 70% 55%;
     
     --sidebar-background: 200 10% 12%;
     --sidebar-foreground: 0 0% 85%;
-    --sidebar-primary: 35 85% 60%; /* Match dark primary */
-    --sidebar-primary-foreground: 30 100% 10%; /* Dark Brown/Black */
-    --sidebar-accent: 35 80% 35%; /* Darker orange for accent bg in dark mode */
-    --sidebar-accent-foreground: 35 85% 65%; /* Lighter orange text on dark orange accent */
+    --sidebar-primary: 14 86% 60%; /* Match dark new primary */
+    --sidebar-primary-foreground: 215 41% 11%; /* Dark text for contrast */
+    --sidebar-accent: 14 80% 35%; /* Darker new orange for accent bg in dark mode */
+    --sidebar-accent-foreground: 14 86% 65%; /* Lighter new orange text on dark orange accent */
     --sidebar-border: 200 10% 25%;
-    --sidebar-ring: 35 85% 60%; /* Match dark primary */
+    --sidebar-ring: 14 86% 60%; /* Match dark new primary */
   }
 }
 
