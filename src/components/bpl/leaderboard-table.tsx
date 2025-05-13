@@ -2,18 +2,17 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Trophy, ArrowUp, ArrowDown, User, Users, Shield } from 'lucide-react';
+import { Trophy, ArrowUp, ArrowDown, User, Users, Shield, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+// import { Badge } from '@/components/ui/badge'; // Status badge currently commented out
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import { fetchProjectData, type LeaderboardEntry, type LeaderboardRole } from '@/lib/supabase';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { fetchCities, supabase } from '@/lib/supabase';
+import { fetchProjectData, type LeaderboardEntry, type LeaderboardRole, supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
+import { useCityFilter } from '@/contexts/CityFilterContext'; // Import global city filter
 
 const roleConfig = {
   SPM: { icon: <User size={16} />, label: "SPM" },
@@ -24,61 +23,53 @@ const roleConfig = {
 export function LeaderboardTable() {
   const [activeRole, setActiveRole] = useState<LeaderboardRole>('SPM');
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedCity, setSelectedCity] = useState<string>("Pan India");
-  const [availableCities, setAvailableCities] = useState<string[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
+  const [dataError, setDataError] = useState<string | null>(null);
+  
+  const { selectedCity, loadingCities: loadingGlobalCities, cityError: globalCityError } = useCityFilter();
   const { toast } = useToast();
-
-  useEffect(() => {
-    async function loadCities() {
-      const result = await fetchCities();
-      if (result.error) {
-        console.error("Failed to load cities for filter:", result.error);
-        toast({
-          title: "Error Loading Cities",
-          description: result.error,
-          variant: "destructive",
-        });
-      } else {
-        setAvailableCities(result.cities);
-      }
-    }
-    if (supabase) { 
-      loadCities();
-    }
-  }, [toast]);
 
   useEffect(() => {
     async function loadData() {
       if (!supabase) {
-        setError("Supabase client not initialized. Check .env variables.");
-        setLoading(false);
+        setDataError("Supabase client not initialized. Check .env variables.");
+        setLoadingData(false);
         return;
       }
-      setLoading(true);
-      setError(null);
+      
+      // Wait for global city filter to initialize if it's still loading or has an error
+      if (loadingGlobalCities) {
+        setLoadingData(true); // Keep showing loading state for the table
+        return;
+      }
+      if (globalCityError) {
+         setDataError(`Cannot load data: Error with city filter (${globalCityError}).`);
+         setLeaderboardData([]);
+         setLoadingData(false);
+         return;
+      }
+
+      setLoadingData(true);
+      setDataError(null);
       
       const result = await fetchProjectData(selectedCity, activeRole);
 
       if (result.error) {
-        console.error("Failed to fetch leaderboard data in component:", result.error);
-        setError(result.error);
+        console.error(`Failed to fetch ${activeRole} leaderboard data for ${selectedCity}:`, result.error);
+        toast({
+            title: `Error Fetching ${activeRole} Data`,
+            description: result.error,
+            variant: "destructive",
+        });
+        setDataError(result.error);
         setLeaderboardData([]);
       } else {
         setLeaderboardData(result.data);
       }
-      setLoading(false);
+      setLoadingData(false);
     }
     loadData();
-  }, [activeRole, selectedCity]);
-
-  // const getStatusBadgeClass = (status: LeaderboardEntry['status']): string => {
-  //   if (status === 'Green') return 'bg-custom-green text-custom-green-foreground';
-  //   if (status === 'Amber') return 'bg-custom-amber text-custom-amber-foreground';
-  //   if (status === 'Red') return 'bg-custom-red text-custom-red-foreground';
-  //   return 'bg-muted text-muted-foreground'; 
-  // };
+  }, [activeRole, selectedCity, loadingGlobalCities, globalCityError, toast]);
   
   const getInitials = (name: string) => {
     if (!name) return 'N/A';
@@ -117,9 +108,9 @@ export function LeaderboardTable() {
         </div>
       </CardHeader>
       <CardContent className="pt-6 px-2 sm:px-6">
-        {error && <div className="text-center py-4 text-destructive bg-destructive/10 border border-destructive/30 rounded-md p-3">{error}</div>}
+        {dataError && <div className="text-center py-4 text-destructive bg-destructive/10 border border-destructive/30 rounded-md p-3">{dataError}</div>}
         
-        {loading ? (
+        {loadingData ? ( 
           <div className="space-y-4">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="flex items-center space-x-4 p-2">
@@ -133,7 +124,7 @@ export function LeaderboardTable() {
               </div>
             ))}
           </div>
-        ) : !error && leaderboardData.length === 0 ? (
+        ) : !dataError && leaderboardData.length === 0 ? (
           <div className="text-center py-10 text-muted-foreground">
             No {activeRole} data available for {selectedCity === "Pan India" ? "Pan India" : selectedCity}.
             <p className="text-xs mt-2">(This could be due to data filters, RLS policies, or the data view in Supabase returning no results for the current selection.)</p>

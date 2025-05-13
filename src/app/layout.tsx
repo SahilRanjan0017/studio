@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google'; // Assuming Geist is preferred, Segoe UI is fallback in globals.css
+import { Geist, Geist_Mono } from 'next/font/google'; 
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { BplHeader } from '@/components/bpl/bpl-header';
 import { BplNavbar } from '@/components/bpl/bpl-navbar';
 import { BplFooter } from '@/components/bpl/bpl-footer';
+import { CityFilterProvider } from '@/contexts/CityFilterContext'; // Import the provider
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -31,15 +32,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans bg-background text-foreground`}>
-        <div className="min-h-screen flex flex-col">
-          <BplHeader />
-          <BplNavbar /> 
-          <main className="flex-grow">
-            {children}
-          </main>
-          <BplFooter />
-          <Toaster />
-        </div>
+        <CityFilterProvider> {/* Wrap with CityFilterProvider */}
+          <div className="min-h-screen flex flex-col">
+            <BplHeader />
+            <BplNavbar /> 
+            <main className="flex-grow">
+              {children}
+            </main>
+            <BplFooter />
+            <Toaster />
+          </div>
+        </CityFilterProvider>
       </body>
     </html>
   );

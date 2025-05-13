@@ -10,10 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState, useEffect } from 'react';
-import { supabase, fetchCities } from '@/lib/supabase'; 
-import { LayoutDashboard, ListOrdered, MapPinned, Award, BookOpen, CheckSquare } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { LayoutDashboard, ListOrdered, MapPinned, Award, BookOpen, CheckSquare, Loader2 } from 'lucide-react';
+import { useCityFilter } from '@/contexts/CityFilterContext'; // Import the context hook
 
 const navLinksConfig = [
   { href: "/dashboard", label: "Dashboard", icon: <LayoutDashboard size={18}/> },
@@ -26,32 +24,16 @@ const navLinksConfig = [
 
 export function BplNavbar() {
   const pathname = usePathname();
-  const [cityFilter, setCityFilter] = useState("Pan India");
-  const [availableCities, setAvailableCities] = useState<string[]>([]);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    async function loadCities() {
-      const result = await fetchCities();
-      if (result.error) {
-        console.error("Failed to load cities for navbar:", result.error);
-        toast({
-          title: "Error Loading Cities",
-          description: "Could not load city filter options. Please try refreshing.",
-          variant: "destructive",
-        });
-      } else {
-        setAvailableCities(result.cities);
-      }
-    }
-    if (supabase) {
-      loadCities();
-    }
-  }, [toast]);
+  const { 
+    selectedCity, 
+    setSelectedCity, 
+    availableCities, 
+    loadingCities, 
+    cityError 
+  } = useCityFilter(); // Use the context
 
   // Determine active link based on current path
   const activeLabel = navLinksConfig.find(link => pathname.startsWith(link.href))?.label || "Dashboard";
-
 
   return (
     <nav className="bg-card shadow-md sticky top-0 z-40">
@@ -75,16 +57,40 @@ export function BplNavbar() {
             ))}
           </ul>
           <div className="flex items-center gap-2 w-full sm:w-auto">
-            <label htmlFor="city-filter-nav" className="text-sm font-medium text-muted-foreground whitespace-nowrap sr-only md:not-sr-only">Filter by City:</label>
-            <Select value={cityFilter} onValueChange={setCityFilter}>
-              <SelectTrigger id="city-filter-nav" className="w-full sm:w-[180px] bg-background h-9">
+            <label htmlFor="city-filter-nav" className="text-sm font-medium text-muted-foreground whitespace-nowrap sr-only md:not-sr-only">
+              Filter by City:
+            </label>
+            <Select 
+              value={selectedCity} 
+              onValueChange={setSelectedCity}
+              disabled={loadingCities || !!cityError}
+            >
+              <SelectTrigger 
+                id="city-filter-nav" 
+                className="w-full sm:w-[180px] bg-background h-9"
+                aria-label="City filter"
+              >
+                {loadingCities ? (
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <span>Loading...</span>
+                  </div>
+                ) : cityError ? (
+                   <span className="text-destructive text-xs">Error</span>
+                ) : (
                   <SelectValue placeholder="Select City" />
+                )}
               </SelectTrigger>
               <SelectContent>
-                  <SelectItem value="Pan India">Pan India</SelectItem>
-                  {availableCities.map((city, index) => (
-                    <SelectItem key={index} value={city}>{city}</SelectItem>
-                  ))}
+                {!loadingCities && !cityError && (
+                  <>
+                    <SelectItem value="Pan India">Pan India</SelectItem>
+                    {availableCities.map((city, index) => (
+                      <SelectItem key={index} value={city}>{city}</SelectItem>
+                    ))}
+                  </>
+                )}
+                 {cityError && <SelectItem value="Error" disabled>Error loading cities</SelectItem>}
               </SelectContent>
             </Select>
           </div>
