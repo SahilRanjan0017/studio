@@ -1,4 +1,5 @@
 // src/app/rewards/page.tsx
+import React from 'react';
 import { DashboardTitleBlock } from '@/components/bpl/dashboard-title-block';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
