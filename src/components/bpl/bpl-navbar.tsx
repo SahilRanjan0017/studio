@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LayoutDashboard, ListOrdered, MapPinned, Award, BookOpen, CheckSquare, Loader2 } from 'lucide-react';
+import { LayoutDashboard, ListOrdered, MapPinned, Award, BookOpen, Loader2 } from 'lucide-react';
 import { useCityFilter } from '@/contexts/CityFilterContext'; // Import the context hook
 
 const navLinksConfig = [
@@ -18,7 +18,6 @@ const navLinksConfig = [
   { href: "/leaderboard", label: "Leaderboard", icon: <ListOrdered size={18}/> },
   { href: "/city-views", label: "City Views", icon: <MapPinned size={18}/> },
   { href: "/rewards", label: "Rewards", icon: <Award size={18}/> },
-  { href: "/performance-log", label: "Performance Log", icon: <CheckSquare size={18}/> },
   { href: "/rules", label: "Rules", icon: <BookOpen size={18}/> },
 ];
 
