@@ -126,7 +126,7 @@ export default function CityViewsPage() {
             ) : citySpecificData ? (
               <div className="space-y-2">
                 <p><strong>Total Projects:</strong> {citySpecificData.totalProjects}</p>
-                <p><strong>Average Cumulative Score:</strong> {citySpecificData.averageScore.toFixed(2)}</p>
+                <p><strong></strong> {citySpecificData.averageScore.toFixed(2)}</p>
                 <p className="text-custom-green"><strong>Green Projects:</strong> {citySpecificData.greenProjects}</p>
                 <p className="text-custom-amber"><strong>Amber Projects:</strong> {citySpecificData.amberProjects}</p>
                 <p className="text-custom-red"><strong>Red Projects:</strong> {citySpecificData.redProjects}</p>
