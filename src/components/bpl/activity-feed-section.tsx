@@ -39,9 +39,9 @@ export function ActivityFeedSection() {
 
       const { data, error: dbError } = await supabase
         .from('project_performance_view')
-        .select('crn_id, score_change, prev_rag_status, current_rag_status, city, score_date')
+        .select('crn_id, score_change, prev_rag_status, current_rag_status, city, record_date')
         .neq('score_change', 0)
-        .eq('score_date', today) // Filter for current date
+        .eq('record_date', today) // Filter for current date
         .order('crn_id', { ascending: true }); 
 
       if (dbError) {
@@ -79,7 +79,7 @@ export function ActivityFeedSection() {
           <div className="flex items-center gap-2">
             <Icon size={20} className={colorClass} />
             <div className="text-sm">
-              <span className="font-semibold text-foreground">CRN {activity.crn_id}</span>
+              <span className="font-semibold text-foreground">{activity.crn_id}</span>
               <span className="text-muted-foreground"> ({activity.city}) score changed by </span>
               <span className={`font-bold ${colorClass}`}>{scorePrefix}{activity.score_change}</span>.
             </div>
