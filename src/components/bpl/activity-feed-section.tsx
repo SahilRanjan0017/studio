@@ -8,7 +8,7 @@ import { supabase } from '@/lib/supabase';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
-import { cn } from '@/lib/utils'; // Import cn from lib/utils
+import { cn } from '@/lib/utils';
 
 interface Activity {
   id: string; 
@@ -23,6 +23,11 @@ export function ActivityFeedSection() {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [formattedDate, setFormattedDate] = useState<string | null>(null);
+
+  useEffect(() => {
+    setFormattedDate(format(new Date(), 'do MMM, yyyy'));
+  }, []);
 
   useEffect(() => {
     async function fetchActivities() {
@@ -41,7 +46,7 @@ export function ActivityFeedSection() {
         .from('project_performance_view')
         .select('crn_id, score_change, prev_rag_status, current_rag_status, city, record_date')
         .neq('score_change', 0)
-        .eq('record_date', today) // Filter for current date
+        .eq('record_date', today) 
         .order('crn_id', { ascending: true }); 
 
       if (dbError) {
@@ -104,7 +109,11 @@ export function ActivityFeedSection() {
             <History size={24} className="text-primary" />
             <CardTitle className="text-xl font-semibold text-primary">Recent Activity</CardTitle>
           </div>
-          <Badge variant="outline" className="text-xs">{format(new Date(), 'do MMM, yyyy')}</Badge>
+          {formattedDate ? (
+            <Badge variant="outline" className="text-xs">{formattedDate}</Badge>
+          ) : (
+            <Badge variant="outline" className="text-xs">Loading date...</Badge>
+          )}
         </div>
       </CardHeader>
       <CardContent className="pt-4 flex-grow overflow-hidden">

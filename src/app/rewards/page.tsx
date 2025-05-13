@@ -95,10 +95,10 @@ export default function RewardsPage() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
           <RoleRewardCard
-            title="Top Performers - Senior Project Managers (SPMs)"
+            title="Top Performers - Site Project Managers (SPMs)"
             icon={<User />}
             rewards={spmRewards}
-            totalReward="₹99,000"
+            totalReward="₹99,000+"
             bgColorClass="border-blue-500 bg-blue-500/5"
             textColorClass="text-blue-600"
           />
@@ -106,21 +106,21 @@ export default function RewardsPage() {
             title="Top Performers - Team Leaders (TLs)"
             icon={<Users />}
             rewards={tlRewards}
-            totalReward="₹62,000"
+            totalReward="₹62,000+"
             bgColorClass="border-green-500 bg-green-500/5"
             textColorClass="text-green-600"
           />
           <RoleRewardCard
             title="Top Performer - Vendor Manager (VM)"
             icon={<Briefcase />}
-            rewards={{ rank: "1", reward: "₹25,000" }}
+            rewards={{ rank: "1", reward: "₹25,000+" }}
             bgColorClass="border-purple-500 bg-purple-500/5"
             textColorClass="text-purple-600"
-          />
+          /> 
           <RoleRewardCard
             title="Top Performer - Sourcing Executive"
             icon={<DollarSign />}
-            rewards={{ rank: "1", reward: "₹25,000" }}
+            rewards={{ rank: "1", reward: "₹25,000+" }}
             bgColorClass="border-orange-500 bg-orange-500/5"
             textColorClass="text-orange-600"
           />
@@ -130,11 +130,11 @@ export default function RewardsPage() {
           <CardHeader>
             <div className="flex items-center justify-center gap-3 mb-2">
               <Award size={36} className="text-accent"/>
-              <CardTitle className="text-3xl font-extrabold">💰 Total Monthly Reward Pool</CardTitle>
+              <CardTitle className="text-3xl font-extrabold">💰 Total Reward Pool</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-5xl font-bold mb-4">₹2,11,000</p>
+            <p className="text-5xl font-bold mb-4">₹5,00,000+</p>
             <p className="text-lg opacity-90">🎉 Celebrate excellence, encourage performance! 🚀</p>
           </CardContent>
         </Card>
