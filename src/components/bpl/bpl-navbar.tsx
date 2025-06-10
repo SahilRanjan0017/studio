@@ -11,14 +11,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { LayoutDashboard, ListOrdered, MapPinned, Award, BookOpen, Loader2 } from 'lucide-react';
-import { useCityFilter } from '@/contexts/CityFilterContext'; // Import the context hook
+import { useCityFilter } from '@/contexts/CityFilterContext'; 
 
 const navLinksConfig = [
-  { href: "/dashboard", label: "Dashboard", icon: <LayoutDashboard size={18}/> },
-  { href: "/leaderboard", label: "Leaderboard", icon: <ListOrdered size={18}/> },
-  { href: "/city-views", label: "City Views", icon: <MapPinned size={18}/> },
-  { href: "/rewards", label: "Rewards", icon: <Award size={18}/> },
-  { href: "/rules", label: "Rules", icon: <BookOpen size={18}/> },
+  { href: "/bpl-ops/dashboard", label: "Dashboard", icon: <LayoutDashboard size={18}/> },
+  { href: "/bpl-ops/leaderboard", label: "Leaderboard", icon: <ListOrdered size={18}/> },
+  { href: "/bpl-ops/city-views", label: "City Views", icon: <MapPinned size={18}/> },
+  { href: "/bpl-ops/rewards", label: "Rewards", icon: <Award size={18}/> },
+  { href: "/bpl-ops/rules", label: "Rules", icon: <BookOpen size={18}/> },
 ];
 
 export function BplNavbar() {
@@ -29,9 +29,8 @@ export function BplNavbar() {
     availableCities, 
     loadingCities, 
     cityError 
-  } = useCityFilter(); // Use the context
+  } = useCityFilter(); 
 
-  // Determine active link based on current path
   const activeLabel = navLinksConfig.find(link => pathname.startsWith(link.href))?.label || "Dashboard";
 
   return (

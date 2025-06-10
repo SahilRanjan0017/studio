@@ -2,10 +2,6 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google'; 
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
-import { BplHeader } from '@/components/bpl/bpl-header';
-import { BplNavbar } from '@/components/bpl/bpl-navbar';
-import { BplFooter } from '@/components/bpl/bpl-footer';
-import { CityFilterProvider } from '@/contexts/CityFilterContext'; // Import the provider
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -20,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Brick & Bolt Premier League | Construction Champions',
-  description: 'Track performance, celebrate achievements, and compete for the top spot in our construction championship.',
+  title: 'Brick & Bolt Portals',
+  description: 'Access Brick & Bolt Operations and Sales Portals.',
 };
 
 export default function RootLayout({
@@ -32,17 +28,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans bg-background text-foreground`}>
-        <CityFilterProvider> {/* Wrap with CityFilterProvider */}
-          <div className="min-h-screen flex flex-col">
-            <BplHeader />
-            <BplNavbar /> 
-            <main className="flex-grow">
-              {children}
-            </main>
-            <BplFooter />
-            <Toaster />
-          </div>
-        </CityFilterProvider>
+        {children}
+        <Toaster />
       </body>
     </html>
   );
