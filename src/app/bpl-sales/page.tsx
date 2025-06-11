@@ -2,7 +2,6 @@
 // This is the main dashboard page for BPL Sales
 import { DashboardTitleBlock } from '@/components/bpl/dashboard-title-block';
 import { SalesLeaderboardTable } from '@/components/bpl-sales/sales-leaderboard-table';
-import { SalesActivityFeedSection } from '@/components/bpl-sales/sales-activity-feed-section';
 import { BarChartBig } from 'lucide-react'; // Using a different icon for Sales Dashboard
 
 export default function BplSalesDashboardPage() {
@@ -16,12 +15,9 @@ export default function BplSalesDashboardPage() {
           className="mb-6"
         />
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-6"> {/* Changed grid to full width for leaderboard */}
+          <div className="lg:col-span-1"> {/* Leaderboard takes full span */}
             <SalesLeaderboardTable />
-          </div>
-          <div className="lg:col-span-1">
-            <SalesActivityFeedSection />
           </div>
         </div>
       </div>
