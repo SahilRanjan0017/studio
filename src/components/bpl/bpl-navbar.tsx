@@ -56,10 +56,8 @@ export function BplNavbar() {
     basePath = '/bpl-sales';
   }
 
-  // Determine active label based on the full path
   const activeLink = currentNavLinks.find(link => {
     const fullLinkPath = `${basePath}${link.hrefRoot || ''}`;
-    // For dashboard (empty hrefRoot), check exact match or if it's the base path itself
     if (link.hrefRoot === "") {
       return pathname === basePath || pathname === `${basePath}/`;
     }
@@ -89,7 +87,7 @@ export function BplNavbar() {
               </li>
             ))}
           </ul>
-          {(isOpsSection || isSalesSection) && ( // Show city filter only if in ops or sales section
+          {isOpsSection && ( // Show city filter only if in ops section
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <label htmlFor="city-filter-nav" className="text-sm font-medium text-muted-foreground whitespace-nowrap sr-only md:not-sr-only">
                 Filter by City:
