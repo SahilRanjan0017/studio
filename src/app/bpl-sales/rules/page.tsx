@@ -54,7 +54,7 @@ export default function ChannelPartnerRulesPage() {
         />
         <Card className="shadow-lg rounded-lg">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-foreground">
               <UserCheck className="text-accent" />
               Channel Partner League Scoring & Prizes
             </CardTitle>
@@ -64,7 +64,7 @@ export default function ChannelPartnerRulesPage() {
             
             <div>
               <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><CalendarDays size={20}/>League Period</h3>
-              <p>The BPL Channel Partner League will run from [Start Date Placeholder] to [End Date Placeholder]. All partner activities and achievements contributing to scores must fall within this period.</p>
+              <p className="text-muted-foreground">The BPL Channel Partner League will run from [Start Date Placeholder] to [End Date Placeholder]. All partner activities and achievements contributing to scores must fall within this period.</p>
             </div>
 
             {/* Partner Performance Tier 1 Section */}
@@ -140,7 +140,7 @@ export default function ChannelPartnerRulesPage() {
               <p className="text-muted-foreground mt-1">
                 Applicable Cities/Regions: BLR1/2/3, CHE, HYD, Gurgaon, Noida, Pune. (Example)
               </p>
-              <p className="mt-2"><strong>Runs Calculation:</strong> Sum of all individual partner scores within the designated region.</p>
+              <p className="mt-2 text-foreground"><strong>Runs Calculation:</strong> Sum of all individual partner scores within the designated region.</p>
             </div>
 
             {/* Prizes Section */}
@@ -154,7 +154,7 @@ export default function ChannelPartnerRulesPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-lg font-semibold text-foreground flex items-center">
-                    <Trophy size={22} className="inline-block mr-2 text-foreground" /> Trophy + ₹50,000 fund for Celebration
+                    <Trophy size={18} className="inline-block mr-2 text-primary" /> Trophy + ₹50,000 fund for Celebration
                   </p>
                   <p className="text-sm text-foreground mt-1">Awarded to the city/region with the highest total runs from its channel partners.</p>
                 </CardContent>
