@@ -112,10 +112,10 @@ export default function RewardsPage() {
             icon={<Users />}
             rewards={tlRewards}
             totalReward="₹62,000+"
-            borderColorClass="border-secondary" 
-            iconBgClass="bg-secondary/10" 
-            iconColorClass="text-secondary-foreground"
-            titleColorClass="text-secondary-foreground" 
+            borderColorClass="border-primary" 
+            iconBgClass="bg-primary/10" 
+            iconColorClass="text-primary"
+            titleColorClass="text-primary" 
           />
           <RoleRewardCard
             title="Top Performer - Vendor Manager (VM)"
@@ -153,3 +153,4 @@ export default function RewardsPage() {
     </div>
   );
 }
+
