@@ -8,7 +8,8 @@ export default function LandingPage() {
   return (
     <div 
       className="relative flex flex-col items-center justify-center min-h-screen p-6 bg-cover bg-center"
-      style={{ backgroundImage: "url('https://i.ibb.co/Kgq9rmH/pexels-tomfisk-2101137.jpg')" }}
+      style={{ backgroundImage: "url('https://thumbs2.imgbox.com/04/74/p8fkPlAk_t.jpg')" }}
+      data-ai-hint="construction building"
     >
       {/* Overlay for better text readability */}
       <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -49,7 +50,7 @@ export default function LandingPage() {
         </div>
 
         <footer className="absolute bottom-8 text-center text-gray-300 text-sm"> {/* Adjusted text color */}
-          © {new Date().getFullYear()} Brick & Bolt. All rights reserved.
+          © 2025 Brick & Bolt. All rights reserved.
         </footer>
       </div>
     </div>
