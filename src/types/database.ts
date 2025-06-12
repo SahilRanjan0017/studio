@@ -55,3 +55,25 @@ export interface LeaderboardEntry {
 }
 
 export type LeaderboardRole = 'SPM' | 'TL' | 'OM';
+
+// Structure for raw data from channel_partner_performance_view
+export interface RawChannelPartnerData {
+  partner_id: string;
+  partner_name: string;
+  city: string | null;
+  leads_generated: number;
+  successful_conversions: number;
+  total_score: number;
+}
+
+// Structure for processed channel partner entries to be displayed
+export interface ChannelPartnerEntry {
+  partner_id: string;
+  partner_name: string;
+  city: string | null;
+  leads_generated: number;
+  successful_conversions: number;
+  conversion_rate: number;
+  total_score: number;
+  rank: number;
+}

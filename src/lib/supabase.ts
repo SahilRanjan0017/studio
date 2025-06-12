@@ -1,6 +1,6 @@
 // src/lib/supabase.ts
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import type { ProjectPerformanceData, LeaderboardEntry, LeaderboardRole } from '@/types/database';
+import type { ProjectPerformanceData, LeaderboardEntry, LeaderboardRole, RawChannelPartnerData, ChannelPartnerEntry } from '@/types/database';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -188,4 +188,72 @@ export async function fetchProjectData(
     }));
 
   return { data: leaderboard, error: null };
+}
+
+
+export async function fetchChannelPartnerData(
+  city: string
+): Promise<{ data: ChannelPartnerEntry[]; error: string | null }> {
+  if (!supabase) {
+    const errorMsg = "Supabase client is not initialized. Cannot fetch channel partner data.";
+    console.error(errorMsg);
+    return { data: [], error: errorMsg };
+  }
+
+  let query = supabase
+    .from('channel_partner_performance_view') // Ensure this view exists in your Supabase
+    .select<string, RawChannelPartnerData>(`
+      partner_id,
+      partner_name,
+      city,
+      leads_generated,
+      successful_conversions,
+      total_score
+    `);
+
+  if (city !== 'Pan India' && city !== '') {
+    query = query.eq('city', city);
+  }
+
+  const { data: rawData, error: supabaseError } = await query;
+
+  if (supabaseError) {
+    let errorMessage = 'Error fetching channel partner performance data.';
+     if (typeof supabaseError === 'object' && supabaseError !== null) {
+        if (Object.keys(supabaseError).length === 0) {
+            errorMessage = 'Error fetching channel partner data: An empty error object was returned. This could be due to RLS policies, network issues, or the view/table returning no data matching the criteria.';
+        } else if ('message' in supabaseError && typeof supabaseError.message === 'string') {
+            errorMessage = supabaseError.message;
+        } else {
+            try {
+                errorMessage = `Error fetching channel partner data: ${JSON.stringify(supabaseError)}`;
+            } catch {
+                errorMessage = 'Error fetching channel partner data: Non-serializable error object.';
+            }
+        }
+    }
+    console.error('Error details from Supabase (fetchChannelPartnerData):', supabaseError);
+    console.error(errorMessage);
+    return { data: [], error: errorMessage };
+  }
+
+  if (!rawData) {
+    return { data: [], error: null };
+  }
+
+  const processedData: ChannelPartnerEntry[] = rawData
+    .map(item => ({
+      ...item,
+      conversion_rate: item.leads_generated > 0 
+        ? parseFloat(((item.successful_conversions / item.leads_generated) * 100).toFixed(1)) 
+        : 0,
+      rank: 0, // Rank will be assigned after sorting
+    }))
+    .sort((a, b) => b.total_score - a.total_score) // Sort by total_score descending
+    .map((entry, index) => ({
+      ...entry,
+      rank: index + 1, // Assign rank
+    }));
+
+  return { data: processedData, error: null };
 }
