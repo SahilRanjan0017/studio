@@ -1,3 +1,4 @@
+
 // @/app/bpl-sales/rules/page.tsx
 // This page is now for BPL Channel Partner Rules
 import { DashboardTitleBlock } from '@/components/bpl/dashboard-title-block';
@@ -147,13 +148,13 @@ export default function ChannelPartnerRulesPage() {
               <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><Trophy size={20}/> Prizes</h3>
               <Card className="mt-3 border-accent bg-accent/5">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-lg flex items-center gap-2 text-accent-foreground">
+                  <CardTitle className="text-lg flex items-center gap-2 text-foreground">
                     <Star size={18} className="text-primary" /> Best Performing Region/City Award
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg font-semibold text-accent-foreground">🏆 Trophy + ₹50,000 fund for Celebration</p>
-                  <p className="text-sm text-muted-foreground mt-1">Awarded to the city/region with the highest total runs from its channel partners.</p>
+                  <p className="text-lg font-semibold text-foreground">🏆 Trophy + ₹50,000 fund for Celebration</p>
+                  <p className="text-sm text-foreground mt-1">Awarded to the city/region with the highest total runs from its channel partners.</p>
                 </CardContent>
               </Card>
             </div>
@@ -176,3 +177,4 @@ export default function ChannelPartnerRulesPage() {
     </div>
   );
 }
+
