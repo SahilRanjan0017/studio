@@ -171,12 +171,12 @@ export function LeaderboardTable() {
               <Table>
                 <TableHeader>
                   <TableRow className="border-border/70">
-                    <TableHead className="w-[50px] text-center text-xs font-medium text-muted-foreground/80 px-2">Rank</TableHead>
-                    <TableHead className="text-xs font-medium text-muted-foreground/80 px-2">Name</TableHead>
-                    <TableHead className="hidden md:table-cell text-xs font-medium text-muted-foreground/80 px-2">City</TableHead>
-                    <TableHead className="text-center text-xs font-medium text-muted-foreground/80 px-2">Projects</TableHead>
-                    <TableHead className="text-right text-xs font-medium text-muted-foreground/80 px-2">Runs</TableHead>
-                    <TableHead className="text-right hidden sm:table-cell text-xs font-medium text-muted-foreground/80 px-1">Trend</TableHead>
+                    <TableHead className="w-[50px] text-center text-xs font-semibold text-foreground px-2">Rank</TableHead>
+                    <TableHead className="text-xs font-semibold text-foreground px-2">Name</TableHead>
+                    <TableHead className="hidden md:table-cell text-xs font-semibold text-foreground px-2">City</TableHead>
+                    <TableHead className="text-center text-xs font-semibold text-foreground px-2">Projects</TableHead>
+                    <TableHead className="text-right text-xs font-semibold text-foreground px-2">Runs</TableHead>
+                    <TableHead className="text-right hidden sm:table-cell text-xs font-semibold text-foreground px-1">Trend</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
