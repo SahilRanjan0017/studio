@@ -2,14 +2,13 @@
 
 const CompanyLogo = () => (
   <svg
-    height="40"
     viewBox="0 0 166 166"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    preserveAspectRatio="xMidYMid meet"
+    style={{ height: '40px', width: 'auto' }}
     className="text-gray-800"
   >
-    <circle cx="83" cy="83" r="83" fill="#ED5A2E" />
+    <circle cx="83" cy="83" r="82.5" fill="#F05A29" stroke="white" />
     <rect
       x="94"
       y="37"

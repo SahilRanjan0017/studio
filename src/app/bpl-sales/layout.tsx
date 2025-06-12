@@ -6,11 +6,11 @@ import { BplFooter } from '@/components/bpl/bpl-footer';
 import { CityFilterProvider } from '@/contexts/CityFilterContext';
 
 export const metadata: Metadata = {
-  title: 'BPL Sales | Brick & Bolt',
-  description: 'Sales Premier League Portal - Track performance and targets.',
+  title: 'BPL Channel Partner | Brick & Bolt',
+  description: 'Channel Partner Premier League Portal - Track performance and targets.',
 };
 
-export default function BplSalesLayout({
+export default function BplChannelPartnerLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

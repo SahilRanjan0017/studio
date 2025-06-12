@@ -1,4 +1,5 @@
 // @/app/bpl-sales/rules/page.tsx
+// This page is now for BPL Channel Partner Rules
 import { DashboardTitleBlock } from '@/components/bpl/dashboard-title-block';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'; 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -14,68 +15,66 @@ import {
   Users, 
   CalendarDays, 
   AlertTriangle,
-  DollarSign
+  DollarSign,
+  UserCheck
 } from 'lucide-react';
 
-const osKpis = [
-  { kpi: "1st Qualified Meeting", runs: "2" },
-  { kpi: "CEM", runs: "6" },
-  { kpi: "Conversion", runs: "24" },
+// Example KPIs - these should be defined based on actual Channel Partner metrics
+const partnerTier1Kpis = [
+  { kpi: "Qualified Leads Generated", runs: "2" },
+  { kpi: "Successful Conversions", runs: "6" },
+  { kpi: "High-Value Project Conversion", runs: "24" },
 ];
 
-const cpOsKpis = [
-  { kpi: "1st Meeting", runs: "2" },
-  { kpi: "1st Qualified Meeting", runs: "6" },
-  { kpi: "For every CP activation with atleast 10 leads", runs: "2" },
-  { kpi: "For every CP activation with atleast 1 1st meeting", runs: "4" },
-  { kpi: "For every CP activation with atleast 1 qualified meeting", runs: "6" },
-  { kpi: ">60% Platinum CPs with atleast 1 qualified meeting", runs: "50" },
-  { kpi: ">60% Gold CPs with atleast 10 lead per CP", runs: "50" },
-  { kpi: ">20% Gold CPs with atleast 1 qualified meeting", runs: "50" },
+const partnerTier2Kpis = [
+  { kpi: "New Partner Onboarding", runs: "2" },
+  { kpi: "Partner Activation (First Lead)", runs: "6" },
+  { kpi: "Consistent Lead Quota Met (Monthly)", runs: "10" },
+  { kpi: ">60% Top-Tier Partners with Qualified Meetings", runs: "50" },
 ];
 
-const isActivationKpis = [
-  { kpi: "# of CP onboarding", runs: "6" },
+const partnerActivationKpis = [
+  { kpi: "Partner Onboarding & Training Completion", runs: "6" },
 ];
 
-const cpIsKpis = [
-  { kpi: "# 1st meetings", runs: "6" },
+const partnerEngagementKpis = [
+  { kpi: "Regular Engagement (e.g., joint meetings)", runs: "6" },
 ];
 
-export default function SalesRulesPage() {
+export default function ChannelPartnerRulesPage() {
   return (
     <div className="bg-background min-h-screen py-6">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <DashboardTitleBlock 
           icon={<BookOpen size={28} className="text-primary" />}
-          title="BPL Sales League: Rules & Guidelines"
-          subtitle="Understanding the framework for the Sales Premier League, including scoring and prizes."
+          title="BPL Channel Partner League: Rules & Guidelines"
+          subtitle="Understanding the framework for the Channel Partner Premier League, including scoring and prizes."
           className="mb-6"
         />
         <Card className="shadow-lg rounded-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <DollarSign className="text-accent" />
-              Sales League Scoring & Prizes
+              <UserCheck className="text-accent" />
+              Channel Partner League Scoring & Prizes
             </CardTitle>
-            <CardDescription>Key performance indicators (KPIs), run allocations for participant categories, and prize details.</CardDescription>
+            <CardDescription>Key performance indicators (KPIs), run allocations for partner categories, and prize details.</CardDescription>
           </CardHeader>
           <CardContent className="prose dark:prose-invert max-w-none space-y-8">
             
             <div>
               <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><CalendarDays size={20}/>League Period</h3>
-              <p>The BPL Sales League will run from [Start Date Placeholder] to [End Date Placeholder]. All sales activities and achievements contributing to scores must fall within this period.</p>
+              <p>The BPL Channel Partner League will run from [Start Date Placeholder] to [End Date Placeholder]. All partner activities and achievements contributing to scores must fall within this period.</p>
             </div>
 
-            {/* OS Section */}
+            {/* Partner Performance Tier 1 Section */}
             <div>
-              <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><Target size={20}/> Outside Sales (OS)</h3>
-              <p className="text-sm text-muted-foreground mb-3">Participants: 8</p>
+              <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><Target size={20}/> Partner Performance Tier 1</h3>
+              <p className="text-sm text-muted-foreground mb-3">Focus: High-performing individual partners or lead generation sources.</p>
               <div className="overflow-x-auto rounded-md border">
                 <Table>
                   <TableHeader><TableRow><TableHead>KPI</TableHead><TableHead className="text-center w-[100px]">Runs</TableHead></TableRow></TableHeader>
                   <TableBody>
-                    {osKpis.map(item => (
+                    {partnerTier1Kpis.map(item => (
                       <TableRow key={item.kpi}><TableCell>{item.kpi}</TableCell><TableCell className="text-center font-semibold">{item.runs}</TableCell></TableRow>
                     ))}
                   </TableBody>
@@ -83,15 +82,15 @@ export default function SalesRulesPage() {
               </div>
             </div>
 
-            {/* CP OS Section */}
+            {/* Partner Performance Tier 2 Section */}
             <div>
-              <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><Award size={20}/> Channel Partner Outside Sales (CP OS)</h3>
-              <p className="text-sm text-muted-foreground mb-3">Participants: 8 Platinum + 22 Gold (Total 30)</p>
+              <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><Award size={20}/> Partner Performance Tier 2</h3>
+              <p className="text-sm text-muted-foreground mb-3">Focus: Broader partner network engagement and activation quality.</p>
               <div className="overflow-x-auto rounded-md border">
                 <Table>
                   <TableHeader><TableRow><TableHead>KPI / Achievement</TableHead><TableHead className="text-center w-[100px]">Runs</TableHead></TableRow></TableHeader>
                   <TableBody>
-                    {cpOsKpis.map(item => (
+                    {partnerTier2Kpis.map(item => (
                       <TableRow key={item.kpi}><TableCell>{item.kpi}</TableCell><TableCell className="text-center font-semibold">{item.runs}</TableCell></TableRow>
                     ))}
                   </TableBody>
@@ -99,15 +98,15 @@ export default function SalesRulesPage() {
               </div>
             </div>
 
-            {/* IS Activation Section */}
+            {/* Partner Activation Metrics Section */}
             <div>
-              <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><Zap size={20}/> Inside Sales Activation (IS Activation)</h3>
-              <p className="text-sm text-muted-foreground mb-3">Participants: 30</p>
+              <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><Zap size={20}/> Partner Activation Metrics</h3>
+              <p className="text-sm text-muted-foreground mb-3">Focus: Onboarding and initial engagement of new partners.</p>
               <div className="overflow-x-auto rounded-md border">
                 <Table>
                   <TableHeader><TableRow><TableHead>KPI</TableHead><TableHead className="text-center w-[100px]">Runs</TableHead></TableRow></TableHeader>
                   <TableBody>
-                    {isActivationKpis.map(item => (
+                    {partnerActivationKpis.map(item => (
                       <TableRow key={item.kpi}><TableCell>{item.kpi}</TableCell><TableCell className="text-center font-semibold">{item.runs}</TableCell></TableRow>
                     ))}
                   </TableBody>
@@ -115,15 +114,15 @@ export default function SalesRulesPage() {
               </div>
             </div>
 
-            {/* CP IS Section */}
+            {/* Partner Engagement Metrics Section */}
             <div>
-              <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><Handshake size={20}/> Channel Partner Inside Sales (CP IS)</h3>
-              <p className="text-sm text-muted-foreground mb-3">Participants: 37</p>
+              <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><Handshake size={20}/> Partner Engagement Metrics</h3>
+              <p className="text-sm text-muted-foreground mb-3">Focus: Ongoing relationship and activity levels with partners.</p>
               <div className="overflow-x-auto rounded-md border">
                 <Table>
                   <TableHeader><TableRow><TableHead>KPI</TableHead><TableHead className="text-center w-[100px]">Runs</TableHead></TableRow></TableHeader>
                   <TableBody>
-                    {cpIsKpis.map(item => (
+                    {partnerEngagementKpis.map(item => (
                       <TableRow key={item.kpi}><TableCell>{item.kpi}</TableCell><TableCell className="text-center font-semibold">{item.runs}</TableCell></TableRow>
                     ))}
                   </TableBody>
@@ -131,16 +130,16 @@ export default function SalesRulesPage() {
               </div>
             </div>
             
-            {/* City Champion Section */}
+            {/* Regional Partner Champion Section */}
             <div>
-              <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><Flame size={20}/> City Champion (OS + CP)</h3>
+              <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><Flame size={20}/> Regional Partner Champion</h3>
               <p className="text-muted-foreground">
-                The City Champion is determined by the sum of all runs achieved by OS and CP OS participants within a specific city.
+                The Regional Partner Champion is determined by the sum of all runs achieved by partners within a specific city/region.
               </p>
               <p className="text-muted-foreground mt-1">
-                Applicable Cities: BLR1/2/3, CHE, HYD, Gurgaon, Noida, Pune.
+                Applicable Cities/Regions: BLR1/2/3, CHE, HYD, Gurgaon, Noida, Pune. (Example)
               </p>
-              <p className="mt-2"><strong>Runs Calculation:</strong> Sum of all individual OS & CP OS scores within the designated city.</p>
+              <p className="mt-2"><strong>Runs Calculation:</strong> Sum of all individual partner scores within the designated region.</p>
             </div>
 
             {/* Prizes Section */}
@@ -149,12 +148,12 @@ export default function SalesRulesPage() {
               <Card className="mt-3 border-accent bg-accent/5">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg flex items-center gap-2 text-accent-foreground">
-                    <Star size={18} className="text-primary" /> Best City Award
+                    <Star size={18} className="text-primary" /> Best Performing Region/City Award
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-lg font-semibold text-accent-foreground">🏆 Trophy + ₹50,000 fund for Celebration</p>
-                  <p className="text-sm text-muted-foreground mt-1">Awarded to the city with the highest total runs from OS and CP OS participants.</p>
+                  <p className="text-sm text-muted-foreground mt-1">Awarded to the city/region with the highest total runs from its channel partners.</p>
                 </CardContent>
               </Card>
             </div>
@@ -162,14 +161,14 @@ export default function SalesRulesPage() {
             <div>
               <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><AlertTriangle size={20}/>General Terms & Conditions</h3>
                <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
-                <li>All sales activities and achievements must be verifiable and adhere to company policies.</li>
+                <li>All partner activities and achievements must be verifiable and adhere to company policies and partnership agreements.</li>
                 <li>Any unethical practices, misrepresentation of data, or manipulation of league mechanics will lead to disqualification.</li>
                 <li>The management reserves the right to modify rules, scoring, or prize distribution in exceptional circumstances, with prior notification to all participants.</li>
                 <li>Dispute resolution mechanisms will be outlined by the league organizers. All decisions by the organizing committee will be final.</li>
               </ul>
             </div>
             <p className="mt-6 text-center font-semibold text-primary/80">
-              Further details regarding specific data tracking methodologies and reporting will be provided. Stay tuned!
+              Further details regarding specific data tracking methodologies and reporting for Channel Partners will be provided. Stay tuned!
             </p>
           </CardContent>
         </Card>
@@ -177,4 +176,3 @@ export default function SalesRulesPage() {
     </div>
   );
 }
-
