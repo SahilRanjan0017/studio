@@ -102,7 +102,7 @@ export function ActivityFeedSection() {
   };
 
   return (
-    <Card className="shadow-lg rounded-lg h-full flex flex-col">
+    <Card className="shadow-lg rounded-lg flex flex-col">
       <CardHeader className="border-b">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -116,25 +116,25 @@ export function ActivityFeedSection() {
           )}
         </div>
       </CardHeader>
-      <CardContent className="pt-4 flex-grow overflow-hidden">
+      <CardContent className="pt-4">
         {loading ? (
-          <div className="flex items-center justify-center h-full text-muted-foreground">
+          <div className="flex items-center justify-center text-muted-foreground py-10">
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
             <span>Loading activities...</span>
           </div>
         ) : error ? (
-          <div className="flex flex-col items-center justify-center h-full text-destructive">
+          <div className="flex flex-col items-center justify-center text-destructive py-10">
             <AlertCircle size={32} className="mb-2" />
             <p className="text-center">{error}</p>
             <p className="text-xs text-muted-foreground mt-1">Please ensure the database view 'project_performance_view' is correctly configured for today's date.</p>
           </div>
         ) : activities.length === 0 ? (
-          <div className="text-center text-muted-foreground py-10 h-full flex flex-col justify-center items-center">
+          <div className="text-center text-muted-foreground py-10 flex flex-col justify-center items-center">
             <History size={32} className="mb-2 opacity-50" />
             <p>No significant score changes today.</p>
           </div>
         ) : (
-          <ScrollArea className="h-[calc(100%-0rem)] pr-3 -mr-3"> 
+          <ScrollArea className="max-h-[500px] pr-3 -mr-3"> 
             <ul className="divide-y divide-border">
               {activities.map(renderActivityItem)}
             </ul>
