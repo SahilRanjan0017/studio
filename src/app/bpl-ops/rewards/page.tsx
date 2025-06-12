@@ -33,15 +33,14 @@ interface RoleRewardProps {
   rewards: RewardTier[] | { rank: string; reward: string };
   totalReward?: string;
   borderColorClass: string; 
-  bgColorClass?: string; 
   iconBgClass: string; 
   iconColorClass: string; 
   titleColorClass: string; 
 }
 
-function RoleRewardCard({ title, icon, rewards, totalReward, borderColorClass, bgColorClass, iconBgClass, iconColorClass, titleColorClass }: RoleRewardProps) {
+function RoleRewardCard({ title, icon, rewards, totalReward, borderColorClass, iconBgClass, iconColorClass, titleColorClass }: RoleRewardProps) {
   return (
-    <Card className={`shadow-lg rounded-xl overflow-hidden border-l-4 ${borderColorClass} ${bgColorClass || 'bg-card'}`}>
+    <Card className={`shadow-lg rounded-xl overflow-hidden border-l-4 ${borderColorClass} bg-card`}>
       <CardHeader className="pb-4">
         <div className="flex items-center gap-3">
           <div className={`p-2 rounded-full ${iconBgClass}`}>
@@ -92,7 +91,7 @@ export default function RewardsPage() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <DashboardTitleBlock 
           icon={<Trophy size={32} className="text-primary animate-pulse-scale" />} 
-          title="🏆 Performance Rewards Breakdown"
+          title="Performance Rewards Breakdown"
           subtitle="Celebrate excellence, encourage performance! Your hard work deserves recognition and reward!"
           className="mb-10"
         />
@@ -115,7 +114,7 @@ export default function RewardsPage() {
             totalReward="₹62,000+"
             borderColorClass="border-secondary" 
             iconBgClass="bg-secondary/10" 
-            iconColorClass="text-secondary-foreground" // Assuming dark text on light secondary
+            iconColorClass="text-secondary-foreground"
             titleColorClass="text-secondary-foreground" 
           />
           <RoleRewardCard
