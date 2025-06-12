@@ -55,8 +55,8 @@ function RoleRewardCard({ title, icon, rewards, totalReward, borderColorClass, i
             <Table className="mb-3">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[100px] text-muted-foreground">🥇 Rank</TableHead>
-                  <TableHead className="text-muted-foreground">💸 Reward</TableHead>
+                  <TableHead className="w-[100px] text-muted-foreground">Rank</TableHead>
+                  <TableHead className="text-muted-foreground">Reward</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -70,13 +70,13 @@ function RoleRewardCard({ title, icon, rewards, totalReward, borderColorClass, i
             </Table>
             {totalReward && (
               <p className={`text-right font-semibold text-lg ${titleColorClass}`}>
-                ✨ Total Reward: {totalReward}
+                Total Reward: {totalReward}
               </p>
             )}
           </>
         ) : (
           <div className="text-lg text-foreground">
-            <span className="font-medium">🥇 Rank {rewards.rank}:</span>
+            <span className="font-medium">Rank {rewards.rank}:</span>
             <span className={`font-bold ml-2 ${titleColorClass}`}>{rewards.reward}</span>
           </div>
         )}
@@ -121,10 +121,10 @@ export default function RewardsPage() {
             title="Top Performer - Vendor Manager (VM)"
             icon={<Briefcase />}
             rewards={{ rank: "1", reward: "₹25,000+" }}
-            borderColorClass="border-accent" 
-            iconBgClass="bg-accent/10" 
-            iconColorClass="text-accent-foreground" 
-            titleColorClass="text-accent-foreground"
+            borderColorClass="border-primary" 
+            iconBgClass="bg-primary/10" 
+            iconColorClass="text-primary" 
+            titleColorClass="text-primary"
           /> 
           <RoleRewardCard
             title="Top Performer - Sourcing Executive"
@@ -141,12 +141,12 @@ export default function RewardsPage() {
           <CardHeader>
             <div className="flex items-center justify-center gap-3 mb-2">
               <Award size={36} className="text-primary-foreground"/> 
-              <CardTitle className="text-3xl font-extrabold">💰 Total Reward Pool</CardTitle>
+              <CardTitle className="text-3xl font-extrabold">Total Reward Pool</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
             <p className="text-5xl font-bold mb-4">₹5,00,000+</p>
-            <p className="text-lg opacity-90">🎉 Celebrate excellence, encourage performance! 🚀</p>
+            <p className="text-lg opacity-90">Celebrate excellence, encourage performance!</p>
           </CardContent>
         </Card>
       </div>
