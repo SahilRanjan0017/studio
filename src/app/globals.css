@@ -6,10 +6,10 @@
 @layer base {
   :root {
     /* Light Theme (Default) - Palette: #F4F1DE, #E07A5F, #3D405B */
-    --background: 48 33% 91%; /* #F4F1DE */
-    --foreground: 236 19% 30%; /* #3D405B */
+    --background: 48 33% 91%; /* #F4F1DE - Warm, creamy off-white */
+    --foreground: 236 19% 30%; /* #3D405B - Deep Indigo for primary text */
 
-    --card: 48 33% 91%; /* #F4F1DE */
+    --card: 48 33% 91%; /* #F4F1DE - Same as background, rely on shadows */
     --card-foreground: 236 19% 30%; /* #3D405B */
 
     --popover: 48 33% 94%; /* Slightly lighter #F4F1DE for pop */
