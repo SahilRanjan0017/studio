@@ -2,6 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import CompanyLogo from '../CompanyLogo'; 
 
 export function BplHeader() {
@@ -27,13 +28,17 @@ export function BplHeader() {
         <div className="flex flex-col md:flex-row items-center justify-between py-4 md:py-5">
           {/* Left side: Logo and Title */}
           <div className="flex items-center gap-4 mb-3 md:mb-0">
-            <div className="w-10 h-10 flex-shrink-0 -mt-3">
-              <CompanyLogo />
-            </div>
+            <Link href="/" passHref aria-label="Go to homepage">
+              <div className="w-10 h-10 flex-shrink-0 -mt-3 cursor-pointer">
+                <CompanyLogo />
+              </div>
+            </Link>
             <div>
-              <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-primary-foreground">
-                Brick & Bolt Premier League
-              </h1>
+              <Link href="/" passHref>
+                <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-primary-foreground cursor-pointer hover:opacity-90 transition-opacity">
+                  Brick & Bolt Premier League
+                </h1>
+              </Link>
               <p className="text-xs opacity-80 font-light text-primary-foreground/90">{championsText}</p>
             </div>
           </div>
