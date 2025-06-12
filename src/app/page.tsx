@@ -29,7 +29,7 @@ export default function LandingPage() {
             <Button
               variant="default"
               size="lg"
-              className="w-full h-20 md:h-24 text-lg md:text-xl shadow-lg group font-bold text-[hsl(var(--primary-foreground))] hover:text-[hsl(var(--foreground))]"
+              className="w-full h-20 md:h-24 text-lg md:text-xl shadow-lg group font-bold text-[hsl(var(--primary-foreground))] hover:text-[hsl(var(--primary-foreground))]"
             >
               <span className="relative z-10">BPL Operations</span>
               <ArrowRight className="ml-2 h-5 w-5 md:h-6 md:w-6 transition-transform duration-300 group-hover:translate-x-1 relative z-10" />
@@ -39,7 +39,7 @@ export default function LandingPage() {
             <Button
               variant="default"
               size="lg"
-              className="w-full h-20 md:h-24 text-lg md:text-xl shadow-lg group font-bold text-[hsl(var(--primary-foreground))] hover:text-[hsl(var(--foreground))]"
+              className="w-full h-20 md:h-24 text-lg md:text-xl shadow-lg group font-bold text-[hsl(var(--primary-foreground))] hover:text-[hsl(var(--primary-foreground))]"
             >
               <span className="relative z-10">BPL Channel Partner</span>
               <ArrowRight className="ml-2 h-5 w-5 md:h-6 md:w-6 transition-transform duration-300 group-hover:translate-x-1 relative z-10" />
