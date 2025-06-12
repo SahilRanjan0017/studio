@@ -153,7 +153,9 @@ export default function ChannelPartnerRulesPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg font-semibold text-foreground">🏆 Trophy + ₹50,000 fund for Celebration</p>
+                  <p className="text-lg font-semibold text-foreground flex items-center">
+                    <Trophy size={22} className="inline-block mr-2 text-foreground" /> Trophy + ₹50,000 fund for Celebration
+                  </p>
                   <p className="text-sm text-foreground mt-1">Awarded to the city/region with the highest total runs from its channel partners.</p>
                 </CardContent>
               </Card>
