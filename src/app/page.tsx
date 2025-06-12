@@ -49,7 +49,7 @@ export default function LandingPage() {
           </Link>
         </div>
 
-        <footer className="absolute bottom-4 text-center text-gray-300 text-sm p-[1px]"> {/* Changed bottom-8 to bottom-4 */}
+        <footer className="absolute bottom-[10px] text-center text-gray-300 text-sm p-[10px]">
           © 2025 Brick & Bolt. All rights reserved.
         </footer>
       </div>
