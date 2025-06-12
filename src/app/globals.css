@@ -4,110 +4,123 @@
 
 @layer base {
   :root {
-    --background: 40 25% 93%; /* #EFEEEA - Soft Off-White/Beige */
-    --foreground: 207 33% 23%; /* #273F4F - Deep Slate Blue */
+    /* New Palette - Light Mode */
+    --background: 40 30% 95%; /* #F5F2EF - Soft Off-White/Beige (Page Canvas) */
+    --foreground: 210 25% 25%; /* #2E3A47 - Deep Charcoal/Dark Navy (Primary Text) */
 
-    --card: 0 0% 100%; /* White cards */
-    --card-foreground: 207 33% 23%; /* Deep Slate Blue text on white cards */
+    --card: 0 0% 100%; /* #FFFFFF - White */
+    --card-foreground: 210 25% 25%; /* #2E3A47 - Deep Charcoal/Dark Navy */
 
-    --popover: 0 0% 100%; /* White popovers */
-    --popover-foreground: 207 33% 23%; /* Deep Slate Blue text on popovers */
+    --popover: 0 0% 100%; /* #FFFFFF - White */
+    --popover-foreground: 210 25% 25%; /* #2E3A47 - Deep Charcoal/Dark Navy */
 
-    --primary: 14 99% 63%; /* #FE7743 - Vibrant Orange */
-    --primary-foreground: 0 0% 100%; /* White */
+    --primary: 20 80% 55%; /* #E67E4A - Burnt Orange/Terracotta (Accent 1 - Brick) */
+    --primary-foreground: 0 0% 96%; /* #F5F5F5 - Crisp Off-White (Text on Accent 1) */
+    --primary-darker: 20 80% 45%; /* Darker shade for gradient */
+    --primary-lighter: 20 80% 65%; /* Lighter shade for gradient */
+    --primary-text-on-fill: 210 25% 25%; /* #2E3A47 - Charcoal/Navy for text on hover fill */
 
-    --secondary: 14 90% 70%; /* #FECFBC - Lighter/softer orange */
-    --secondary-foreground: 207 33% 23%; /* Deep Slate Blue text for contrast */
 
-    --muted: 60 10% 88%; /* #E2E2DD - Grayish off-white */
-    --muted-foreground: 207 30% 50%; /* #5F7381 - Lighter Deep Slate Blue */
+    /* Secondary can be a variation or another accent if needed */
+    --secondary: 210 20% 88%; /* #DCDFE2 - Light Grey for secondary elements/borders */
+    --secondary-foreground: 210 25% 25%; /* #2E3A47 - Deep Charcoal/Dark Navy */
 
-    --accent: 14 99% 63%; /* #FE7743 - Vibrant Orange (same as primary) */
-    --accent-foreground: 0 0% 100%; /* White */
+    --muted: 210 20% 92%; /* #E8EAEB - Very Light Grey */
+    --muted-foreground: 0 0% 40%; /* #666666 - Silver-Grey (Accent 2 - Bolt) */
 
-    --destructive: 0 72% 51%; /* #dc2626 - Kept for semantic error states */
+    --accent: 20 80% 55%; /* #E67E4A - Burnt Orange/Terracotta (Same as Primary) */
+    --accent-foreground: 0 0% 96%; /* #F5F5F5 - Crisp Off-White */
+
+    --destructive: 0 72% 51%; /* #dc2626 - Standard red, kept for semantics */
     --destructive-foreground: 0 0% 100%; /* white */
 
-    --border: 40 15% 85%; /* #DAD9D4 - Subtle border */
-    --input: 40 15% 85%; /* #DAD9D4 - Input border */
-    --ring: 14 99% 63%; /* #FE7743 - Focus ring */
+    --border: 210 20% 80%; /* #C8CDD3 - Light Grey */
+    --input: 210 20% 80%; /* #C8CDD3 - Light Grey */
+    --ring: 20 80% 55%; /* #E67E4A - Burnt Orange/Terracotta (Focus Ring) */
 
-    --chart-1: 14 99% 63%; /* Vibrant Orange */
-    --chart-2: 14 99% 70%; /* Lighter Orange */
-    --chart-3: 14 99% 77%; /* Even Lighter Orange */
-    --chart-4: 14 99% 56%; /* Deeper Orange */
-    --chart-5: 14 80% 63%; /* Muted Orange */
-    --radius: 0.5rem;
+    --chart-1: 20 80% 55%;
+    --chart-2: 20 80% 65%;
+    --chart-3: 20 80% 75%;
+    --chart-4: 20 80% 45%;
+    --chart-5: 20 60% 55%;
+    --radius: 0.5rem; /* Kept from previous, can be adjusted */
 
-    /* Custom colors from BPL theme - RAG status colors should remain semantic */
+    /* Custom RAG colors - kept for semantic value */
     --custom-green: 145 73% 36%; /* #16a34a */
     --custom-green-foreground: 0 0% 100%; /* white */
-    --custom-amber: 38 96% 50%;  /* #f59e0b - Standard amber, kept for semantics */
-    --custom-amber-foreground: 207 33% 23%; /* Deep Slate Blue text on amber */
-    --custom-red: 0 72% 51%; /* #dc2626 - Standard red, kept for semantics */
+    --custom-amber: 38 96% 50%;  /* #f59e0b */
+    --custom-amber-foreground: 210 25% 25%; 
+    --custom-red: 0 72% 51%; /* #dc2626 */
     --custom-red-foreground: 0 0% 100%; /* white */
 
-    --sidebar-background: 207 33% 23%; /* #273F4F Deep Slate Blue */
-    --sidebar-foreground: 40 25% 93%; /* #EFEEEA Soft Off-White */
-    --sidebar-primary: 14 99% 63%; /* #FE7743 Orange */
-    --sidebar-primary-foreground: 0 0% 100%; /* White */
-    --sidebar-accent: 14 99% 70%; /* #FF8C60 Lighter Orange for hover */
-    --sidebar-accent-foreground: 207 33% 15%; /* Dark text for light orange accent */
-    --sidebar-border: 207 33% 30%; /* #3C505F Slightly lighter slate blue */
-    --sidebar-ring: 14 99% 63%; /* Orange */
+    /* Sidebar Theme - Aligned with new palette */
+    --sidebar-background: 210 25% 18%; /* #202A33 - Darker Charcoal/Navy */
+    --sidebar-foreground: 0 0% 85%; /* #D9D9D9 - Light Grey/Off-white */
+    --sidebar-primary: 20 80% 55%; /* #E67E4A - Burnt Orange */
+    --sidebar-primary-foreground: 0 0% 96%; /* #F5F5F5 - Crisp Off-White */
+    --sidebar-accent: 20 80% 60%; /* Lighter Burnt Orange for hover */
+    --sidebar-accent-foreground: 210 25% 15%; /* Dark text for light orange accent */
+    --sidebar-border: 210 25% 25%; /* Slightly lighter than sidebar bg */
+    --sidebar-ring: 20 80% 55%; /* Burnt Orange */
   }
 
   .dark {
-    --background: 207 33% 15%; /* #1D2A33 - Darker Slate Blue */
-    --foreground: 40 25% 93%; /* #EFEEEA - Soft Off-White/Beige */
+    /* New Palette - Dark Mode */
+    --background: 210 25% 12%; /* #161C22 - Very Dark Charcoal/Navy (Page Canvas) */
+    --foreground: 0 0% 88%; /* #E0E0E0 - Light Grey/Off-White (Primary Text) */
 
-    --card: 207 33% 20%; /* #273F4F - Deep Slate Blue for cards */
-    --card-foreground: 40 25% 93%; /* #EFEEEA - Soft Off-White/Beige text */
+    --card: 210 25% 18%; /* #202A33 - Darker Charcoal/Navy */
+    --card-foreground: 0 0% 88%; /* #E0E0E0 - Light Grey/Off-White */
 
-    --popover: 207 33% 20%; /* #273F4F - Deep Slate Blue for popovers */
-    --popover-foreground: 40 25% 93%; /* #EFEEEA */
+    --popover: 210 25% 18%; /* #202A33 - Darker Charcoal/Navy */
+    --popover-foreground: 0 0% 88%; /* #E0E0E0 - Light Grey/Off-White */
 
-    --primary: 14 99% 63%; /* #FE7743 - Vibrant Orange */
-    --primary-foreground: 0 0% 0%; /* Black for text on orange */
+    --primary: 20 80% 60%; /* #E88F63 - Slightly lighter Burnt Orange for dark mode contrast */
+    --primary-foreground: 210 25% 10%; /* #11151A - Very Dark (Text on Accent 1) */
+    --primary-darker: 20 80% 50%; 
+    --primary-lighter: 20 80% 70%;
+    --primary-text-on-fill: 0 0% 96%; /* Off-white for text on hover fill */
 
-    --secondary: 14 90% 55%; /* #E46A3D - Darker, less vibrant orange */
-    --secondary-foreground: 40 25% 93%; /* #EFEEEA */
 
-    --muted: 207 30% 25%; /* #324552 - Darker than dark card */
-    --muted-foreground: 40 20% 75%; /* #C9C8C4 - Lighter Soft Off-White */
+    --secondary: 210 20% 25%; /* #333C47 - Dark Grey */
+    --secondary-foreground: 0 0% 88%; /* #E0E0E0 - Light Grey/Off-White */
 
-    --accent: 14 99% 63%; /* #FE7743 - Vibrant Orange */
-    --accent-foreground: 0 0% 0%; /* Black for text on orange */
+    --muted: 210 20% 20%; /* #262D36 - Darker Grey */
+    --muted-foreground: 0 0% 55%; /* #8C8C8C - Lighter Silver-Grey */
+
+    --accent: 20 80% 60%; /* #E88F63 - Slightly lighter Burnt Orange */
+    --accent-foreground: 210 25% 10%; /* #11151A - Very Dark */
 
     --destructive: 0 70% 55%; /* #EA4335 - Brighter red for dark mode */
     --destructive-foreground: 0 0% 100%; /* White */
 
-    --border: 207 30% 30%; /* #3C505F - Lighter than dark background */
-    --input: 207 30% 30%; /* #3C505F */
-    --ring: 14 99% 63%; /* #FE7743 */
+    --border: 210 20% 30%; /* #3E4A59 - Medium Dark Grey */
+    --input: 210 20% 30%; /* #3E4A59 - Medium Dark Grey */
+    --ring: 20 80% 60%; /* #E88F63 - Lighter Burnt Orange (Focus Ring) */
+    
+    --chart-1: 20 80% 60%;
+    --chart-2: 20 80% 70%;
+    --chart-3: 20 80% 80%;
+    --chart-4: 20 80% 50%;
+    --chart-5: 20 60% 60%;
 
-    /* Custom RAG colors - remain semantic, can be adjusted if needed */
-    --custom-green: 145 73% 46%;
+    /* Custom RAG colors - kept for semantic value, ensure good contrast in dark mode */
+    --custom-green: 145 63% 42%; /* #25B05F - Adjusted for dark */
     --custom-green-foreground: 0 0% 100%;
-    --custom-amber: 38 96% 60%;
-    --custom-amber-foreground: 207 33% 15%; /* Dark text on amber */
-    --custom-red: 0 72% 61%;
+    --custom-amber: 38 90% 55%;  /* #F7A931 - Adjusted for dark */
+    --custom-amber-foreground: 210 25% 10%; 
+    --custom-red: 0 70% 60%; /* #F04F4F - Adjusted for dark */
     --custom-red-foreground: 0 0% 100%;
 
-    --chart-1: 14 99% 63%; 
-    --chart-2: 14 99% 70%;
-    --chart-3: 14 99% 77%;
-    --chart-4: 14 99% 56%;
-    --chart-5: 14 80% 63%;
-    
-    --sidebar-background: 207 33% 20%; /* #273F4F */
-    --sidebar-foreground: 40 25% 93%; /* #EFEEEA */
-    --sidebar-primary: 14 99% 63%; /* #FE7743 Orange */
-    --sidebar-primary-foreground: 0 0% 0%; /* Black */
-    --sidebar-accent: 14 99% 55%; /* #DD6A3C Darker Orange for hover */
-    --sidebar-accent-foreground: 40 25% 93%; /* #EFEEEA */
-    --sidebar-border: 207 33% 25%; /* #324552 */
-    --sidebar-ring: 14 99% 63%; /* Orange */
+    /* Sidebar Theme - Aligned with new palette for Dark Mode */
+    --sidebar-background: 210 25% 15%; /* #1A232B - Base Dark */
+    --sidebar-foreground: 0 0% 80%; /* #CCCCCC - Lighter Grey */
+    --sidebar-primary: 20 80% 60%; /* #E88F63 - Lighter Burnt Orange */
+    --sidebar-primary-foreground: 210 25% 10%; /* #11151A - Very Dark */
+    --sidebar-accent: 20 80% 55%; /* Darker Burnt Orange for hover */
+    --sidebar-accent-foreground: 0 0% 90%; /* Lighter text */
+    --sidebar-border: 210 25% 22%; /* Slightly lighter than sidebar bg */
+    --sidebar-ring: 20 80% 60%; /* Lighter Burnt Orange */
   }
 }
 
@@ -120,14 +133,51 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, var(--font-geist-sans);
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply text-foreground;
+    @apply text-foreground; /* Use the primary text color by default */
   }
 }
 
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-page-fade-in {
+  animation: pageFadeIn 0.6s ease-out forwards;
+}
+
+@keyframes subtleScale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+.animate-subtle-scale {
+  animation: subtleScale 2.5s infinite ease-in-out;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0px; /* Explicitly use 0px instead of 0 */
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0px; /* Explicitly use 0px */
+  }
+}
+
+/* Animations from previous theme - kept for reference or potential reuse */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(10px); /* Softer animation */
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -136,15 +186,15 @@
 }
 
 .animate-fadeInUp {
-  animation: fadeInUp 0.3s ease-out forwards; /* Faster, softer animation */
+  animation: fadeInUp 0.3s ease-out forwards;
 }
 
 @keyframes pulse-scale {
   0% { transform: scale(1); }
-  50% { transform: scale(1.03); } /* Softer pulse */
+  50% { transform: scale(1.03); }
   100% { transform: scale(1); }
 }
 
 .animate-pulse-scale {
-  animation: pulse-scale 2s infinite ease-in-out; /* Smoother easing */
+  animation: pulse-scale 2s infinite ease-in-out;
 }

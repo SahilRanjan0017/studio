@@ -2,56 +2,56 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import CompanyLogo from '@/components/CompanyLogo'; // Import the CompanyLogo component
+import CompanyLogo from '@/components/CompanyLogo';
 
 export default function LandingPage() {
   return (
     <div
       className="relative flex flex-col items-center justify-center min-h-screen p-6 bg-cover bg-center"
-      style={{ backgroundImage: "url('https://thumbs2.imgbox.com/04/74/p8fkPlAk_t.jpg')" }}
-      data-ai-hint="construction building"
+      style={{ backgroundImage: "url('https://placehold.co/1920x1080.png')" }}
+      data-ai-hint="modern construction architectural abstract"
     >
-      {/* Overlay for better text readability */}
-      <div className="absolute inset-0 bg-black opacity-50"></div>
+      {/* Dark Overlay for better text readability and premium feel */}
+      <div className="absolute inset-0 bg-black/60 z-0"></div>
 
       {/* Content container, z-index to be above overlay */}
-      <div className="relative z-10 flex flex-col items-center justify-center w-full">
-        <header className="text-center mb-12">
-          <div className="mb-6">
-            <CompanyLogo />
+      <div className="relative z-10 flex flex-col items-center justify-center w-full animate-page-fade-in">
+        <header className="text-center mb-10 md:mb-12">
+          <div className="mb-6 inline-block transform transition-transform hover:scale-105 duration-300">
+            <CompanyLogo /> {/* Consider replacing with an SVG for more styling options */}
           </div>
-          <h1 className="text-5xl font-extrabold text-white mb-2">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-50 mb-3 tracking-tight">
             Welcome to Brick & Bolt
           </h1>
-          <p className="text-xl text-gray-200">Choose your portal:</p>
+          <p className="text-lg sm:text-xl text-gray-200">Choose your portal:</p>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-2xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 w-full max-w-xl md:max-w-2xl">
           <Link href="/bpl-ops/dashboard" passHref>
             <Button
               variant="default"
               size="lg"
-              className="w-full h-24 text-xl shadow-lg hover:shadow-xl transition-shadow duration-300 group hover:bg-transparent hover:text-primary hover:border-primary/80"
+              className="w-full h-20 md:h-24 text-lg md:text-xl shadow-lg group" // Removed specific hover overrides, relying on new default variant
             >
-              BPL Operations
-              <ArrowRight className="ml-2 h-6 w-6 transition-transform duration-300 group-hover:translate-x-1" />
+              <span className="relative z-10">BPL Operations</span> {/* Ensure text is above pseudo-element */}
+              <ArrowRight className="ml-2 h-5 w-5 md:h-6 md:w-6 transition-transform duration-300 group-hover:translate-x-1 relative z-10" />
             </Button>
           </Link>
           <Link href="/bpl-sales" passHref>
             <Button
-              variant="default" // Changed from secondary to default for #FE7743 border
+              variant="default" 
               size="lg"
-              className="w-full h-24 text-xl shadow-lg hover:shadow-xl transition-shadow duration-300 group hover:bg-transparent hover:text-primary hover:border-primary/80"
+              className="w-full h-20 md:h-24 text-lg md:text-xl shadow-lg group" // Removed specific hover overrides, relying on new default variant
             >
-              BPL Channel Partner
-              <ArrowRight className="ml-2 h-6 w-6 transition-transform duration-300 group-hover:translate-x-1" />
+              <span className="relative z-10">BPL Channel Partner</span> {/* Ensure text is above pseudo-element */}
+              <ArrowRight className="ml-2 h-5 w-5 md:h-6 md:w-6 transition-transform duration-300 group-hover:translate-x-1 relative z-10" />
             </Button>
           </Link>
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="absolute bottom-4 w-full text-center text-gray-300 text-sm py-2">
+      <footer className="absolute bottom-4 w-full text-center text-gray-400 text-xs md:text-sm py-2 z-10">
         © {new Date().getFullYear()} Brick & Bolt. All rights reserved.
       </footer>
     </div>
