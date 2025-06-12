@@ -1,7 +1,7 @@
 // @/components/bpl/bpl-navbar.tsx
 'use client';
 
-import React from 'react'; // Added missing React import
+import React from 'react'; 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LayoutDashboard, ListOrdered, MapPinned, Award, BookOpen, Loader2, BarChartBig } from 'lucide-react';
+import { LayoutDashboard, Award, BookOpen, Loader2, BarChartBig } from 'lucide-react';
 import { useCityFilter } from '@/contexts/CityFilterContext'; 
 import { cn } from '@/lib/utils';
 
@@ -23,8 +23,6 @@ interface NavLink {
 
 const opsNavLinks: NavLink[] = [
   { hrefRoot: "/dashboard", label: "Dashboard", icon: <LayoutDashboard size={18}/> },
-  { hrefRoot: "/leaderboard", label: "Leaderboard", icon: <ListOrdered size={18}/> },
-  { hrefRoot: "/city-views", label: "City Views", icon: <MapPinned size={18}/> },
   { hrefRoot: "/rewards", label: "Rewards", icon: <Award size={18}/> },
   { hrefRoot: "/rules", label: "Rules", icon: <BookOpen size={18}/> },
 ];
