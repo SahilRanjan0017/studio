@@ -8,20 +8,17 @@ export default function LandingPage() {
   return (
     <div
       className="relative flex flex-col items-center justify-center min-h-screen p-6 bg-cover bg-center"
-      style={{ backgroundImage: "url('https://placehold.co/1920x1080.png')" }}
+      style={{ backgroundImage: "url('https://i.postimg.cc/HLfQVfQL/sports-in-construction-dark-theme-with-orange-and-slate-grey.jpg')" }}
       data-ai-hint="modern construction architectural abstract"
     >
       <div className="absolute inset-0 bg-black/60 z-0"></div>
 
       <div className="relative z-10 flex flex-col items-center justify-center w-full animate-page-fade-in">
         <header className="text-center mb-10 md:mb-12">
-          <div className="mb-6 inline-block transform transition-transform hover:scale-105 duration-300 animate-subtle-scale">
-            <CompanyLogo />
-          </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-[hsl(var(--primary-foreground))] mb-3 tracking-tight">
-            Welcome to Brick & Bolt
+            Welcome to Brick & Bolt Premier League 
           </h1>
-          <p className="text-lg sm:text-xl text-[hsl(var(--primary-foreground))] opacity-80">Choose your portal:</p>
+          <p className="text-lg sm:text-xl text-[hsl(var(--primary-foreground))] opacity-80">Navigate to Your Team's Scorecard          </p>
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 w-full max-w-xl md:max-w-2xl">
