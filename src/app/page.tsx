@@ -6,7 +6,7 @@ import CompanyLogo from '@/components/CompanyLogo'; // Import the CompanyLogo co
 
 export default function LandingPage() {
   return (
-    <div 
+    <div
       className="relative flex flex-col items-center justify-center min-h-screen p-6 bg-cover bg-center"
       style={{ backgroundImage: "url('https://thumbs2.imgbox.com/04/74/p8fkPlAk_t.jpg')" }}
       data-ai-hint="construction building" // Added data-ai-hint for image searchability
@@ -25,7 +25,7 @@ export default function LandingPage() {
           </h1>
           <p className="text-xl text-gray-200">Choose your portal:</p>
         </header>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-2xl">
           <Link href="/bpl-ops/dashboard" passHref>
             <Button
@@ -49,7 +49,7 @@ export default function LandingPage() {
           </Link>
         </div>
 
-        <footer className="absolute bottom-8 text-center text-gray-300 text-sm p-[1px]"> {/* Added p-[1px] as requested */}
+        <footer className="absolute bottom-4 text-center text-gray-300 text-sm p-[1px]"> {/* Changed bottom-8 to bottom-4 */}
           © 2025 Brick & Bolt. All rights reserved.
         </footer>
       </div>
