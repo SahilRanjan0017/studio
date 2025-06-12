@@ -5,62 +5,62 @@
 
 @layer base {
   :root {
-    /* Default Dark Theme (Dashboard & General App) */
-    /* Palette: #1F0756 (Deep Indigo), #fff6f4 (Soft Off-White), #f05a29 (Vibrant Red-Orange), #2C0E6B (Lighter Indigo for Cards) */
-    --background: 258 82% 18%; /* #1F0756 */
-    --foreground: 20 100% 98%; /* #fff6f4 */
+    /* Default Light Theme based on user request */
+    /* Palette: #fff6f4 (Soft Off-White), #1F0756 (Deep Indigo), #f05a29 (Vibrant Red-Orange) */
+    --background: 20 100% 98%; /* #fff6f4 */
+    --foreground: 258 82% 18%; /* #1F0756 */
 
-    --card: 257 76% 23%; /* #2C0E6B - Lighter Indigo for Card Backgrounds */
-    --card-foreground: 20 100% 98%; /* #fff6f4 */
+    --card: 20 100% 98%; /* #fff6f4 - Rely on shadows for depth */
+    --card-foreground: 258 82% 18%; /* #1F0756 */
 
-    --popover: 257 76% 20%; /* Slightly darker than card for popovers */
-    --popover-foreground: 20 100% 98%; /* #fff6f4 */
+    --popover: 20 100% 98%; /* #fff6f4 */
+    --popover-foreground: 258 82% 18%; /* #1F0756 */
 
     --primary: 16 88% 55%; /* #f05a29 - Vibrant Red-Orange */
-    --primary-foreground: 258 82% 18%; /* #1F0756 - Deep Indigo for text on primary */
+    --primary-foreground: 20 100% 98%; /* #fff6f4 - For text on primary elements */
     
     --primary-darker: 16 88% 45%; /* Darker Red-Orange for gradient */
     --primary-lighter: 16 88% 65%; /* Lighter Red-Orange for gradient */
     
-    --secondary: 258 80% 25%; /* Slightly lighter Indigo for secondary elements */
-    --secondary-foreground: 20 100% 98%; /* #fff6f4 */
+    --secondary: 258 30% 90%; /* Light cool grey/desaturated indigo */
+    --secondary-foreground: 258 82% 18%; /* #1F0756 */
 
-    --muted: 258 80% 15%; /* Darker, less prominent Indigo */
-    --muted-foreground: 20 100% 98% / 0.7; /* Lower opacity #fff6f4 */
+    --muted: 20 20% 94%; /* Very light grey */
+    --muted-foreground: 258 10% 50%; /* Medium grey */
     
     --accent: 16 88% 55%; /* #f05a29 */
-    --accent-foreground: 258 82% 18%; /* #1F0756 */
+    --accent-foreground: 20 100% 98%; /* #fff6f4 */
 
-    --destructive: 0 72% 51%; /* A standard bright red for destructive actions, can be adjusted */
+    --destructive: 0 72% 51%; /* A standard bright red for destructive actions */
     --destructive-foreground: 20 100% 98%; /* #fff6f4 */
 
-    --border: 258 50% 30%; /* Subtle, darker Indigo/Grey for borders */
-    --input: 258 70% 15%; /* Darker Indigo for input backgrounds */
+    --border: 20 15% 88%; /* Light grey border */
+    --input: 20 100% 98%; /* #fff6f4 - Input bg same as page, rely on border */
     --ring: 16 88% 55%; /* #f05a29 */
     
     --chart-1: 16 88% 55%;   /* #f05a29 */
-    --chart-2: 180 60% 50%;  /* A contrasting teal/cyan for charts */
-    --chart-3: 35 90% 60%;   /* A bright orange/yellow for charts */
-    --chart-4: 20 100% 98% / 0.8;  /* Lighter Off-White for charts */
-    --chart-5: 20 100% 98% / 0.6;  /* Even Lighter Off-White for charts */
+    --chart-2: 258 82% 40%;  /* A contrasting indigo for charts */
+    --chart-3: 200 50% 60%;   /* A muted blue/cyan for charts */
+    --chart-4: 258 82% 18% / 0.8;  /* Darker Indigo for charts */
+    --chart-5: 258 82% 18% / 0.6;  /* Even Darker Indigo for charts */
     --radius: 0.75rem;
 
-    /* RAG status colors - adjusted for dark theme visibility */
-    --custom-green: 130 70% 50%; /* Vivid Green */
-    --custom-green-foreground: 20 100% 98%; /* #fff6f4 */
+    /* RAG status colors - adjusted for light theme visibility */
+    --custom-green: 130 60% 45%; /* Vivid Green */
+    --custom-green-foreground: 258 82% 18%; /* #1F0756 */
     --custom-amber: 38 90% 55%;  /* Bright Amber/Orange */
-    --custom-amber-foreground: 258 82% 10%; /* Darker indigo for contrast */
+    --custom-amber-foreground: 258 82% 18%; /* #1F0756 */
     --custom-red: 16 88% 55%; /* #f05a29 - Using primary accent for red status */
     --custom-red-foreground: 20 100% 98%; /* #fff6f4 */
 
-    /* Sidebar Theme - Aligned with new dark theme */
-    --sidebar-background: 258 82% 15%; /* Slightly darker than main bg */
-    --sidebar-foreground: 20 100% 98%; /* #fff6f4 */
+    /* Sidebar Theme - Aligned with new light theme */
+    --sidebar-background: 20 50% 96%; /* Slightly off-white, distinct from main bg */
+    --sidebar-foreground: 258 82% 18%; /* #1F0756 */
     --sidebar-primary: 16 88% 55%; /* #f05a29 */
-    --sidebar-primary-foreground: 258 82% 18%; /* #1F0756 */
+    --sidebar-primary-foreground: 20 100% 98%; /* #fff6f4 */
     --sidebar-accent: 16 88% 50%; /* Slightly darker red-orange */
     --sidebar-accent-foreground: 20 100% 98%; /* #fff6f4 */
-    --sidebar-border: 258 50% 25%;
+    --sidebar-border: 20 15% 85%;
     --sidebar-ring: 16 88% 55%;
   }
 }

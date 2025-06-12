@@ -104,7 +104,7 @@ export default function RewardsPage() {
             rewards={spmRewards}
             totalReward="₹99,000+"
             borderColorClass="border-primary" 
-            iconBgClass="bg-primary/20" 
+            iconBgClass="bg-primary/10" 
             iconColorClass="text-primary" 
             titleColorClass="text-primary" 
           />
@@ -113,26 +113,26 @@ export default function RewardsPage() {
             icon={<Users />}
             rewards={tlRewards}
             totalReward="₹62,000+"
-            borderColorClass="border-accent" // Using accent for TLs for variety if primary is red-orange
-            iconBgClass="bg-accent/20" 
-            iconColorClass="text-accent" 
-            titleColorClass="text-accent" 
+            borderColorClass="border-secondary" 
+            iconBgClass="bg-secondary/10" 
+            iconColorClass="text-secondary-foreground" // Assuming dark text on light secondary
+            titleColorClass="text-secondary-foreground" 
           />
           <RoleRewardCard
             title="Top Performer - Vendor Manager (VM)"
             icon={<Briefcase />}
             rewards={{ rank: "1", reward: "₹25,000+" }}
-            borderColorClass="border-secondary" // Using secondary for VM
-            iconBgClass="bg-secondary/20" 
-            iconColorClass="text-secondary-foreground" // Assuming secondary has a contrasting fg
-            titleColorClass="text-secondary-foreground"
+            borderColorClass="border-accent" 
+            iconBgClass="bg-accent/10" 
+            iconColorClass="text-accent-foreground" 
+            titleColorClass="text-accent-foreground"
           /> 
           <RoleRewardCard
             title="Top Performer - Sourcing Executive"
             icon={<DollarSign />}
             rewards={{ rank: "1", reward: "₹25,000+" }}
             borderColorClass="border-primary" 
-            iconBgClass="bg-primary/20" 
+            iconBgClass="bg-primary/10" 
             iconColorClass="text-primary" 
             titleColorClass="text-primary" 
           />
