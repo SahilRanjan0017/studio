@@ -1,6 +1,7 @@
 // @/components/bpl/bpl-navbar.tsx
 'use client';
 
+import React from 'react'; // Added missing React import
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -142,5 +143,3 @@ export function BplNavbar() {
     </nav>
   );
 }
-
-    
