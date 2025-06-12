@@ -5,60 +5,63 @@
 
 @layer base {
   :root {
-    /* Dark Theme (Teal Palette - NOW DEFAULT) */
-    --background: 202 76% 10%; /* #06202B */
-    --foreground: 40 56% 91%; /* #F5EEDD */
+    /* Light Theme (Default) - Palette: #F4F1DE, #E07A5F, #3D405B */
+    --background: 48 33% 91%; /* #F4F1DE */
+    --foreground: 236 19% 30%; /* #3D405B */
 
-    --card: 202 76% 12%; /* Slightly lighter than background */
-    --card-foreground: 40 56% 91%; /* #F5EEDD */
+    --card: 48 33% 91%; /* #F4F1DE */
+    --card-foreground: 236 19% 30%; /* #3D405B */
 
-    --popover: 202 76% 12%; /* Consistent with card */
-    --popover-foreground: 40 56% 91%; /* #F5EEDD */
+    --popover: 48 33% 94%; /* Slightly lighter #F4F1DE for pop */
+    --popover-foreground: 236 19% 30%; /* #3D405B */
 
-    --primary: 168 58% 68%; /* #7AE2CF - Teal for Headers/Primary Actions */
-    --primary-foreground: 202 76% 10%; /* #06202B - Dark text for contrast on light teal */
-    --primary-darker: 168 58% 58%; /* Darker shade for gradient */
-    --primary-lighter: 168 58% 78%; /* Lighter shade for gradient */
+    --primary: 15 69% 62%; /* #E07A5F - Terracotta Accent */
+    --primary-foreground: 48 33% 91%; /* #F4F1DE - Creamy Off-White for text on terracotta */
     
-    --secondary: 181 90% 30%; /* #077A7D - Dark Teal, brightened slightly */
-    --secondary-foreground: 40 56% 91%; /* #F5EEDD - Light text on dark teal */
-
-    --muted: 202 70% 15%; /* Dark, desaturated blue-grey */
-    --muted-foreground: 40 56% 70%; /* #F5EEDD, slightly dimmed */
+    /* For Landing Page Button Liquid Fill (uses primary as base) */
+    --primary-darker: 15 69% 52%; /* Darker terracotta for gradient */
+    --primary-lighter: 15 69% 72%; /* Lighter terracotta for gradient */
     
-    --accent: 181 90% 26%; /* #077A7D - Dark Teal for icons/accents */
-    --accent-foreground: 40 56% 91%; /* #F5EEDD - Light text on dark teal accent */
+    --secondary: 236 19% 45%; /* Mid Indigo for secondary actions */
+    --secondary-foreground: 48 33% 91%; /* #F4F1DE - Creamy Off-White for text on mid indigo */
 
-    --destructive: 0 80% 60%; /* Brighter red for dark mode */
-    --destructive-foreground: 0 0% 96%; /* Off-white text on destructive */
-
-    --border: 181 80% 20%; /* Subtle border derived from dark teal */
-    --input: 181 80% 22%; /* Slightly lighter than border for input fields */
-    --ring: 168 58% 68%; /* #7AE2CF - Teal for focus rings */
+    --muted: 48 20% 88%; /* Very light grey for muted backgrounds */
+    --muted-foreground: 236 19% 50%; /* Lighter Indigo for muted text */
     
-    --chart-1: 168 58% 68%; /* Light Teal */
-    --chart-2: 181 90% 35%; /* Dark Teal (brightened) */
-    --chart-3: 168 60% 80%; /* Very Light Teal */
-    --chart-4: 40 56% 80%;  /* Lighter Beige */
-    --chart-5: 0 0% 60%;    /* Neutral Grey */
+    --accent: 15 69% 62%; /* #E07A5F - Terracotta Accent */
+    --accent-foreground: 48 33% 91%; /* #F4F1DE - Creamy Off-White */
+
+    --destructive: 0 70% 55%; /* Brighter red for light mode */
+    --destructive-foreground: 0 0% 100%; /* White text on destructive */
+
+    --border: 48 20% 80%; /* Light grey border */
+    --input: 48 20% 85%; /* Slightly darker light grey for input */
+    --ring: 15 69% 62%; /* Terracotta for focus rings */
+    
+    --chart-1: 15 69% 62%;   /* Terracotta */
+    --chart-2: 236 19% 45%;  /* Mid Indigo */
+    --chart-3: 15 60% 75%;   /* Lighter Terracotta */
+    --chart-4: 236 19% 60%;  /* Lighter Indigo */
+    --chart-5: 30 50% 60%;   /* Muted Orange/Brown */
     --radius: 0.75rem;
 
-    --custom-green: 145 60% 50%; 
+    /* RAG status colors - adjusted for light theme visibility if needed */
+    --custom-green: 130 50% 40%; /* Slightly darker green for better contrast on light bg */
     --custom-green-foreground: 0 0% 100%;
-    --custom-amber: 38 90% 60%;  
-    --custom-amber-foreground: 0 0% 7%; /* Dark text for amber */
-    --custom-red: 0 80% 65%; 
+    --custom-amber: 35 80% 55%;  /* Slightly desaturated amber */
+    --custom-amber-foreground: 236 19% 15%; /* Dark text for amber */
+    --custom-red: 0 70% 50%; /* Slightly desaturated red */
     --custom-red-foreground: 0 0% 100%;
 
-    /* Sidebar Theme - Dark Mode (Teal) - NOW DEFAULT */
-    --sidebar-background: 202 76% 8%; /* Even darker blue/black */
-    --sidebar-foreground: 40 56% 91%; /* #F5EEDD */
-    --sidebar-primary: 168 58% 68%; /* #7AE2CF - Teal */
-    --sidebar-primary-foreground: 202 76% 10%; /* Dark text for contrast */
-    --sidebar-accent: 181 90% 35%; /* Dark Teal (brightened for accents) */
-    --sidebar-accent-foreground: 40 56% 91%; /* Light text */
-    --sidebar-border: 202 70% 15%; /* Subtle border */
-    --sidebar-ring: 168 58% 68%; /* Teal for focus */
+    /* Sidebar Theme - Light */
+    --sidebar-background: 48 33% 93%; /* Slightly off-white from main bg #F6F4E_ */
+    --sidebar-foreground: 236 19% 30%; /* Indigo */
+    --sidebar-primary: 15 69% 62%; /* Terracotta */
+    --sidebar-primary-foreground: 48 33% 91%; /* Creamy */
+    --sidebar-accent: 15 69% 58%; /* Slightly darker terracotta */
+    --sidebar-accent-foreground: 48 33% 91%;
+    --sidebar-border: 48 20% 80%;
+    --sidebar-ring: 15 69% 62%;
   }
 }
 
@@ -135,4 +138,3 @@
 .animate-pulse-scale {
   animation: pulse-scale 2.5s infinite ease-in-out;
 }
-

@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
@@ -9,21 +10,21 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: // Liquid Fill Gradient Shift for Primary Accent Button
-          "border border-primary text-primary hover:text-primary-foreground focus-visible:ring-primary before:content-[''] before:absolute before:inset-0 before:w-full before:h-full before:bg-gradient-to-r before:from-[hsl(var(--primary-darker))] before:to-[hsl(var(--primary-lighter))] before:transition-transform before:duration-500 before:ease-out before:scale-x-0 before:origin-left group-hover:before:scale-x-100 before:z-[-1] hover:border-transparent",
+        default: // Primary CTA for dashboard: Solid terracotta fill, creamy text.
+          "bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-primary",
         destructive:
           "border border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: // Standard outline, can be made thinner if border-input is adjusted or use border-primary for brand color
-          "border border-input bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground",
-        secondary: // Outline style for secondary, using secondary color
-          "border border-secondary bg-transparent text-secondary hover:text-secondary-foreground hover:bg-secondary",
-        ghost: "hover:bg-accent hover:text-accent-foreground text-foreground",
+        outline: // Standard outline for light theme
+          "border border-primary bg-transparent text-primary hover:bg-primary hover:text-primary-foreground",
+        secondary: // Secondary CTA: Solid mid-indigo, creamy text
+          "bg-secondary text-secondary-foreground hover:bg-secondary/90",
+        ghost: "hover:bg-accent/20 hover:text-accent-foreground text-foreground", // Accent is terracotta, foreground is indigo
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-10 px-6 py-2", // Adjusted padding for oval
-        sm: "h-9 px-4", // Adjusted padding for oval
-        lg: "h-12 px-8", // Adjusted padding for oval
+        default: "h-10 px-6 py-2",
+        sm: "h-9 px-4",
+        lg: "h-12 px-8",
         icon: "h-10 w-10",
       },
     },
