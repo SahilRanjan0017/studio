@@ -40,7 +40,7 @@ export function BplHeader() {
 
           {/* Right side: Date */}
           {currentDate && (
-            <div className="text-sm font-medium text-primary-foreground/90 mt-2 md:mt-0 self-center md:self-auto">
+            <div className="text-2xl lg:text-3xl font-extrabold text-primary-foreground/90 mt-2 md:mt-0 self-center md:self-auto">
               {currentDate}
             </div>
           )}
