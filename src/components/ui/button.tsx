@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: // Liquid Fill Gradient Shift for Primary Accent Button
-          "border border-primary text-primary hover:text-primary-foreground focus-visible:ring-primary before:content-[''] before:absolute before:inset-0 before:w-full before:h-full before:bg-gradient-to-r before:from-[hsl(var(--primary-darker))] before:to-[hsl(var(--primary-lighter))] before:transition-transform before:duration-300 before:ease-out before:scale-x-0 before:origin-left group-hover:before:scale-x-100 before:z-[-1] hover:border-transparent",
+          "border border-primary text-primary hover:text-primary-foreground focus-visible:ring-primary before:content-[''] before:absolute before:inset-0 before:w-full before:h-full before:bg-gradient-to-r before:from-[hsl(var(--primary-darker))] before:to-[hsl(var(--primary-lighter))] before:transition-transform before:duration-500 before:ease-out before:scale-x-0 before:origin-left group-hover:before:scale-x-100 before:z-[-1] hover:border-transparent",
         destructive:
           "border border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline: // Standard outline, can be made thinner if border-input is adjusted or use border-primary for brand color
@@ -55,5 +55,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button"
 
 export { Button, buttonVariants }
-
-    
