@@ -31,7 +31,7 @@ export default function LandingPage() {
             <Button
               variant="default"
               size="lg"
-              className="w-full h-24 text-xl shadow-lg hover:shadow-xl transition-shadow duration-300 group bg-gradient-to-r from-primary to-orange-500 hover:from-primary/90 hover:to-orange-500/90 text-primary-foreground"
+              className="w-full h-24 text-xl shadow-lg hover:shadow-xl transition-shadow duration-300 group hover:bg-transparent hover:text-primary hover:border-primary/80"
             >
               BPL Operations
               <ArrowRight className="ml-2 h-6 w-6 transition-transform duration-300 group-hover:translate-x-1" />
@@ -39,9 +39,9 @@ export default function LandingPage() {
           </Link>
           <Link href="/bpl-sales" passHref>
             <Button
-              variant="secondary"
+              variant="default" // Changed from secondary to default for #FE7743 border
               size="lg"
-              className="w-full h-24 text-xl shadow-lg hover:shadow-xl transition-shadow duration-300 group bg-gradient-to-r from-secondary to-amber-500 hover:from-secondary/90 hover:to-amber-500/90 text-secondary-foreground"
+              className="w-full h-24 text-xl shadow-lg hover:shadow-xl transition-shadow duration-300 group hover:bg-transparent hover:text-primary hover:border-primary/80"
             >
               BPL Channel Partner
               <ArrowRight className="ml-2 h-6 w-6 transition-transform duration-300 group-hover:translate-x-1" />
