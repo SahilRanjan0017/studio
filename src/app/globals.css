@@ -5,63 +5,62 @@
 
 @layer base {
   :root {
-    /* Light Theme (Default) - Palette: #F4F1DE, #E07A5F, #3D405B */
-    --background: 48 33% 91%; /* #F4F1DE - Warm, creamy off-white */
-    --foreground: 236 19% 30%; /* #3D405B - Deep Indigo for primary text */
+    /* New Light Theme (Default) - Palette: #f1faee, #e63946, #a8dadc, #343A40 */
+    --background: 96 67% 96%; /* #f1faee - Very Soft, Cool Off-White */
+    --foreground: 210 10% 23%; /* #343A40 - Dark Charcoal for primary text */
 
-    --card: 48 33% 91%; /* #F4F1DE - Same as background, rely on shadows */
-    --card-foreground: 236 19% 30%; /* #3D405B */
+    --card: 96 67% 96%; /* #f1faee - Same as background, rely on shadows */
+    --card-foreground: 210 10% 23%; /* #343A40 */
 
-    --popover: 48 33% 94%; /* Slightly lighter #F4F1DE for pop */
-    --popover-foreground: 236 19% 30%; /* #3D405B */
+    --popover: 96 67% 98%; /* Slightly lighter #f1faee for pop */
+    --popover-foreground: 210 10% 23%; /* #343A40 */
 
-    --primary: 15 69% 62%; /* #E07A5F - Terracotta Accent */
-    --primary-foreground: 48 33% 91%; /* #F4F1DE - Creamy Off-White for text on terracotta */
+    --primary: 356 79% 56%; /* #e63946 - Vibrant Red/Coral Accent */
+    --primary-foreground: 96 67% 96%; /* #f1faee - Soft Off-White for text on red */
     
-    /* For Landing Page Button Liquid Fill (uses primary as base) */
-    --primary-darker: 15 69% 52%; /* Darker terracotta for gradient */
-    --primary-lighter: 15 69% 72%; /* Lighter terracotta for gradient */
+    --primary-darker: 356 79% 46%; /* Darker red for gradient */
+    --primary-lighter: 356 79% 66%; /* Lighter red for gradient */
     
-    --secondary: 236 19% 45%; /* Mid Indigo for secondary actions */
-    --secondary-foreground: 48 33% 91%; /* #F4F1DE - Creamy Off-White for text on mid indigo */
+    --secondary: 182 39% 76%; /* #a8dadc - Light, Muted Teal/Cyan */
+    --secondary-foreground: 210 10% 23%; /* #343A40 - Dark Charcoal for text on teal */
 
-    --muted: 48 20% 88%; /* Very light grey for muted backgrounds */
-    --muted-foreground: 236 19% 50%; /* Lighter Indigo for muted text */
+    --muted: 96 67% 92%; /* Very light grey derived from base #f1faee */
+    --muted-foreground: 210 10% 45%; /* Lighter version of foreground for muted text */
     
-    --accent: 15 69% 62%; /* #E07A5F - Terracotta Accent */
-    --accent-foreground: 48 33% 91%; /* #F4F1DE - Creamy Off-White */
+    --accent: 356 79% 56%; /* #e63946 - Red Accent */
+    --accent-foreground: 96 67% 96%; /* #f1faee - Soft Off-White */
 
-    --destructive: 0 70% 55%; /* Brighter red for light mode */
-    --destructive-foreground: 0 0% 100%; /* White text on destructive */
+    --destructive: 356 79% 56%; /* #e63946 - Red for destructive */
+    --destructive-foreground: 96 67% 96%; /* #f1faee */
 
-    --border: 48 20% 80%; /* Light grey border */
-    --input: 48 20% 85%; /* Slightly darker light grey for input */
-    --ring: 15 69% 62%; /* Terracotta for focus rings */
+    --border: 182 39% 85%; /* Light teal for borders */
+    --input: 96 67% 92%; /* Slightly off from main bg for input */
+    --ring: 356 79% 56%; /* Red for focus rings */
     
-    --chart-1: 15 69% 62%;   /* Terracotta */
-    --chart-2: 236 19% 45%;  /* Mid Indigo */
-    --chart-3: 15 60% 75%;   /* Lighter Terracotta */
-    --chart-4: 236 19% 60%;  /* Lighter Indigo */
-    --chart-5: 30 50% 60%;   /* Muted Orange/Brown */
+    --chart-1: 356 79% 56%;   /* Red */
+    --chart-2: 182 39% 66%;  /* Slightly darker Teal for charts */
+    --chart-3: 356 79% 70%;   /* Lighter Red */
+    --chart-4: 182 39% 86%;  /* Lighter Teal */
+    --chart-5: 0 0% 60%;   /* Neutral Grey */
     --radius: 0.75rem;
 
     /* RAG status colors - adjusted for light theme visibility if needed */
-    --custom-green: 130 50% 40%; /* Slightly darker green for better contrast on light bg */
+    --custom-green: 130 50% 45%; /* Distinct Green */
     --custom-green-foreground: 0 0% 100%;
-    --custom-amber: 35 80% 55%;  /* Slightly desaturated amber */
-    --custom-amber-foreground: 236 19% 15%; /* Dark text for amber */
-    --custom-red: 0 70% 50%; /* Slightly desaturated red */
-    --custom-red-foreground: 0 0% 100%;
+    --custom-amber: 35 80% 55%;  /* Distinct Amber */
+    --custom-amber-foreground: 210 10% 15%; /* Dark text for amber */
+    --custom-red: 356 79% 56%; /* Use new primary red for consistency */
+    --custom-red-foreground: 96 67% 96%;
 
-    /* Sidebar Theme - Light */
-    --sidebar-background: 48 33% 93%; /* Slightly off-white from main bg #F6F4E_ */
-    --sidebar-foreground: 236 19% 30%; /* Indigo */
-    --sidebar-primary: 15 69% 62%; /* Terracotta */
-    --sidebar-primary-foreground: 48 33% 91%; /* Creamy */
-    --sidebar-accent: 15 69% 58%; /* Slightly darker terracotta */
-    --sidebar-accent-foreground: 48 33% 91%;
-    --sidebar-border: 48 20% 80%;
-    --sidebar-ring: 15 69% 62%;
+    /* Sidebar Theme - Light (aligned with new palette) */
+    --sidebar-background: 96 67% 95%; /* Slightly off-white from main bg #f1faee base */
+    --sidebar-foreground: 210 10% 23%; /* Dark Charcoal */
+    --sidebar-primary: 356 79% 56%; /* Red Accent */
+    --sidebar-primary-foreground: 96 67% 96%; /* Soft Off-White */
+    --sidebar-accent: 356 79% 50%; /* Slightly darker red */
+    --sidebar-accent-foreground: 96 67% 96%;
+    --sidebar-border: 182 39% 85%; /* Light teal */
+    --sidebar-ring: 356 79% 56%; /* Red */
   }
 }
 

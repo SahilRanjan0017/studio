@@ -15,16 +15,15 @@ export default function LandingPage() {
       <div className="absolute inset-0 bg-black/60 z-0"></div>
 
       <div className="relative z-10 flex flex-col items-center justify-center w-full animate-page-fade-in">
-        {/* Logo with subtle hover animation */}
         <div className="mb-8 md:mb-10 transition-transform duration-300 ease-out hover:scale-105">
           <CompanyLogo />
         </div>
 
         <header className="text-center mb-10 md:mb-12">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-[hsl(var(--primary-foreground))] mb-3 tracking-tight" style={{color: '#F4F1DE'}}>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-[hsl(var(--primary-foreground))] mb-3 tracking-tight" style={{color: 'hsl(96, 67%, 96%)'}}> {/* #f1faee */}
             Welcome to Brick & Bolt
           </h1>
-          <p className="text-lg sm:text-xl text-[hsl(var(--primary-foreground))] opacity-80" style={{color: '#F4F1DE'}}>
+          <p className="text-lg sm:text-xl text-[hsl(var(--primary-foreground))] opacity-80" style={{color: 'hsl(96, 67%, 96%)'}}> {/* #f1faee */}
             Choose your portal
           </p>
         </header>
@@ -32,11 +31,11 @@ export default function LandingPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 w-full max-w-xl md:max-w-2xl">
           <Link href="/bpl-ops/dashboard" passHref>
             <Button
-              variant="outline" // Use outline and then customize fully for landing page
+              variant="outline" 
               size="lg"
               className="w-full h-20 md:h-24 text-lg md:text-xl font-bold 
-                         bg-transparent border-2 border-[hsl(var(--primary))] text-[hsl(48,33%,91%)]  /* #F4F1DE text */
-                         hover:text-[hsl(var(--foreground))] /* #3D405B text on hover */
+                         bg-transparent border-2 border-[hsl(var(--primary))] text-[hsl(96,67%,96%)] /* #f1faee text */
+                         hover:text-[hsl(96,67%,96%)] /* #f1faee text on hover */
                          focus-visible:ring-[hsl(var(--primary))]
                          before:content-[''] before:absolute before:inset-0 before:w-full before:h-full 
                          before:bg-gradient-to-r before:from-[hsl(var(--primary-darker))] before:to-[hsl(var(--primary-lighter))] 
@@ -50,11 +49,11 @@ export default function LandingPage() {
           </Link>
           <Link href="/bpl-sales" passHref>
             <Button
-              variant="outline" // Use outline and then customize fully for landing page
+              variant="outline" 
               size="lg"
               className="w-full h-20 md:h-24 text-lg md:text-xl font-bold
-                         bg-transparent border-2 border-[hsl(var(--primary))] text-[hsl(48,33%,91%)] /* #F4F1DE text */
-                         hover:text-[hsl(var(--foreground))] /* #3D405B text on hover */
+                         bg-transparent border-2 border-[hsl(var(--primary))] text-[hsl(96,67%,96%)] /* #f1faee text */
+                         hover:text-[hsl(96,67%,96%)] /* #f1faee text on hover */
                          focus-visible:ring-[hsl(var(--primary))]
                          before:content-[''] before:absolute before:inset-0 before:w-full before:h-full 
                          before:bg-gradient-to-r before:from-[hsl(var(--primary-darker))] before:to-[hsl(var(--primary-lighter))] 
@@ -69,7 +68,7 @@ export default function LandingPage() {
         </div>
       </div>
 
-      <footer className="absolute bottom-4 w-full text-center text-[hsl(var(--muted-foreground))] text-xs md:text-sm py-2 z-10" style={{color: 'rgba(244, 241, 222, 0.7)'}}>
+      <footer className="absolute bottom-4 w-full text-center text-xs md:text-sm py-2 z-10" style={{color: 'hsla(96, 67%, 96%, 0.7)'}}> {/* #f1faee with opacity */}
         © {new Date().getFullYear()} Brick & Bolt. All rights reserved.
       </footer>
     </div>
