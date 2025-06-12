@@ -1,10 +1,11 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Light Theme based on previous user specs */
+    /* Light Theme (Vibrant Orange Accent) */
     --background: 40 25% 93%; /* #EFEEEA - Soft Off-White/Beige */
     --foreground: 207 33% 23%; /* #273F4F - Deep Slate Blue */
 
@@ -61,59 +62,59 @@
   }
 
   .dark {
-    /* Dark Theme - Option 1 (Warm Accents) from user prompt */
-    --background: 0 0% 7%; /* #121212 - Dark Grey */
-    --foreground: 0 0% 100%; /* #FFFFFF - White */
+    /* Dark Theme - New Teal Palette */
+    --background: 202 76% 10%; /* #06202B */
+    --foreground: 40 56% 91%; /* #F5EEDD */
 
-    --card: 0 0% 10%; /* #1A1A1A - Slightly lighter than bg */
-    --card-foreground: 0 0% 100%; /* White */
+    --card: 202 76% 12%; /* Slightly lighter than background */
+    --card-foreground: 40 56% 91%; /* #F5EEDD */
 
-    --popover: 0 0% 10%; /* #1A1A1A */
-    --popover-foreground: 0 0% 100%; /* White */
+    --popover: 202 76% 12%; /* Consistent with card */
+    --popover-foreground: 40 56% 91%; /* #F5EEDD */
 
-    --primary: 25 100% 41%; /* #D35400 - Burnt Orange */
-    --primary-foreground: 0 0% 100%; /* White (Text on Burnt Orange) */
-    --primary-darker: 25 100% 31%; /* Darker shade for gradient */
-    --primary-lighter: 25 100% 51%; /* Lighter shade for gradient */
-
-    --secondary: 210 15% 20%; /* #2A3038 - Dark Slate */
-    --secondary-foreground: 0 0% 80%; /* Light Grey text */
-
-    --muted: 0 0% 15%; /* #262626 */
-    --muted-foreground: 0 0% 63%; /* #A0A0A0 - Lighter Grey (Secondary Text) */
+    --primary: 168 58% 68%; /* #7AE2CF - Teal for Headers/Primary Actions */
+    --primary-foreground: 202 76% 10%; /* #06202B - Dark text for contrast on light teal */
+    --primary-darker: 168 58% 58%; /* Darker shade for gradient */
+    --primary-lighter: 168 58% 78%; /* Lighter shade for gradient */
     
-    --accent: 25 100% 41%; /* #D35400 - Burnt Orange */
-    --accent-foreground: 0 0% 100%; /* White */
+    --secondary: 181 90% 30%; /* #077A7D - Dark Teal, brightened slightly */
+    --secondary-foreground: 40 56% 91%; /* #F5EEDD - Light text on dark teal */
 
-    --destructive: 0 70% 55%; /* #EA4335 - Brighter red */
-    --destructive-foreground: 0 0% 100%; /* White */
-
-    --border: 0 0% 20%; /* #333333 */
-    --input: 0 0% 20%; /* #333333 */
-    --ring: 25 100% 41%; /* #D35400 - Burnt Orange (Focus Ring) */
+    --muted: 202 70% 15%; /* Dark, desaturated blue-grey */
+    --muted-foreground: 40 56% 70%; /* #F5EEDD, slightly dimmed */
     
-    --chart-1: 25 100% 50%; 
-    --chart-2: 37 90% 60%;  
-    --chart-3: 200 80% 60%; 
-    --chart-4: 0 0% 70%;   
-    --chart-5: 120 50% 55%;
+    --accent: 181 90% 26%; /* #077A7D - Dark Teal for icons/accents */
+    --accent-foreground: 40 56% 91%; /* #F5EEDD - Light text on dark teal accent */
 
-    --custom-green: 145 63% 42%; /* #25B05F */
+    --destructive: 0 80% 60%; /* Brighter red for dark mode */
+    --destructive-foreground: 0 0% 96%; /* Off-white text on destructive */
+
+    --border: 181 80% 20%; /* Subtle border derived from dark teal */
+    --input: 181 80% 22%; /* Slightly lighter than border for input fields */
+    --ring: 168 58% 68%; /* #7AE2CF - Teal for focus rings */
+    
+    --chart-1: 168 58% 68%; /* Light Teal */
+    --chart-2: 181 90% 35%; /* Dark Teal (brightened) */
+    --chart-3: 168 60% 80%; /* Very Light Teal */
+    --chart-4: 40 56% 80%;  /* Lighter Beige */
+    --chart-5: 0 0% 60%;    /* Neutral Grey */
+
+    --custom-green: 145 60% 50%; 
     --custom-green-foreground: 0 0% 100%;
-    --custom-amber: 38 90% 55%;  /* #F7A931 */
-    --custom-amber-foreground: 0 0% 7%; /* Dark text for amber on dark */
-    --custom-red: 0 70% 60%; /* #F04F4F */
+    --custom-amber: 38 90% 60%;  
+    --custom-amber-foreground: 0 0% 7%; /* Dark text for amber */
+    --custom-red: 0 80% 65%; 
     --custom-red-foreground: 0 0% 100%;
 
-    /* Sidebar Theme - Dark Mode */
-    --sidebar-background: 0 0% 5%; /* #0D0D0D - Even darker */
-    --sidebar-foreground: 0 0% 85%; /* #D9D9D9 */
-    --sidebar-primary: 25 100% 41%; /* #D35400 - Burnt Orange */
-    --sidebar-primary-foreground: 0 0% 100%; 
-    --sidebar-accent: 25 100% 51%; /* Lighter Burnt Orange for hover */
-    --sidebar-accent-foreground: 0 0% 5%; 
-    --sidebar-border: 0 0% 15%; /* #262626 */
-    --sidebar-ring: 25 100% 41%; /* Burnt Orange */
+    /* Sidebar Theme - Dark Mode (Teal) */
+    --sidebar-background: 202 76% 8%; /* Even darker blue/black */
+    --sidebar-foreground: 40 56% 91%; /* #F5EEDD */
+    --sidebar-primary: 168 58% 68%; /* #7AE2CF - Teal */
+    --sidebar-primary-foreground: 202 76% 10%; /* Dark text for contrast */
+    --sidebar-accent: 181 90% 35%; /* Dark Teal (brightened for accents) */
+    --sidebar-accent-foreground: 40 56% 91%; /* Light text */
+    --sidebar-border: 202 70% 15%; /* Subtle border */
+    --sidebar-ring: 168 58% 68%; /* Teal for focus */
   }
 }
 
