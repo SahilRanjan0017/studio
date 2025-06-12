@@ -25,7 +25,7 @@ export default function LandingPage() {
             Welcome to Brick & Bolt Premier League
           </h1>
           <p className="text-lg sm:text-xl text-[hsl(20,100%,98%)] opacity-90" style={{color: 'hsl(20, 100%, 98%)'}}> {/* #fff6f4 */}
-            Choose your portal
+          Drill Down into Team Stats
           </p>
         </header>
 
