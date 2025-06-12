@@ -5,64 +5,7 @@
 
 @layer base {
   :root {
-    /* Light Theme (Vibrant Orange Accent) */
-    --background: 40 25% 93%; /* #EFEEEA - Soft Off-White/Beige */
-    --foreground: 207 33% 23%; /* #273F4F - Deep Slate Blue */
-
-    --card: 0 0% 100%; /* #FFFFFF - White cards for contrast */
-    --card-foreground: 207 33% 23%; /* Deep Slate Blue */
-
-    --popover: 0 0% 100%; /* White */
-    --popover-foreground: 207 33% 23%; /* Deep Slate Blue */
-
-    --primary: 14 99% 63%; /* #FE7743 - Vibrant Orange */
-    --primary-foreground: 0 0% 96%; /* #F5F5F5 - Crisp Off-White (Text on Orange) */
-    --primary-darker: 14 99% 53%; /* Darker shade for gradient */
-    --primary-lighter: 14 99% 73%; /* Lighter shade for gradient */
-    
-    --secondary: 207 33% 30%; /* #354C5D - Slightly lighter Slate Blue */
-    --secondary-foreground: 0 0% 93%; /* #EFEEEA - Text on secondary */
-
-    --muted: 207 20% 88%; /* #DCDFE2 - Light Grey for muted elements */
-    --muted-foreground: 0 0% 50%; /* #808080 - Silver-Grey */
-    
-    --accent: 14 99% 63%; /* #FE7743 - Vibrant Orange (Same as Primary) */
-    --accent-foreground: 0 0% 96%; /* #F5F5F5 - Crisp Off-White */
-
-    --destructive: 0 72% 51%; /* #dc2626 - Standard red */
-    --destructive-foreground: 0 0% 100%; /* white */
-
-    --border: 207 20% 80%; /* #C8CDD3 - Light Grey, derived from muted */
-    --input: 207 20% 80%; /* #C8CDD3 - Light Grey */
-    --ring: 14 99% 63%; /* #FE7743 - Vibrant Orange (Focus Ring) */
-
-    --chart-1: 14 99% 63%; /* Orange */
-    --chart-2: 14 80% 70%; /* Lighter Orange */
-    --chart-3: 207 33% 40%; /* Medium Slate Blue */
-    --chart-4: 0 0% 60%; /* Silver Grey */
-    --chart-5: 14 70% 50%; /* Darker Orange */
-    --radius: 0.75rem;
-
-    --custom-green: 145 73% 36%; /* #16a34a */
-    --custom-green-foreground: 0 0% 100%;
-    --custom-amber: 38 96% 50%;  /* #f59e0b */
-    --custom-amber-foreground: 207 33% 23%;
-    --custom-red: 0 72% 51%; /* #dc2626 */
-    --custom-red-foreground: 0 0% 100%;
-
-    /* Sidebar Theme - Light Mode */
-    --sidebar-background: 207 33% 18%; /* #202A33 - Darker Slate Blue */
-    --sidebar-foreground: 0 0% 85%; /* #D9D9D9 - Light Grey/Off-white */
-    --sidebar-primary: 14 99% 63%; /* #FE7743 - Vibrant Orange */
-    --sidebar-primary-foreground: 0 0% 96%; /* #F5F5F5 - Crisp Off-White */
-    --sidebar-accent: 14 99% 70%; /* Lighter Orange for hover */
-    --sidebar-accent-foreground: 207 33% 15%; /* Dark text for light orange accent */
-    --sidebar-border: 207 33% 25%;
-    --sidebar-ring: 14 99% 63%;
-  }
-
-  .dark {
-    /* Dark Theme - New Teal Palette */
+    /* Dark Theme (Teal Palette - NOW DEFAULT) */
     --background: 202 76% 10%; /* #06202B */
     --foreground: 40 56% 91%; /* #F5EEDD */
 
@@ -98,6 +41,7 @@
     --chart-3: 168 60% 80%; /* Very Light Teal */
     --chart-4: 40 56% 80%;  /* Lighter Beige */
     --chart-5: 0 0% 60%;    /* Neutral Grey */
+    --radius: 0.75rem;
 
     --custom-green: 145 60% 50%; 
     --custom-green-foreground: 0 0% 100%;
@@ -106,7 +50,7 @@
     --custom-red: 0 80% 65%; 
     --custom-red-foreground: 0 0% 100%;
 
-    /* Sidebar Theme - Dark Mode (Teal) */
+    /* Sidebar Theme - Dark Mode (Teal) - NOW DEFAULT */
     --sidebar-background: 202 76% 8%; /* Even darker blue/black */
     --sidebar-foreground: 40 56% 91%; /* #F5EEDD */
     --sidebar-primary: 168 58% 68%; /* #7AE2CF - Teal */
@@ -191,3 +135,4 @@
 .animate-pulse-scale {
   animation: pulse-scale 2.5s infinite ease-in-out;
 }
+
