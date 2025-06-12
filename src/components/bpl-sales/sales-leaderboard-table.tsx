@@ -122,7 +122,7 @@ export function SalesLeaderboardTable() {
             </div>
           </div>
           <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center gap-2">
-            <div className="relative w-full sm:w-56 md:w-64">
+            <div className="relative w-full sm:w-56 md:w-64 sm:-ml-2">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input 
                 type="search"
