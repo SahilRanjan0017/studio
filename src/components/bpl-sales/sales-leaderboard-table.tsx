@@ -204,7 +204,7 @@ export function SalesLeaderboardTable() {
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <div className="font-medium text-foreground text-sm leading-tight">{player.name}</div>
+                          <div className="font-semibold text-foreground text-sm leading-tight">{player.name}</div>
                           <div className="text-xs text-muted-foreground leading-tight">{salesRoleConfig[player.role].label}</div>
                         </div>
                       </div>

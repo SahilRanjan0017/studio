@@ -202,7 +202,7 @@ export function LeaderboardTable() {
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <div className="font-medium text-foreground text-sm leading-tight">{player.name}</div>
+                            <div className="font-semibold text-foreground text-sm leading-tight">{player.name}</div>
                             <div className="text-xs text-muted-foreground leading-tight">{roleConfig[activeRole].label}</div>
                           </div>
                         </div>
