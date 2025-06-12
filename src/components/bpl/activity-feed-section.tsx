@@ -2,11 +2,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { History, TrendingUp, TrendingDown, AlertCircle, Loader2 } from 'lucide-react';
+import { History, TrendingUp, TrendingDown, AlertCircle, Loader2, Minus } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/lib/supabase';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge'; // Keep Badge for date
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -72,70 +72,81 @@ export function ActivityFeedSection() {
     fetchActivities();
   }, []);
 
+  const getStatusColor = (status: string | null) => {
+    if (!status) return 'text-muted-foreground';
+    if (status.toLowerCase() === 'green') return 'text-custom-green';
+    if (status.toLowerCase() === 'amber') return 'text-custom-amber';
+    if (status.toLowerCase() === 'red') return 'text-custom-red';
+    return 'text-muted-foreground';
+  };
+  
+  const TrendIcon = ({ scoreChange }: { scoreChange: number }) => {
+    if (scoreChange > 0) return <TrendingUp size={16} className="text-custom-green" />;
+    if (scoreChange < 0) return <TrendingDown size={16} className="text-primary" />; // Orange for down
+    return <Minus size={16} className="text-muted-foreground" />;
+  };
+
+
   const renderActivityItem = (activity: Activity) => {
-    const isPositive = activity.score_change > 0;
-    const Icon = isPositive ? TrendingUp : TrendingDown;
-    const colorClass = isPositive ? 'text-custom-green' : 'text-custom-red';
-    const scorePrefix = isPositive ? '+' : '';
+    const scorePrefix = activity.score_change > 0 ? '+' : '';
 
     return (
-      <li key={activity.id} className="py-3 px-1 border-b border-border last:border-b-0">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Icon size={20} className={colorClass} />
+      <li key={activity.id} className="py-2.5 px-1 border-b border-border/70 last:border-b-0">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5">
+            <TrendIcon scoreChange={activity.score_change} />
             <div className="text-sm">
-              <span className="font-semibold text-foreground">{activity.crn_id}</span>
-              <span className="text-muted-foreground"> ({activity.city}) score changed by </span>
-              <span className={`font-bold ${colorClass}`}>{scorePrefix}{activity.score_change}</span>.
+              <span className="font-medium text-foreground">{activity.crn_id}</span>
+              <span className="text-xs text-muted-foreground"> ({activity.city}) score </span>
+              <span className={cn("font-semibold text-xs", activity.score_change > 0 ? 'text-custom-green' : activity.score_change < 0 ? 'text-primary' : 'text-muted-foreground')}>
+                {scorePrefix}{activity.score_change}
+              </span>.
             </div>
           </div>
-           <Badge variant={isPositive ? "default" : "destructive"} className={cn(
-             "text-xs py-0.5 px-2 font-medium",
-             isPositive ? "bg-custom-green/10 text-custom-green border-custom-green/30 hover:bg-custom-green/20" 
-                        : "bg-custom-red/10 text-custom-red border-custom-red/30 hover:bg-custom-red/20"
-           )}>
-            {activity.prev_rag_status} → {activity.current_rag_status}
-          </Badge>
+          <div className="text-xs text-muted-foreground">
+            <span className={getStatusColor(activity.prev_rag_status)}>{activity.prev_rag_status}</span>
+            <span className="mx-0.5">→</span> 
+            <span className={getStatusColor(activity.current_rag_status)}>{activity.current_rag_status}</span>
+          </div>
         </div>
       </li>
     );
   };
 
   return (
-    <Card className="shadow-lg rounded-lg flex flex-col">
-      <CardHeader className="border-b">
+    <Card className="shadow-md rounded-lg bg-card flex flex-col">
+      <CardHeader className="border-b border-border/70 pb-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <History size={24} className="text-primary" />
-            <CardTitle className="text-xl font-semibold text-primary">Recent Activity</CardTitle>
+          <div className="flex items-center gap-2.5">
+            <History size={20} className="text-primary" />
+            <CardTitle className="text-base font-semibold text-foreground">Recent Activity</CardTitle>
           </div>
           {formattedDate ? (
-            <Badge variant="outline" className="text-xs">{formattedDate}</Badge>
+            <Badge variant="outline" className="text-xs font-normal border-border/70 text-muted-foreground">{formattedDate}</Badge>
           ) : (
             <Badge variant="outline" className="text-xs">Loading date...</Badge>
           )}
         </div>
       </CardHeader>
-      <CardContent className="pt-4">
+      <CardContent className="pt-2 flex-grow">
         {loading ? (
-          <div className="flex items-center justify-center text-muted-foreground py-10">
-            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-            <span>Loading activities...</span>
+          <div className="flex items-center justify-center text-muted-foreground py-8">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <span className="text-sm">Loading activities...</span>
           </div>
         ) : error ? (
-          <div className="flex flex-col items-center justify-center text-destructive py-10">
-            <AlertCircle size={32} className="mb-2" />
+          <div className="flex flex-col items-center justify-center text-destructive py-8 text-sm">
+            <AlertCircle size={28} className="mb-1.5" />
             <p className="text-center">{error}</p>
-            <p className="text-xs text-muted-foreground mt-1">Please ensure the database view 'project_performance_view' is correctly configured for today's date.</p>
           </div>
         ) : activities.length === 0 ? (
-          <div className="text-center text-muted-foreground py-10 flex flex-col justify-center items-center">
-            <History size={32} className="mb-2 opacity-50" />
-            <p>No significant score changes today.</p>
+          <div className="text-center text-muted-foreground py-8 flex flex-col justify-center items-center">
+            <History size={28} className="mb-1.5 opacity-50" />
+            <p className="text-sm">No significant score changes today.</p>
           </div>
         ) : (
-          <ScrollArea className="max-h-[500px] pr-3 -mr-3"> 
-            <ul className="divide-y divide-border">
+          <ScrollArea className="max-h-[450px] pr-2 -mr-2"> 
+            <ul className="divide-y divide-border/50">
               {activities.map(renderActivityItem)}
             </ul>
           </ScrollArea>
@@ -144,3 +155,5 @@ export function ActivityFeedSection() {
     </Card>
   );
 }
+
+    

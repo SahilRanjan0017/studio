@@ -10,8 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LayoutDashboard, ListOrdered, MapPinned, Award, BookOpen, Loader2 } from 'lucide-react';
+import { LayoutDashboard, ListOrdered, MapPinned, Award, BookOpen, Loader2, BarChartBig } from 'lucide-react';
 import { useCityFilter } from '@/contexts/CityFilterContext'; 
+import { cn } from '@/lib/utils';
 
 interface NavLink {
   hrefRoot: string;
@@ -28,7 +29,7 @@ const opsNavLinks: NavLink[] = [
 ];
 
 const salesNavLinks: NavLink[] = [
-  { hrefRoot: "", label: "Dashboard", icon: <LayoutDashboard size={18}/> }, // Root of bpl-sales is dashboard
+  { hrefRoot: "", label: "Dashboard", icon: <BarChartBig size={18}/> }, 
   { hrefRoot: "/rules", label: "Rules", icon: <BookOpen size={18}/> },
 ];
 
@@ -58,39 +59,48 @@ export function BplNavbar() {
 
   const activeLink = currentNavLinks.find(link => {
     const fullLinkPath = `${basePath}${link.hrefRoot || ''}`;
-    if (link.hrefRoot === "") {
+    // Handle root path for sales dashboard correctly
+    if (link.hrefRoot === "" && basePath === "/bpl-sales") {
       return pathname === basePath || pathname === `${basePath}/`;
     }
-    return pathname.startsWith(fullLinkPath);
-  });
+    return pathname.startsWith(fullLinkPath) && fullLinkPath !== basePath; // ensure it's not just the base path if hrefRoot is not empty
+  }) || (pathname === basePath && currentNavLinks[0]?.hrefRoot === "" ? currentNavLinks[0] : undefined) || (pathname === `${basePath}/` && currentNavLinks[0]?.hrefRoot === "" ? currentNavLinks[0] : undefined) ;
+  
   const activeLabel = activeLink?.label || (currentNavLinks[0]?.label || "");
 
 
   return (
-    <nav className="bg-card shadow-md sticky top-0 z-40">
+    <nav className="bg-card shadow-sm sticky top-0 z-40 border-b border-border">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-center justify-between py-3">
-          <ul className="flex flex-wrap justify-center md:justify-start gap-1 md:gap-2 mb-3 md:mb-0">
-            {currentNavLinks.map((link) => (
-              <li key={link.label}>
-                <Link
-                  href={`${basePath}${link.hrefRoot || ''}`}
-                  className={`flex items-center gap-2 font-medium px-3 py-2 rounded-md transition-colors duration-200 text-sm
-                    ${activeLabel === link.label
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-foreground hover:bg-primary/10 hover:text-primary'
-                    }`}
-                >
-                  {link.icon}
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+        <div className="flex flex-col md:flex-row items-center justify-between py-2.5">
+          <ul className="flex flex-wrap justify-center md:justify-start gap-1 md:gap-1.5 mb-3 md:mb-0">
+            {currentNavLinks.map((link) => {
+              const isActive = activeLabel === link.label;
+              return (
+                <li key={link.label}>
+                  <Link
+                    href={`${basePath}${link.hrefRoot || ''}`}
+                    className={cn(
+                      `relative flex items-center gap-2 font-medium px-3.5 py-2.5 rounded-md transition-all duration-200 text-sm group`,
+                      isActive
+                        ? 'text-primary' // Active text color uses primary (orange)
+                        : 'text-foreground hover:bg-muted hover:text-primary'
+                    )}
+                  >
+                    {React.cloneElement(link.icon as React.ReactElement, { className: cn(isActive ? "text-primary" : "") })}
+                    {link.label}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t-full animate-fadeInUp" style={{animationDuration: '0.3s'}}></span>
+                    )}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
-          {isOpsSection && ( // Show city filter only if in ops section
+          {isOpsSection && (
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <label htmlFor="city-filter-nav" className="text-sm font-medium text-muted-foreground whitespace-nowrap sr-only md:not-sr-only">
-                Filter by City:
+                City:
               </label>
               <Select 
                 value={selectedCity} 
@@ -99,12 +109,12 @@ export function BplNavbar() {
               >
                 <SelectTrigger 
                   id="city-filter-nav" 
-                  className="w-full sm:w-[180px] bg-background h-9"
+                  className="w-full sm:w-[170px] bg-background h-9 text-sm focus:ring-primary/50"
                   aria-label="City filter"
                 >
                   {loadingCities ? (
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <div className="flex items-center text-xs text-muted-foreground">
+                      <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
                       <span>Loading...</span>
                     </div>
                   ) : cityError ? (
@@ -132,3 +142,5 @@ export function BplNavbar() {
     </nav>
   );
 }
+
+    
