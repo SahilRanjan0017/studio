@@ -1,18 +1,20 @@
+
 // @/components/bpl/leaderboard-table.tsx
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Trophy, ArrowUp, ArrowDown, User, Users, Shield, TrendingUp, TrendingDownIcon, Minus } from 'lucide-react';
+import { Trophy, ArrowUp, ArrowDown, User, Users, Shield, TrendingUp, TrendingDownIcon, Minus, Search, Loader2 } from 'lucide-react'; // Added Search and Loader2
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input'; // Added Input
 import { cn } from '@/lib/utils';
 import { fetchProjectData, type LeaderboardEntry, type LeaderboardRole, supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
 import { useCityFilter } from '@/contexts/CityFilterContext';
-import { DetailPanel } from './detail-panel'; // Import the new DetailPanel
+import { DetailPanel } from './detail-panel';
 
 const roleConfig = {
   SPM: { icon: <User size={14} />, label: "SPM" },
@@ -25,6 +27,7 @@ export function LeaderboardTable() {
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [dataError, setDataError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState(''); // State for search term
   
   const { selectedCity, loadingCities: loadingGlobalCities, cityError: globalCityError } = useCityFilter();
   const { toast } = useToast();
@@ -92,9 +95,16 @@ export function LeaderboardTable() {
 
   const TrendIcon = ({ trend }: { trend: number }) => {
     if (trend > 0) return <TrendingUp size={16} className="text-custom-green" />;
-    if (trend < 0) return <TrendingDownIcon size={16} className="text-primary" />; // Burnt orange for down
-    return <Minus size={16} className="text-muted-foreground" />; // Silver/grey for no change
+    if (trend < 0) return <TrendingDownIcon size={16} className="text-primary" />;
+    return <Minus size={16} className="text-muted-foreground" />;
   };
+
+  const filteredLeaderboardData = useMemo(() => {
+    if (!searchTerm) return leaderboardData;
+    return leaderboardData.filter(player =>
+      player.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [leaderboardData, searchTerm]);
 
   return (
     <>
@@ -108,21 +118,31 @@ export function LeaderboardTable() {
                 <p className="text-xs text-muted-foreground">{DisplayName}</p>
               </div>
             </div>
-            <Tabs value={activeRole} onValueChange={(value) => setActiveRole(value as LeaderboardRole)} className="w-full sm:w-auto">
-              <TabsList className="grid w-full grid-cols-3 h-9 bg-muted/70">
-                {(Object.keys(roleConfig) as LeaderboardRole[]).map(roleKey => (
-                  <TabsTrigger key={roleKey} value={roleKey} className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 text-xs data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
-                    {React.cloneElement(roleConfig[roleKey].icon, { className: "hidden sm:inline" })}
-                    {roleConfig[roleKey].label}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
+            <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center gap-2">
+              <div className="relative w-full sm:w-56 md:w-64">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder={`Search ${roleConfig[activeRole].label} name...`}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-8 w-full h-9"
+                />
+              </div>
+              <Tabs value={activeRole} onValueChange={(value) => setActiveRole(value as LeaderboardRole)} className="w-full sm:w-auto">
+                <TabsList className="grid w-full grid-cols-3 h-9 bg-muted/70">
+                  {(Object.keys(roleConfig) as LeaderboardRole[]).map(roleKey => (
+                    <TabsTrigger key={roleKey} value={roleKey} className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 text-xs data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+                      {React.cloneElement(roleConfig[roleKey].icon, { className: "hidden sm:inline" })}
+                      {roleConfig[roleKey].label}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="pt-4 px-2 sm:px-4">
-          {dataError && <div className="text-center py-3 text-destructive bg-destructive/10 border border-destructive/30 rounded-md p-2.5 text-sm">{dataError}</div>}
-          
           {loadingData ? ( 
             <div className="space-y-3">
               {[...Array(5)].map((_, i) => (
@@ -137,9 +157,14 @@ export function LeaderboardTable() {
                 </div>
               ))}
             </div>
-          ) : !dataError && leaderboardData.length === 0 ? (
+          ) : dataError ? (
+             <div className="text-center py-3 text-destructive bg-destructive/10 border border-destructive/30 rounded-md p-2.5 text-sm">{dataError}</div>
+          ) : filteredLeaderboardData.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground text-sm">
-              No {roleConfig[activeRole].label} data available for {selectedCity === "Pan India" ? "Pan India" : selectedCity}.
+              {searchTerm 
+                ? `No ${roleConfig[activeRole].label} found matching "${searchTerm}".`
+                : `No ${roleConfig[activeRole].label} data available for ${selectedCity === "Pan India" ? "Pan India" : selectedCity}.`
+              }
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -155,7 +180,7 @@ export function LeaderboardTable() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {leaderboardData.map((player) => (
+                  {filteredLeaderboardData.map((player) => (
                     <TableRow 
                       key={player.name + player.rank + player.city} 
                       className="hover:bg-muted/50 cursor-pointer transition-colors duration-150"
@@ -215,5 +240,3 @@ export function LeaderboardTable() {
     </>
   );
 }
-
-    

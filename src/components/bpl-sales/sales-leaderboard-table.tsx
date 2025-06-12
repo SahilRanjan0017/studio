@@ -1,3 +1,4 @@
+
 // @/components/bpl-sales/sales-leaderboard-table.tsx
 'use client';
 
@@ -19,11 +20,11 @@ interface SalesLeaderboardEntry {
   rank: number;
   name: string;
   city: string | null;
-  dealsClosed?: number; // Example metric for sales
-  revenueGenerated?: number; // Example metric for sales
-  status: string; // e.g., 'Top Performer', 'On Target'
-  runs: number; // Main scoring metric, e.g., sales points
-  trend: number; // Change in score/points
+  dealsClosed?: number; 
+  revenueGenerated?: number; 
+  status: string; 
+  runs: number; 
+  trend: number; 
   role: SalesLeaderboardRole;
 }
 
@@ -35,7 +36,6 @@ const salesRoleConfig: Record<SalesLeaderboardRole, { icon: React.ReactNode; lab
   'City Champion': { icon: <Flame size={16} />, label: "City Champ" },
 };
 
-// Placeholder data - replace with actual data fetching logic for sales
 const placeholderSalesData: SalesLeaderboardEntry[] = [
   { rank: 1, name: 'Sales Star Alpha', city: 'Metropolis', dealsClosed: 10, revenueGenerated: 500000, status: 'Top Performer', runs: 500, trend: 50, role: 'OS' },
   { rank: 2, name: 'Channel King Beta', city: 'Gotham', dealsClosed: 8, revenueGenerated: 450000, status: 'High Achiever', runs: 450, trend: 30, role: 'CP OS - Platinum' },
@@ -82,7 +82,7 @@ export function SalesLeaderboardTable() {
         .map((entry, index) => ({ ...entry, rank: index + 1 }));
 
       setLeaderboardData(finalData);
-      if (finalData.length === 0) {
+      if (finalData.length === 0 && !globalCityError) { // Only set no data if there wasn't a global city error
          setDataError(null); 
       }
       setLoadingData(false);
@@ -122,18 +122,18 @@ export function SalesLeaderboardTable() {
             </div>
           </div>
           <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center gap-2">
-            <div className="relative w-full sm:w-64">
+            <div className="relative w-full sm:w-56 md:w-64">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input 
                 type="search"
-                placeholder={`Search by ${salesRoleConfig[activeRole].label} name...`}
+                placeholder={`Search ${salesRoleConfig[activeRole].label} name...`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-8 w-full h-9"
               />
             </div>
             <Tabs value={activeRole} onValueChange={(value) => setActiveRole(value as SalesLeaderboardRole)} className="w-full sm:w-auto">
-              <TabsList className="grid w-full grid-cols-3 md:grid-cols-5 h-9">
+              <TabsList className="grid w-full grid-cols-3 md:grid-cols-5 h-9 bg-muted/70">
                 {(Object.keys(salesRoleConfig) as SalesLeaderboardRole[]).map(roleKey => (
                   <TabsTrigger key={roleKey} value={roleKey} className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 text-xs data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">
                     {React.cloneElement(salesRoleConfig[roleKey].icon, { className: "hidden sm:inline" })}
@@ -162,12 +162,12 @@ export function SalesLeaderboardTable() {
           </div>
         ) : dataError ? (
            <div className="text-center py-4 text-destructive bg-destructive/10 border border-destructive/30 rounded-md p-3">{dataError}</div>
-        ) : leaderboardData.length === 0 ? ( // Check original data length before filtering
+        ) : leaderboardData.length === 0 ? ( 
           <div className="text-center py-10 text-muted-foreground">
             No {salesRoleConfig[activeRole].label} data available for {selectedCity === "Pan India" ? "Pan India" : selectedCity}.
             <p className="text-xs mt-2">(Currently using placeholder data. Sales data source needs to be connected.)</p>
           </div>
-        ) : filteredLeaderboardData.length === 0 && searchTerm ? ( // No results from search
+        ) : filteredLeaderboardData.length === 0 && searchTerm ? ( 
           <div className="text-center py-10 text-muted-foreground">
             No {salesRoleConfig[activeRole].label} found matching "{searchTerm}".
           </div>
@@ -232,5 +232,3 @@ export function SalesLeaderboardTable() {
     </Card>
   );
 }
-
-```)
