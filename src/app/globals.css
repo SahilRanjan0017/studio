@@ -5,62 +5,63 @@
 
 @layer base {
   :root {
-    /* New Light Theme (Default) - Palette: #f1faee, #e63946, #a8dadc, #343A40 */
-    --background: 96 67% 96%; /* #f1faee - Very Soft, Cool Off-White */
-    --foreground: 210 10% 23%; /* #343A40 - Dark Charcoal for primary text */
+    /* Default Dark Theme (Dashboard & General App) */
+    /* Palette: #1F0756 (Deep Indigo), #fff6f4 (Soft Off-White), #f05a29 (Vibrant Red-Orange), #2C0E6B (Lighter Indigo for Cards) */
+    --background: 258 82% 18%; /* #1F0756 */
+    --foreground: 20 100% 98%; /* #fff6f4 */
 
-    --card: 96 67% 96%; /* #f1faee - Same as background, rely on shadows */
-    --card-foreground: 210 10% 23%; /* #343A40 */
+    --card: 257 76% 23%; /* #2C0E6B - Lighter Indigo for Card Backgrounds */
+    --card-foreground: 20 100% 98%; /* #fff6f4 */
 
-    --popover: 96 67% 98%; /* Slightly lighter #f1faee for pop */
-    --popover-foreground: 210 10% 23%; /* #343A40 */
+    --popover: 257 76% 20%; /* Slightly darker than card for popovers */
+    --popover-foreground: 20 100% 98%; /* #fff6f4 */
 
-    --primary: 356 79% 56%; /* #e63946 - Vibrant Red/Coral Accent */
-    --primary-foreground: 96 67% 96%; /* #f1faee - Soft Off-White for text on red */
+    --primary: 16 88% 55%; /* #f05a29 - Vibrant Red-Orange */
+    --primary-foreground: 258 82% 18%; /* #1F0756 - Deep Indigo for text on primary */
     
-    --primary-darker: 356 79% 46%; /* Darker red for gradient */
-    --primary-lighter: 356 79% 66%; /* Lighter red for gradient */
+    --primary-darker: 16 88% 45%; /* Darker Red-Orange for gradient */
+    --primary-lighter: 16 88% 65%; /* Lighter Red-Orange for gradient */
     
-    --secondary: 182 39% 76%; /* #a8dadc - Light, Muted Teal/Cyan */
-    --secondary-foreground: 210 10% 23%; /* #343A40 - Dark Charcoal for text on teal */
+    --secondary: 258 80% 25%; /* Slightly lighter Indigo for secondary elements */
+    --secondary-foreground: 20 100% 98%; /* #fff6f4 */
 
-    --muted: 96 67% 92%; /* Very light grey derived from base #f1faee */
-    --muted-foreground: 210 10% 45%; /* Lighter version of foreground for muted text */
+    --muted: 258 80% 15%; /* Darker, less prominent Indigo */
+    --muted-foreground: 20 100% 98% / 0.7; /* Lower opacity #fff6f4 */
     
-    --accent: 356 79% 56%; /* #e63946 - Red Accent */
-    --accent-foreground: 96 67% 96%; /* #f1faee - Soft Off-White */
+    --accent: 16 88% 55%; /* #f05a29 */
+    --accent-foreground: 258 82% 18%; /* #1F0756 */
 
-    --destructive: 356 79% 56%; /* #e63946 - Red for destructive */
-    --destructive-foreground: 96 67% 96%; /* #f1faee */
+    --destructive: 0 72% 51%; /* A standard bright red for destructive actions, can be adjusted */
+    --destructive-foreground: 20 100% 98%; /* #fff6f4 */
 
-    --border: 182 39% 85%; /* Light teal for borders */
-    --input: 96 67% 92%; /* Slightly off from main bg for input */
-    --ring: 356 79% 56%; /* Red for focus rings */
+    --border: 258 50% 30%; /* Subtle, darker Indigo/Grey for borders */
+    --input: 258 70% 15%; /* Darker Indigo for input backgrounds */
+    --ring: 16 88% 55%; /* #f05a29 */
     
-    --chart-1: 356 79% 56%;   /* Red */
-    --chart-2: 182 39% 66%;  /* Slightly darker Teal for charts */
-    --chart-3: 356 79% 70%;   /* Lighter Red */
-    --chart-4: 182 39% 86%;  /* Lighter Teal */
-    --chart-5: 0 0% 60%;   /* Neutral Grey */
+    --chart-1: 16 88% 55%;   /* #f05a29 */
+    --chart-2: 180 60% 50%;  /* A contrasting teal/cyan for charts */
+    --chart-3: 35 90% 60%;   /* A bright orange/yellow for charts */
+    --chart-4: 20 100% 98% / 0.8;  /* Lighter Off-White for charts */
+    --chart-5: 20 100% 98% / 0.6;  /* Even Lighter Off-White for charts */
     --radius: 0.75rem;
 
-    /* RAG status colors - adjusted for light theme visibility if needed */
-    --custom-green: 130 50% 45%; /* Distinct Green */
-    --custom-green-foreground: 0 0% 100%;
-    --custom-amber: 35 80% 55%;  /* Distinct Amber */
-    --custom-amber-foreground: 210 10% 15%; /* Dark text for amber */
-    --custom-red: 356 79% 56%; /* Use new primary red for consistency */
-    --custom-red-foreground: 96 67% 96%;
+    /* RAG status colors - adjusted for dark theme visibility */
+    --custom-green: 130 70% 50%; /* Vivid Green */
+    --custom-green-foreground: 20 100% 98%; /* #fff6f4 */
+    --custom-amber: 38 90% 55%;  /* Bright Amber/Orange */
+    --custom-amber-foreground: 258 82% 10%; /* Darker indigo for contrast */
+    --custom-red: 16 88% 55%; /* #f05a29 - Using primary accent for red status */
+    --custom-red-foreground: 20 100% 98%; /* #fff6f4 */
 
-    /* Sidebar Theme - Light (aligned with new palette) */
-    --sidebar-background: 96 67% 95%; /* Slightly off-white from main bg #f1faee base */
-    --sidebar-foreground: 210 10% 23%; /* Dark Charcoal */
-    --sidebar-primary: 356 79% 56%; /* Red Accent */
-    --sidebar-primary-foreground: 96 67% 96%; /* Soft Off-White */
-    --sidebar-accent: 356 79% 50%; /* Slightly darker red */
-    --sidebar-accent-foreground: 96 67% 96%;
-    --sidebar-border: 182 39% 85%; /* Light teal */
-    --sidebar-ring: 356 79% 56%; /* Red */
+    /* Sidebar Theme - Aligned with new dark theme */
+    --sidebar-background: 258 82% 15%; /* Slightly darker than main bg */
+    --sidebar-foreground: 20 100% 98%; /* #fff6f4 */
+    --sidebar-primary: 16 88% 55%; /* #f05a29 */
+    --sidebar-primary-foreground: 258 82% 18%; /* #1F0756 */
+    --sidebar-accent: 16 88% 50%; /* Slightly darker red-orange */
+    --sidebar-accent-foreground: 20 100% 98%; /* #fff6f4 */
+    --sidebar-border: 258 50% 25%;
+    --sidebar-ring: 16 88% 55%;
   }
 }
 

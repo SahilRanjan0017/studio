@@ -10,15 +10,15 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: // Dashboard CTA: Solid Red Accent, Light text.
+        default: // Dashboard CTA: Solid Red-Orange Accent, Deep Indigo text.
           "bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-primary",
         destructive:
           "border border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: // Standard outline for light theme
+        outline: // Standard outline for dark theme
           "border border-primary bg-transparent text-primary hover:bg-primary hover:text-primary-foreground",
-        secondary: // Secondary CTA: Solid Teal Accent, Dark text
+        secondary: // Secondary CTA: Solid Lighter Indigo, Soft Off-White text
           "bg-secondary text-secondary-foreground hover:bg-secondary/90",
-        ghost: "hover:bg-secondary/20 hover:text-primary text-foreground", // Hover with teal bg, red text
+        ghost: "hover:bg-secondary/20 hover:text-primary text-foreground", // Hover with indigo bg, red-orange text
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

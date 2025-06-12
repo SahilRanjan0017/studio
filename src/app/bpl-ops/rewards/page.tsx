@@ -32,11 +32,11 @@ interface RoleRewardProps {
   icon: React.ReactNode;
   rewards: RewardTier[] | { rank: string; reward: string };
   totalReward?: string;
-  borderColorClass: string; // Changed from bgColorClass to borderColorClass
-  bgColorClass?: string; // Optional background for card content if needed
-  iconBgClass: string; // Specific for icon background circle
-  iconColorClass: string; // Specific for icon color
-  titleColorClass: string; // Specific for title text color
+  borderColorClass: string; 
+  bgColorClass?: string; 
+  iconBgClass: string; 
+  iconColorClass: string; 
+  titleColorClass: string; 
 }
 
 function RoleRewardCard({ title, icon, rewards, totalReward, borderColorClass, bgColorClass, iconBgClass, iconColorClass, titleColorClass }: RoleRewardProps) {
@@ -91,7 +91,7 @@ export default function RewardsPage() {
     <div className="bg-background min-h-screen py-6">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <DashboardTitleBlock 
-          icon={<Trophy size={32} className="text-primary animate-pulse-scale" />} // text-primary (red)
+          icon={<Trophy size={32} className="text-primary animate-pulse-scale" />} 
           title="🏆 Performance Rewards Breakdown"
           subtitle="Celebrate excellence, encourage performance! Your hard work deserves recognition and reward!"
           className="mb-10"
@@ -103,45 +103,45 @@ export default function RewardsPage() {
             icon={<User />}
             rewards={spmRewards}
             totalReward="₹99,000+"
-            borderColorClass="border-primary" // Red border
-            iconBgClass="bg-primary/10" // Light red bg for icon
-            iconColorClass="text-primary" // Red icon
-            titleColorClass="text-primary" // Red title
+            borderColorClass="border-primary" 
+            iconBgClass="bg-primary/20" 
+            iconColorClass="text-primary" 
+            titleColorClass="text-primary" 
           />
           <RoleRewardCard
             title="Top Performers - Team Leaders (TLs)"
             icon={<Users />}
             rewards={tlRewards}
             totalReward="₹62,000+"
-            borderColorClass="border-secondary" // Teal border
-            iconBgClass="bg-secondary/20" // Light teal bg for icon
-            iconColorClass="text-secondary-foreground" // Dark text on teal for icon
-            titleColorClass="text-secondary-foreground" // Dark text on teal for title
+            borderColorClass="border-accent" // Using accent for TLs for variety if primary is red-orange
+            iconBgClass="bg-accent/20" 
+            iconColorClass="text-accent" 
+            titleColorClass="text-accent" 
           />
           <RoleRewardCard
             title="Top Performer - Vendor Manager (VM)"
             icon={<Briefcase />}
             rewards={{ rank: "1", reward: "₹25,000+" }}
-            borderColorClass="border-foreground" // Dark Charcoal border
-            iconBgClass="bg-foreground/10" // Light Dark Charcoal bg for icon
-            iconColorClass="text-foreground" // Dark Charcoal icon
-            titleColorClass="text-foreground" // Dark Charcoal title
+            borderColorClass="border-secondary" // Using secondary for VM
+            iconBgClass="bg-secondary/20" 
+            iconColorClass="text-secondary-foreground" // Assuming secondary has a contrasting fg
+            titleColorClass="text-secondary-foreground"
           /> 
           <RoleRewardCard
             title="Top Performer - Sourcing Executive"
             icon={<DollarSign />}
             rewards={{ rank: "1", reward: "₹25,000+" }}
-            borderColorClass="border-primary" // Red border
-            iconBgClass="bg-primary/10" // Light red bg for icon
-            iconColorClass="text-primary" // Red icon
-            titleColorClass="text-primary" // Red title
+            borderColorClass="border-primary" 
+            iconBgClass="bg-primary/20" 
+            iconColorClass="text-primary" 
+            titleColorClass="text-primary" 
           />
         </div>
 
         <Card className="shadow-xl rounded-xl bg-gradient-to-r from-primary to-accent text-primary-foreground p-6 text-center">
           <CardHeader>
             <div className="flex items-center justify-center gap-3 mb-2">
-              <Award size={36} className="text-primary-foreground"/> {/* Adjusted to primary-foreground for visibility on gradient */}
+              <Award size={36} className="text-primary-foreground"/> 
               <CardTitle className="text-3xl font-extrabold">💰 Total Reward Pool</CardTitle>
             </div>
           </CardHeader>
