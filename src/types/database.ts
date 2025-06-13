@@ -40,7 +40,7 @@ export interface ProjectPerformanceData {
   cumulative_score: number;
 }
 
-// Represents an entry in the displayed leaderboard
+// Represents an entry in the displayed leaderboard for BPL Operations
 export interface LeaderboardEntry {
   rank: number;
   name: string; // SPM name, TL name, etc.
@@ -49,14 +49,40 @@ export interface LeaderboardEntry {
   status: 'Green' | 'Amber' | 'Red' | string; // Overall status
   runs: number; // Typically cumulative_score
   trend: number; // score_change indicating trend
-  // Optional: for tooltips or detailed views
   avg_csat?: number | null;
   total_delay_days_sum?: number | null;
 }
 
 export type LeaderboardRole = 'SPM' | 'TL' | 'OM';
 
-// Structure for raw data from channel_partner_performance_view
+
+// Types for BPL Sales Leaderboard
+export type SalesLeaderboardRole = 'OS' | 'IS' | 'CP_OS' | 'CP_IS';
+
+export interface RawSalesLeaderboardData {
+  participant_id: string;
+  name: string;
+  city: string | null;
+  role: SalesLeaderboardRole;
+  total_runs: number;
+  kpi_types_count?: number;
+  last_update: string | null; // ISO string date from Supabase
+}
+
+export interface SalesLeaderboardEntry {
+  rank: number;
+  participant_id: string;
+  name: string;
+  city: string | null;
+  role: SalesLeaderboardRole;
+  total_runs: number;
+  kpi_types_count?: number; // Optional, count of distinct KPI types contributing to score
+  last_update_formatted?: string; // Formatted for display, e.g., "Today, 10:30 AM"
+  trend?: number; // Optional: if trend data is available
+}
+
+
+// Structure for raw data from channel_partner_performance_view (Initial version, might be superseded by SalesLeaderboard)
 export interface RawChannelPartnerData {
   partner_id: string;
   partner_name: string;
@@ -66,7 +92,7 @@ export interface RawChannelPartnerData {
   total_score: number;
 }
 
-// Structure for processed channel partner entries to be displayed
+// Structure for processed channel partner entries to be displayed (Initial version)
 export interface ChannelPartnerEntry {
   partner_id: string;
   partner_name: string;

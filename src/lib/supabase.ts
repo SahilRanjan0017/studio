@@ -1,6 +1,17 @@
 // src/lib/supabase.ts
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import type { ProjectPerformanceData, LeaderboardEntry, LeaderboardRole, RawChannelPartnerData, ChannelPartnerEntry } from '@/types/database';
+import type { 
+  ProjectPerformanceData, 
+  LeaderboardEntry, 
+  LeaderboardRole, 
+  RawChannelPartnerData, 
+  ChannelPartnerEntry,
+  RawSalesLeaderboardData,
+  SalesLeaderboardEntry,
+  SalesLeaderboardRole
+} from '@/types/database';
+import { formatDistanceToNow, parseISO, isValid } from 'date-fns';
+
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -10,11 +21,8 @@ let supabaseInstance: SupabaseClient | null = null;
 if (supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('http')) {
   try {
     supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
-    // console.log("Supabase client initialized successfully."); // Optional: for successful initialization
   } catch (error) {
     console.error("Error creating Supabase client:", error);
-    // console.error("Attempted Supabase URL:", supabaseUrl); // Be cautious logging URLs if they might contain sensitive info, though NEXT_PUBLIC_ ones are usually safe.
-    // console.error("Supabase Anon Key presence:", supabaseAnonKey ? "Present" : "Missing");
   }
 } else {
   let warningMessage = "Supabase client not initialized. ";
@@ -39,7 +47,7 @@ export async function fetchCities(): Promise<{ cities: string[]; error: string |
   }
 
   const { data, error: supabaseError } = await supabase
-    .from('project_performance_view')
+    .from('project_performance_view') // This could also come from a dedicated 'cities' table or distinct on sales_members table city
     .select('city');
 
   if (supabaseError) {
@@ -102,7 +110,7 @@ export async function fetchProjectData(
   if (supabaseError) {
     let errorMessage = 'Error fetching project performance data.';
     if (typeof supabaseError === 'object' && supabaseError !== null) {
-        if (Object.keys(supabaseError).length === 0) { // Specifically checking for an empty error object
+        if (Object.keys(supabaseError).length === 0) { 
             errorMessage = 'Error fetching project performance data: An empty error object was returned from Supabase. This could be due to Row Level Security (RLS) policies, network issues, or the queried view/table (project_performance_view) returning no data matching the criteria (e.g., date filters in the view definition).';
         } else if ('message' in supabaseError && typeof supabaseError.message === 'string') {
             errorMessage = supabaseError.message;
@@ -169,7 +177,7 @@ export async function fetchProjectData(
       let overallStatus: LeaderboardEntry['status'] = 'Green';
       if (agg.statuses.includes('Red')) overallStatus = 'Red';
       else if (agg.statuses.includes('Amber')) overallStatus = 'Amber';
-      else if (agg.statuses.length === 0) overallStatus = 'N/A'; // If no projects or no status, default N/A
+      else if (agg.statuses.length === 0) overallStatus = 'N/A'; 
 
       return {
         name: agg.name,
@@ -181,7 +189,7 @@ export async function fetchProjectData(
         rank: 0, 
       };
     })
-    .sort((a, b) => b.runs - a.runs) // Higher runs = better rank
+    .sort((a, b) => b.runs - a.runs) 
     .map((entry, index) => ({
       ...entry,
       rank: index + 1,
@@ -191,6 +199,7 @@ export async function fetchProjectData(
 }
 
 
+// This function is kept for now, but might be deprecated if SalesLeaderboardTable fully replaces it.
 export async function fetchChannelPartnerData(
   city: string
 ): Promise<{ data: ChannelPartnerEntry[]; error: string | null }> {
@@ -201,7 +210,7 @@ export async function fetchChannelPartnerData(
   }
 
   let query = supabase
-    .from('channel_partner_performance_view') // Ensure this view exists in your Supabase
+    .from('channel_partner_performance_view') 
     .select<string, RawChannelPartnerData>(`
       partner_id,
       partner_name,
@@ -247,12 +256,91 @@ export async function fetchChannelPartnerData(
       conversion_rate: item.leads_generated > 0 
         ? parseFloat(((item.successful_conversions / item.leads_generated) * 100).toFixed(1)) 
         : 0,
-      rank: 0, // Rank will be assigned after sorting
+      rank: 0, 
     }))
-    .sort((a, b) => b.total_score - a.total_score) // Sort by total_score descending
+    .sort((a, b) => b.total_score - a.total_score) 
     .map((entry, index) => ({
       ...entry,
-      rank: index + 1, // Assign rank
+      rank: index + 1, 
+    }));
+
+  return { data: processedData, error: null };
+}
+
+
+export async function fetchSalesLeaderboardData(
+  city: string,
+  role: SalesLeaderboardRole
+): Promise<{ data: SalesLeaderboardEntry[]; error: string | null }> {
+  if (!supabase) {
+    const errorMsg = "Supabase client is not initialized. Cannot fetch sales leaderboard data.";
+    console.error(errorMsg);
+    return { data: [], error: errorMsg };
+  }
+
+  let query = supabase
+    .from('sales_team_performance_view') // Query the new view
+    .select<string, RawSalesLeaderboardData>(`
+      participant_id,
+      name,
+      city,
+      role,
+      total_runs,
+      kpi_types_count,
+      last_update
+    `)
+    .eq('role', role); // Filter by the selected role
+
+  if (city !== 'Pan India' && city !== '') {
+    query = query.eq('city', city);
+  }
+
+  const { data: rawData, error: supabaseError } = await query;
+
+  if (supabaseError) {
+    let errorMessage = `Error fetching sales leaderboard data for role ${role}.`;
+     if (typeof supabaseError === 'object' && supabaseError !== null) {
+        if (Object.keys(supabaseError).length === 0) {
+            errorMessage = `Error fetching sales leaderboard data for role ${role}: An empty error object was returned. This could be due to RLS policies, network issues, or the view 'sales_team_performance_view' returning no data.`;
+        } else if ('message' in supabaseError && typeof supabaseError.message === 'string') {
+            errorMessage = supabaseError.message;
+        } else {
+            try {
+                errorMessage = `Error fetching sales leaderboard data for role ${role}: ${JSON.stringify(supabaseError)}`;
+            } catch {
+                errorMessage = `Error fetching sales leaderboard data for role ${role}: Non-serializable error object.`;
+            }
+        }
+    }
+    console.error(`Error details from Supabase (fetchSalesLeaderboardData for ${role}):`, supabaseError);
+    console.error(errorMessage);
+    return { data: [], error: errorMessage };
+  }
+
+  if (!rawData) {
+    return { data: [], error: null };
+  }
+
+  const processedData: SalesLeaderboardEntry[] = rawData
+    .map(item => {
+      let last_update_formatted = 'N/A';
+      if (item.last_update) {
+        const date = parseISO(item.last_update);
+        if (isValid(date)) {
+          last_update_formatted = formatDistanceToNow(date, { addSuffix: true });
+        }
+      }
+      return {
+        ...item,
+        rank: 0, // Rank will be assigned after sorting
+        last_update_formatted,
+        // trend: calculateTrend(item.participant_id, item.total_runs) // Placeholder for trend calculation logic
+      };
+    })
+    .sort((a, b) => b.total_runs - a.total_runs) 
+    .map((entry, index) => ({
+      ...entry,
+      rank: index + 1, 
     }));
 
   return { data: processedData, error: null };
