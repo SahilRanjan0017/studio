@@ -124,7 +124,7 @@ export function SalesLeaderboardTable() {
                     />
                 </div>
                 <Tabs value={activeRole} onValueChange={(value) => setActiveRole(value as SalesLeaderboardRole)} className="w-full md:w-auto">
-                    <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-9 bg-muted/70">
+                    <TabsList className="grid w-full grid-cols-4 h-9 bg-muted/70">
                         {(Object.keys(salesRoleConfig) as SalesLeaderboardRole[]).map(roleKey => (
                         <TabsTrigger 
                             key={roleKey} 
@@ -219,3 +219,4 @@ export function SalesLeaderboardTable() {
     </Card>
   );
 }
+
