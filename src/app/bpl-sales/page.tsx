@@ -11,8 +11,8 @@ import type { SalesLeaderboardRole } from '@/types/database';
 // Define the roles for the tabs
 const salesDashboards: { value: SalesLeaderboardRole; label: string }[] = [
   { value: 'CP_OS', label: 'CP OS Dashboard' },
-  { value: 'OS', label: 'OS Dashboard' }, // Interpreting "CP Dashboard" as OS
-  { value: 'IS', label: 'IS Dashboard' },   // Interpreting "IS Activation Dashboard" as IS
+  { value: 'OS', label: 'OS Dashboard' }, 
+  { value: 'IS', label: 'IS Dashboard' },   
   { value: 'CP_IS', label: 'CP IS Dashboard' },
 ];
 
@@ -34,7 +34,7 @@ export default function BplSalesDashboardPage() {
           onValueChange={(value) => setActiveDashboard(value as SalesLeaderboardRole)}
           className="w-full"
         >
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-4">
+          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-4 mb-4">
             {salesDashboards.map((dashboard) => (
               <TabsTrigger key={dashboard.value} value={dashboard.value}>
                 {dashboard.label}
