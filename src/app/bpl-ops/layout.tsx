@@ -1,4 +1,6 @@
 // src/app/bpl-ops/layout.tsx
+"use client"; // Add "use client" directive
+
 import type { Metadata } from 'next';
 import { BplHeader } from '@/components/bpl/bpl-header';
 import { BplNavbar } from '@/components/bpl/bpl-navbar';
@@ -19,7 +21,7 @@ export default function BplOpsLayout({
     <CityFilterProvider>
       <div className="min-h-screen flex flex-col">
         <BplHeader />
-        <BplNavbar /> 
+        <BplNavbar />
         <main className="flex-grow">
           {children}
         </main>
