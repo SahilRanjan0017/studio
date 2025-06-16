@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Users, Search, AlertCircle, Target, Zap, Briefcase, UserSquare, Building, UserCheck, BuildingUser } from 'lucide-react';
+import { Users, Search, AlertCircle, Target, Zap, Briefcase, UserSquare, Building, UserCheck } from 'lucide-react';
 import { fetchSalesLeaderboardData, supabase } from '@/lib/supabase';
 import type { SalesLeaderboardEntry, SalesLeaderboardRole, ManagerLeaderboardEntry, CityLeaderboardEntry, RawSalesLeaderboardData } from '@/types/database';
 import { useCityFilter } from '@/contexts/CityFilterContext';
@@ -47,7 +47,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
   const [activeSubView, setActiveSubView] = useState<SubView>('Individual');
 
   const {
-    selectedCity, 
+    selectedCity,
     loadingCities: loadingGlobalCities,
     cityError: globalCityError
   } = useCityFilter();
@@ -66,7 +66,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       }
 
       if (loadingGlobalCities) {
-        setLoadingData(true); 
+        setLoadingData(true);
         return;
       }
       if (globalCityError) {
@@ -80,16 +80,16 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
 
       setLoadingData(true);
       setError(null);
-      setSearchTerm(''); // Reset search term on data reload
+      setSearchTerm('');
 
       const result = await fetchSalesLeaderboardData(selectedCity, tableForRole);
 
       if (result.error) {
         const specificError = result.error.toLowerCase();
         if (specificError.includes("relation") && specificError.includes("does not exist") && specificError.includes("sales_team_performance_view")) {
-             setError(`DATABASE SETUP ERROR: The required database view "public.sales_team_performance_view" could not be found. Please ensure this view is created in your Supabase SQL Editor. Also verify its underlying table "public.sales_score_tracking" exists and is populated.`);
+             setError(`DATABASE SETUP ERROR: The required database view "public.sales_team_performance_view" could not be found. Please ensure this view is created in your Supabase SQL Editor, and its underlying table "public.sales_score_tracking" exists and is populated.`);
         } else if (specificError.includes("column") && specificError.includes("does not exist")) {
-             setError(`DATABASE VIEW MISMATCH: A required column is missing from or incorrect in "public.sales_team_performance_view". Error: "${result.error}". Please verify your view definition in Supabase SQL Editor.`);
+             setError(`DATABASE VIEW MISMATCH: A required column (e.g., '${specificError.split("column ")[1]?.split(" ")[0] || 'unknown'}') is missing from or incorrect in "public.sales_team_performance_view". Error: "${result.error}". Please verify your view definition in Supabase SQL Editor against the application's expectations.`);
         } else {
              setError(result.error);
         }
@@ -102,7 +102,6 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
         setIndividualData(fetchedIndividualEntries);
 
         if (fetchedIndividualEntries.length > 0) {
-          // Process for Manager Level View
           const managers: Record<string, { name: string; total_runs: number; cities: Set<string> }> = {};
           fetchedIndividualEntries.forEach(entry => {
             const managerName = entry.manager_name || 'No Manager Assigned';
@@ -123,7 +122,6 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
               }))
           );
 
-          // Process for City Level and CityManagerDetail Views
           const citiesAgg: Record<string, { name: string; total_runs: number; managersInCity: Record<string, number> }> = {};
           fetchedIndividualEntries.forEach(entry => {
             const cityNameKey = entry.city && entry.city.trim() !== '' ? entry.city.trim() : 'N/A (Global)';
@@ -136,17 +134,10 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
                 if (!citiesAgg[cityNameKey].managersInCity[entry.manager_name]) {
                     citiesAgg[cityNameKey].managersInCity[entry.manager_name] = 0;
                 }
-                // Sum runs for this manager *within this specific city*
-                // This assumes entry.total_runs is the individual's total, so we need to be careful if an individual spans multiple cities
-                // For simplicity here, we are adding the individual's total_runs to their manager's tally for this city.
-                // If an individual's score is city-specific in the base data, this is fine.
-                // If total_runs is their global total, this aggregation for manager-in-city might inflate if manager has people in multiple cities.
-                // Assuming sales_score_tracking is granular enough (e.g. daily scores per person per city for specific role)
-                // then cumulative_score in the view (which becomes total_runs) should reflect this.
                 citiesAgg[cityNameKey].managersInCity[entry.manager_name] += entry.total_runs;
             }
           });
-          
+
           const cityProcessedEntries: CityLeaderboardEntry[] = Object.values(citiesAgg)
             .map(cityAgg => {
                 let topManagerNameInCity: string | undefined = undefined;
@@ -157,7 +148,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
                 }
 
                 return {
-                    rank: 0, // Rank assigned after sorting
+                    rank: 0,
                     name: cityAgg.name === 'N/A (Global)' ? 'Global/Unassigned' : cityAgg.name,
                     total_runs: cityAgg.total_runs,
                     top_manager_name: topManagerNameInCity,
@@ -186,7 +177,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
   const subViewTabs: { value: SubView; label: string; icon: React.ReactNode; searchPlaceholder: string }[] = [
     { value: 'Individual', label: `${currentRoleConfig.label}`, icon: <UserSquare size={16} />, searchPlaceholder: `Search by ${currentRoleConfig.label} name...` },
     { value: 'ManagerLevel', label: `${currentRoleConfig.label} Managers`, icon: <Users size={16} />, searchPlaceholder: `Search by Manager name...` },
-    { value: 'CityManagerDetail', label: `City & Manager (${currentRoleConfig.label})`, icon: <BuildingUser size={16} />, searchPlaceholder: `Search by City or Manager...` },
+    { value: 'CityManagerDetail', label: `City & Manager (${currentRoleConfig.label})`, icon: <Briefcase size={16} />, searchPlaceholder: `Search by City or Manager...` },
     { value: 'CityLevel', label: `City Rank (${currentRoleConfig.label})`, icon: <Building size={16} />, searchPlaceholder: `Search by City name...` },
   ];
 
@@ -195,7 +186,8 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
   const filteredIndividualData = useMemo(() => {
     if (!searchTerm) return individualData;
     return individualData.filter(entry =>
-      entry.name.toLowerCase().includes(searchTerm.toLowerCase())
+      entry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (entry.manager_name && entry.manager_name.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   }, [individualData, searchTerm]);
 
@@ -205,30 +197,47 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       entry.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [managerData, searchTerm]);
-  
+
   const filteredCityManagerDetailData = useMemo(() => {
-    if (!searchTerm) return cityData; // cityData contains top_manager_name
+    if (!searchTerm) return cityData;
     return cityData.filter(entry =>
-        entry.name.toLowerCase().includes(searchTerm.toLowerCase()) || // Search by City Name
-        (entry.top_manager_name && entry.top_manager_name.toLowerCase().includes(searchTerm.toLowerCase())) // Search by Top Manager Name
+        entry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (entry.top_manager_name && entry.top_manager_name.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   }, [cityData, searchTerm]);
 
   const filteredCityData = useMemo(() => {
     if (!searchTerm) return cityData;
     return cityData.filter(entry =>
-      entry.name.toLowerCase().includes(searchTerm.toLowerCase()) 
+      entry.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [cityData, searchTerm]);
 
   const renderErrorState = () => {
     if (!error) return null;
+    const isViewMissingError = error.includes("relation") && error.includes("does not exist") && error.includes("sales_team_performance_view");
+    const isColumnMissingError = error.includes("column") && error.includes("does not exist");
+
+    let title = `Failed to load data for ${currentRoleConfig.label}`;
+    let details = error;
+
+    if (isViewMissingError) {
+        title = "DATABASE SETUP ERROR";
+        details = `The required database view "public.sales_team_performance_view" could not be found. Please ensure this view is created in your Supabase SQL Editor using the provided SQL, and its underlying table "public.sales_score_tracking" exists and is populated with relevant data for the role "${tableForRole}". Check RLS policies.`;
+    } else if (isColumnMissingError) {
+        title = "DATABASE VIEW MISMATCH";
+        const missingColumnMatch = error.match(/column "(.+?)" does not exist/i) || error.match(/column ([a-zA-Z0-9_]+) of relation "sales_team_performance_view" does not exist/i);
+        const missingColumn = missingColumnMatch ? (missingColumnMatch[1] || missingColumnMatch[2]) : "unknown";
+        details = `A required column (e.g., '${missingColumn}') is missing from or incorrect in "public.sales_team_performance_view". The application expects certain columns based on the SQL view definition. Please verify your view definition in Supabase SQL Editor. Original error: "${error}"`;
+    }
+
+
     return (
       <div className="flex flex-col items-center justify-center text-destructive py-8 text-sm bg-destructive/5 border border-destructive/20 rounded-md p-4 space-y-2">
         <AlertCircle size={32} className="mb-1.5" />
-        <p className="text-center font-semibold text-base">Failed to load data for {currentRoleConfig.label}</p>
-        <p className="text-center text-xs text-destructive/80 px-4">{error}</p>
-        <p className="text-center text-xs mt-1 text-muted-foreground">Please check the browser console for more details and verify your database setup, including the existence and RLS policies of 'public.sales_team_performance_view' and its underlying table 'public.sales_score_tracking'.</p>
+        <p className="text-center font-semibold text-base">{title}</p>
+        <p className="text-center text-xs text-destructive/80 px-4">{details}</p>
+        <p className="text-center text-xs mt-1 text-muted-foreground">Please check the browser console for more technical details.</p>
       </div>
     );
   };
@@ -238,7 +247,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       <div className="text-center py-8 text-muted-foreground text-sm">
         {searchTerm
           ? `No ${currentRoleConfig.label} found matching "${searchTerm}" in ${globalCityDisplayName}.`
-          : `No data available for ${currentRoleConfig.label} in ${globalCityDisplayName}. Check if 'sales_score_tracking' table has relevant entries for this role and city.`}
+          : `No data available for ${currentRoleConfig.label} in ${globalCityDisplayName}. Check if 'sales_team_performance_view' table has relevant entries for this role and city.`}
       </div>
     ) : (
       <Table>
@@ -246,13 +255,15 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
           <TableRow className="border-border/70">
             <TableHead className="w-[50px] text-center text-xs font-semibold text-foreground px-2">Rank</TableHead>
             <TableHead className="text-xs font-semibold text-foreground px-2 min-w-[180px]">Name / Role</TableHead>
+            <TableHead className="text-xs font-semibold text-foreground px-2 hidden md:table-cell">Manager</TableHead>
             <TableHead className="text-xs font-semibold text-foreground px-2 hidden md:table-cell">City</TableHead>
+            <TableHead className="text-xs font-semibold text-foreground px-2 hidden sm:table-cell">Record Date</TableHead>
             <TableHead className="text-right text-xs font-semibold text-foreground px-2">Total Runs</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredIndividualData.map((entry) => (
-            <TableRow key={`${entry.name}-${entry.role}-${entry.city || 'global'}-${entry.record_date}`} className="hover:bg-muted/50 transition-colors duration-150">
+            <TableRow key={`${entry.name}-${entry.role}-${entry.city || 'global_city'}-${entry.record_date}`} className="hover:bg-muted/50 transition-colors duration-150">
               <TableCell className="text-center px-2 py-2.5">
                 <div className={cn("w-7 h-7 rounded-full flex items-center justify-center font-semibold text-white text-[0.6rem] mx-auto", entry.rank <= 3 ? "bg-accent" : "bg-primary/80")}>
                   {entry.rank}
@@ -267,7 +278,9 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
                   </div>
                 </div>
               </TableCell>
+              <TableCell className="text-xs text-muted-foreground px-2 py-2.5 hidden md:table-cell">{entry.manager_name || 'N/A'}</TableCell>
               <TableCell className="text-xs text-muted-foreground px-2 py-2.5 hidden md:table-cell">{entry.city || 'N/A'}</TableCell>
+              <TableCell className="text-xs text-muted-foreground px-2 py-2.5 hidden sm:table-cell">{entry.record_date}</TableCell>
               <TableCell className="text-right font-bold text-sm text-foreground px-2 py-2.5">{entry.total_runs}</TableCell>
             </TableRow>
           ))}
@@ -281,7 +294,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
        <div className="text-center py-8 text-muted-foreground text-sm">
         {searchTerm
           ? `No Managers found matching "${searchTerm}" for ${currentRoleConfig.label} in ${globalCityDisplayName}.`
-          : `No Manager data available for ${currentRoleConfig.label} in ${globalCityDisplayName}. Ensure 'manager_name' is populated in 'sales_score_tracking'.`}
+          : `No Manager data available for ${currentRoleConfig.label} in ${globalCityDisplayName}. Ensure 'manager_name' is populated in 'sales_team_performance_view'.`}
       </div>
     ) : (
       <Table>
@@ -295,7 +308,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
         </TableHeader>
         <TableBody>
           {filteredManagerData.map((entry) => (
-            <TableRow key={entry.name + '-' + (entry.city || 'global_manager_city')} className="hover:bg-muted/50 transition-colors duration-150">
+            <TableRow key={`${entry.name}-${entry.city || 'global_manager_city'}`} className="hover:bg-muted/50 transition-colors duration-150">
               <TableCell className="text-center px-2 py-2.5">
                 <div className={cn("w-7 h-7 rounded-full flex items-center justify-center font-semibold text-white text-[0.6rem] mx-auto", entry.rank <= 3 ? "bg-accent" : "bg-primary/80")}>
                   {entry.rank}
@@ -361,8 +374,8 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       </Table>
     )
   );
-  
-  const renderCityTable = () => ( // This is the original City Rank (overall for the role)
+
+  const renderCityTable = () => (
     filteredCityData.length === 0 ? (
       <div className="text-center py-8 text-muted-foreground text-sm">
          {searchTerm
@@ -379,8 +392,8 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredCityData.map((entry) => ( 
-            <TableRow key={entry.name} className="hover:bg-muted/50 transition-colors duration-150">
+          {filteredCityData.map((entry) => (
+            <TableRow key={`${entry.name}-citylevel`} className="hover:bg-muted/50 transition-colors duration-150">
               <TableCell className="text-center px-2 py-2.5">
                  <div className={cn("w-7 h-7 rounded-full flex items-center justify-center font-semibold text-white text-[0.6rem] mx-auto", entry.rank <= 3 ? "bg-accent" : "bg-primary/80")}>
                   {entry.rank}
