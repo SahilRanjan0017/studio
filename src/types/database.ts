@@ -68,19 +68,19 @@ export interface RawSalesLeaderboardData {
   manager_name: string | null;
   city: string | null;
   record_date: string; 
-  daily_score: number; 
-  cumulative_score: number; 
+  daily_score: number; // Sum of score_change for that day
+  cumulative_score: number; // Max cumulative_score up to that day
 }
 
 // Processed entry for display in the sales leaderboard (Individual/Staff View)
 export interface SalesLeaderboardEntry {
   rank: number;
   name: string;
-  manager_name?: string; // Still needed for manager aggregation
+  manager_name?: string; 
   city: string | null;
   role: SalesLeaderboardRole;
-  total_runs: number;     
-  record_date: string;    // Kept for processing, but may not be displayed
+  total_runs: number; // This will be the latest cumulative_score for the participant    
+  record_date: string; 
 }
 
 // Processed entry for Manager Level View
@@ -91,10 +91,11 @@ export interface ManagerLeaderboardEntry {
   total_runs: number;
 }
 
-// Processed entry for City Level View
+// Processed entry for City Level View (and CityManagerDetail view)
 export interface CityLeaderboardEntry {
   rank: number;
   name: string; // City Name
+  top_manager_name?: string; // Optional: For the CityManagerDetail view
   total_runs: number;
 }
 
@@ -120,4 +121,3 @@ export interface ChannelPartnerEntry {
   total_score: number;
   rank: number;
 }
-
