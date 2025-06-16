@@ -8,20 +8,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Users, Search, Loader2, AlertCircle, TrendingUp, TrendingDownIcon, Minus, Target, Zap, Briefcase, UserCircle2, MapPin, Building, UserSquare } from 'lucide-react';
+import { Users, Search, Loader2, AlertCircle, Target, Zap, Briefcase, UserSquare, Building, MapPin } from 'lucide-react';
 import { fetchSalesLeaderboardData, supabase } from '@/lib/supabase';
 import type { SalesLeaderboardEntry, SalesLeaderboardRole } from '@/types/database';
 import { useCityFilter } from '@/contexts/CityFilterContext';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"; // Import Tabs components
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const salesRoleConfig: Record<SalesLeaderboardRole, { icon: React.ReactNode; label: string; fullTitle: string }> = {
   'OS': { icon: <Target size={20} />, label: "OS", fullTitle: "OS Performance" },
@@ -45,8 +38,8 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
   
   const { 
     selectedCity, 
-    setSelectedCity, 
-    availableCities, 
+    // setSelectedCity, // No longer used for individual selector
+    // availableCities, // No longer used for individual selector
     loadingCities: loadingGlobalCities, 
     cityError: globalCityError 
   } = useCityFilter();
@@ -96,14 +89,12 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     if (activeSubView === 'Individual') {
       loadIndividualData();
     } else if (activeSubView === 'ManagerLevel') {
-      // Placeholder: Fetch manager level data
-      // e.g., fetchManagerLeaderboardData(selectedCity, tableForRole)
-      setLoadingData(false); // Simulate loading complete for placeholder
+      setIndividualData([]); // Clear data for placeholder view
+      setLoadingData(false); 
       setError(null);
     } else if (activeSubView === 'CityLevel') {
-      // Placeholder: Fetch city level data
-      // e.g., fetchCityRankingData(tableForRole)
-      setLoadingData(false); // Simulate loading complete for placeholder
+      setIndividualData([]); // Clear data for placeholder view
+      setLoadingData(false); 
       setError(null);
     }
   }, [tableForRole, selectedCity, loadingGlobalCities, globalCityError, toast, currentRoleConfig.label, activeSubView]);
@@ -134,53 +125,16 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       <CardHeader className="border-b border-border/70 pb-4">
          <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2.5">
-                {React.cloneElement(currentRoleConfig.icon, { className: "text-primary h-6 w-6" })} 
+                {React.cloneElement(currentRoleConfig.icon, { className: "text-primary h-7 w-7" })} 
                 <div>
                     <CardTitle className="text-lg font-semibold text-foreground">{currentRoleConfig.fullTitle}</CardTitle>
                     <CardDescription className="text-xs text-muted-foreground mt-0.5">
-                      Role: {currentRoleConfig.label}
+                      Role: {currentRoleConfig.label} | City: {cityDisplayName}
                     </CardDescription>
                 </div>
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-3 w-full">
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                  <label htmlFor={`city-filter-sales-${tableForRole}`} className="text-sm font-medium text-foreground whitespace-nowrap sr-only md:not-sr-only">
-                    <MapPin size={16} className="inline-block mr-1 text-muted-foreground" /> City:
-                  </label>
-                  <Select 
-                    value={selectedCity} 
-                    onValueChange={setSelectedCity}
-                    disabled={loadingGlobalCities || !!globalCityError || activeSubView === 'CityLevel'}
-                  >
-                    <SelectTrigger 
-                      id={`city-filter-sales-${tableForRole}`}
-                      className="w-full sm:w-[180px] bg-background h-9 text-sm focus:ring-primary/50"
-                      aria-label="City filter for sales dashboard"
-                    >
-                      {loadingGlobalCities ? (
-                        <div className="flex items-center text-xs text-muted-foreground">
-                          <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
-                          <span>Loading...</span>
-                        </div>
-                      ) : globalCityError ? (
-                         <span className="text-destructive text-xs">Error</span>
-                      ) : (
-                        <SelectValue placeholder="Select City" />
-                      )}
-                    </SelectTrigger>
-                    <SelectContent>
-                      {!loadingGlobalCities && !globalCityError && (
-                        <>
-                          <SelectItem value="Pan India">Pan India</SelectItem>
-                          {availableCities.map((city, index) => (
-                            <SelectItem key={index} value={city}>{city}</SelectItem>
-                          ))}
-                        </>
-                      )}
-                       {globalCityError && <SelectItem value="Error" disabled>Error loading cities</SelectItem>}
-                    </SelectContent>
-                  </Select>
-                </div>
+                {/* City Selector Removed */}
                 <div className="relative w-full sm:flex-grow">
                     <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
@@ -306,5 +260,3 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     </Card>
   );
 }
-
-    
