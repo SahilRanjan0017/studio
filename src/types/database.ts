@@ -62,6 +62,7 @@ export type SalesLeaderboardRole = 'OS' | 'IS' | 'CP_OS' | 'CP_IS';
 export interface RawSalesLeaderboardData {
   participant_id: string;
   name: string;
+  manager_name?: string; // Added manager's name
   city: string | null;
   role: SalesLeaderboardRole;
   total_runs: number;
@@ -73,6 +74,7 @@ export interface SalesLeaderboardEntry {
   rank: number;
   participant_id: string;
   name: string;
+  manager_name?: string; // Added manager's name
   city: string | null;
   role: SalesLeaderboardRole;
   total_runs: number;
@@ -103,3 +105,4 @@ export interface ChannelPartnerEntry {
   total_score: number;
   rank: number;
 }
+

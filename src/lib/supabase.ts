@@ -283,6 +283,7 @@ export async function fetchSalesLeaderboardData(
     .select<string, RawSalesLeaderboardData>(`
       participant_id,
       name,
+      manager_name, 
       city,
       role,
       total_runs,
@@ -301,7 +302,7 @@ export async function fetchSalesLeaderboardData(
     let errorMessage = `Error fetching sales leaderboard data for role ${role}.`;
      if (typeof supabaseError === 'object' && supabaseError !== null) {
         if (Object.keys(supabaseError).length === 0) {
-            errorMessage = `Error fetching sales leaderboard data for role ${role}: An empty error object was returned. This could be due to RLS policies, network issues, or the view 'sales_team_performance_view' returning no data.`;
+            errorMessage = `Error fetching sales leaderboard data for role ${role}: An empty error object was returned. This could be due to RLS policies, network issues, or the view 'sales_team_performance_view' returning no data. Ensure the view includes a 'manager_name' column.`;
         } else if ('message' in supabaseError && typeof supabaseError.message === 'string') {
             errorMessage = supabaseError.message;
         } else {
@@ -333,6 +334,7 @@ export async function fetchSalesLeaderboardData(
       return {
         ...item,
         rank: 0, // Rank will be assigned after sorting
+        manager_name: item.manager_name || undefined,
         last_update_formatted,
         // trend: calculateTrend(item.participant_id, item.total_runs) // Placeholder for trend calculation logic
       };
@@ -345,3 +347,4 @@ export async function fetchSalesLeaderboardData(
 
   return { data: processedData, error: null };
 }
+

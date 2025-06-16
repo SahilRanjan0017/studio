@@ -7,8 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Users, Search, Loader2, AlertCircle, TrendingUp, TrendingDownIcon, Minus, Target, Zap, Briefcase } from 'lucide-react';
-// Removed Tabs, TabsList, TabsTrigger from here as role selection is now at page level
+import { Users, Search, Loader2, AlertCircle, TrendingUp, TrendingDownIcon, Minus, Target, Zap, Briefcase, UserCircle2 } from 'lucide-react';
 import { fetchSalesLeaderboardData, supabase } from '@/lib/supabase';
 import type { SalesLeaderboardEntry, SalesLeaderboardRole } from '@/types/database';
 import { useCityFilter } from '@/contexts/CityFilterContext';
@@ -86,16 +85,17 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
   const filteredData = useMemo(() => {
     if (!searchTerm) return data;
     return data.filter(entry =>
-      entry.name.toLowerCase().includes(searchTerm.toLowerCase())
+      entry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (entry.manager_name && entry.manager_name.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   }, [data, searchTerm]);
 
   const cityDisplayName = selectedCity === "Pan India" ? "Pan India" : selectedCity;
 
   const TrendIcon = ({ trend }: { trend?: number }) => {
-    if (trend === undefined) return null; // No trend data to show
+    if (trend === undefined) return null; 
     if (trend > 0) return <TrendingUp size={16} className="text-custom-green" />;
-    if (trend < 0) return <TrendingDownIcon size={16} className="text-primary" />; // Using primary for negative trend
+    if (trend < 0) return <TrendingDownIcon size={16} className="text-primary" />; 
     return <Minus size={16} className="text-muted-foreground" />;
   };
 
@@ -107,7 +107,6 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
                 {React.cloneElement(currentRoleConfig.icon, { className: "text-primary" })}
                 <div>
                     <CardTitle className="text-lg font-semibold text-foreground">{`${currentRoleConfig.fullTitle} - ${cityDisplayName}`}</CardTitle>
-                    {/* Add subtitle if needed, e.g., number of participants */}
                 </div>
             </div>
             <div className="w-full sm:w-auto flex flex-col md:flex-row items-center gap-2">
@@ -115,13 +114,12 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
                     <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       type="search"
-                      placeholder={`Search ${currentRoleConfig.label} name...`}
+                      placeholder={`Search ${currentRoleConfig.label} name or manager...`}
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="pl-8 w-full h-9"
                     />
                 </div>
-                {/* Role Tabs removed from here */}
             </div>
         </div>
       </CardHeader>
@@ -145,7 +143,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
             <AlertCircle size={28} className="mb-1.5" />
             <p className="text-center font-medium">Failed to load data for {currentRoleConfig.label}</p>
             <p className="text-center text-xs mt-1">{error}</p>
-            <p className="text-center text-xs mt-2">Please ensure the 'sales_team_performance_view' exists and is correctly configured in Supabase.</p>
+            <p className="text-center text-xs mt-2">Please ensure the 'sales_team_performance_view' exists, includes a 'manager_name' column, and is correctly configured in Supabase. Also, check RLS policies.</p>
           </div>
         ) : filteredData.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground text-sm">
@@ -159,13 +157,11 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
               <TableHeader>
                 <TableRow className="border-border/70">
                   <TableHead className="w-[50px] text-center text-xs font-semibold text-foreground px-2">Rank</TableHead>
-                  <TableHead className="text-xs font-semibold text-foreground px-2 min-w-[150px]">Name</TableHead>
-                  <TableHead className="hidden md:table-cell text-xs font-semibold text-foreground px-2">City</TableHead>
-                  <TableHead className="text-center text-xs font-semibold text-foreground px-2">KPIs Count</TableHead>
-                  <TableHead className="text-center text-xs font-semibold text-foreground px-2 hidden sm:table-cell">Last Update</TableHead>
-                  {/* Optional Trend Column - Add if you implement trend calculation later
-                  <TableHead className="text-right text-xs font-semibold text-foreground px-1">Trend</TableHead> 
-                  */}
+                  <TableHead className="text-xs font-semibold text-foreground px-2 min-w-[180px]">Name / Role</TableHead>
+                  <TableHead className="text-xs font-semibold text-foreground px-2 min-w-[150px] hidden md:table-cell">Manager</TableHead>
+                  <TableHead className="text-xs font-semibold text-foreground px-2 hidden lg:table-cell">City</TableHead>
+                  <TableHead className="text-center text-xs font-semibold text-foreground px-2 hidden sm:table-cell">KPIs Count</TableHead>
+                  <TableHead className="text-center text-xs font-semibold text-foreground px-2 hidden md:table-cell">Last Update</TableHead>
                   <TableHead className="text-right text-xs font-semibold text-foreground px-2">Total Runs</TableHead>
                 </TableRow>
               </TableHeader>
@@ -193,24 +189,12 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="hidden md:table-cell text-xs text-muted-foreground px-2 py-2.5">{entry.city || 'N/A'}</TableCell>
-                    <TableCell className="text-center text-sm text-muted-foreground px-2 py-2.5">{entry.kpi_types_count ?? 'N/A'}</TableCell>
-                    <TableCell className="text-center text-xs text-muted-foreground px-2 py-2.5 hidden sm:table-cell">{entry.last_update_formatted || 'N/A'}</TableCell>
-                    {/* Optional Trend Cell - Corresponds to Trend Header
-                    <TableCell className="text-right hidden sm:table-cell px-1 py-2.5">
-                      <div className="flex items-center justify-end gap-0.5">
-                        <TrendIcon trend={entry.trend} />
-                        {entry.trend !== undefined && entry.trend !== 0 && (
-                          <span className={cn(
-                            "text-xs",
-                            entry.trend > 0 ? 'text-custom-green' : 'text-primary'
-                          )}>
-                            {Math.abs(entry.trend)}
-                          </span>
-                        )}
-                      </div>
+                    <TableCell className="text-xs text-muted-foreground px-2 py-2.5 hidden md:table-cell">
+                      {entry.manager_name || 'N/A'}
                     </TableCell>
-                    */}
+                    <TableCell className="text-xs text-muted-foreground px-2 py-2.5 hidden lg:table-cell">{entry.city || 'N/A'}</TableCell>
+                    <TableCell className="text-center text-sm text-muted-foreground px-2 py-2.5 hidden sm:table-cell">{entry.kpi_types_count ?? 'N/A'}</TableCell>
+                    <TableCell className="text-center text-xs text-muted-foreground px-2 py-2.5 hidden md:table-cell">{entry.last_update_formatted || 'N/A'}</TableCell>
                     <TableCell className="text-right font-bold text-sm text-foreground px-2 py-2.5">{entry.total_runs}</TableCell>
                   </TableRow>
                 ))}
@@ -222,3 +206,4 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     </Card>
   );
 }
+
