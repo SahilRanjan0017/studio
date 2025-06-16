@@ -6,12 +6,10 @@ import type {
   LeaderboardRole, 
   RawChannelPartnerData, 
   ChannelPartnerEntry,
-  RawSalesLeaderboardData, // Updated type
-  SalesLeaderboardEntry,   // Updated type
+  RawSalesLeaderboardData,
+  SalesLeaderboardEntry,
   SalesLeaderboardRole
 } from '@/types/database';
-// formatDistanceToNow, parseISO, isValid are not directly used for the new sales view processing,
-// but kept for other potential uses or if last_update was to be re-added from a different source.
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -46,40 +44,41 @@ export async function fetchCities(): Promise<{ cities: string[]; error: string |
     return { cities: [], error: errorMsg };
   }
 
-  // Fetch cities from project_performance_view first for BPL Ops
-  const { data: projectCitiesData, error: projectCitiesError } = await supabase
-    .from('project_performance_view') 
-    .select('city');
-
   let projectCities: string[] = [];
-  if (!projectCitiesError && projectCitiesData) {
-    projectCities = [...new Set(projectCitiesData.map(item => item.city).filter(city => typeof city === 'string' && city.trim() !== '') as string[])];
-  } else if (projectCitiesError) {
-    console.error('Error fetching cities from project_performance_view:', projectCitiesError.message);
-    // Don't return error yet, try fetching from sales view
+  try {
+    const { data: projectCitiesData, error: projectCitiesError } = await supabase
+      .from('project_performance_view') 
+      .select('city');
+    if (projectCitiesError) throw projectCitiesError;
+    if (projectCitiesData) {
+      projectCities = [...new Set(projectCitiesData.map(item => item.city).filter(city => typeof city === 'string' && city.trim() !== '') as string[])];
+    }
+  } catch (e: any) {
+    console.warn('Warning fetching cities from project_performance_view:', e.message);
   }
 
-  // Fetch cities from sales_team_performance_view for BPL Sales
-  // This assumes your new view is correctly named and accessible
-  const { data: salesCitiesData, error: salesCitiesError } = await supabase
-    .from('sales_team_performance_view')
-    .select('city');
-  
   let salesCities: string[] = [];
-  if (!salesCitiesError && salesCitiesData) {
-    salesCities = [...new Set(salesCitiesData.map(item => item.city).filter(city => typeof city === 'string' && city.trim() !== '') as string[])];
-  } else if (salesCitiesError) {
-     console.error('Error fetching cities from sales_team_performance_view:', salesCitiesError.message);
-     // If projectCities also failed, then return an error
-     if (projectCitiesError) {
-        return { cities: [], error: `Failed to fetch cities from both views. Project view: ${projectCitiesError.message}. Sales view: ${salesCitiesError.message}` };
-     }
+  try {
+    const { data: salesCitiesData, error: salesCitiesError } = await supabase
+      .from('sales_team_performance_view') // Querying the new sales view for cities
+      .select('city');
+    if (salesCitiesError) throw salesCitiesError;
+    if (salesCitiesData) {
+      salesCities = [...new Set(salesCitiesData.map(item => item.city).filter(city => typeof city === 'string' && city.trim() !== '') as string[])];
+    }
+  } catch (e: any) {
+    console.warn('Warning fetching cities from sales_team_performance_view:', e.message);
   }
   
   const combinedCities = [...new Set([...projectCities, ...salesCities])].sort();
 
-  if (combinedCities.length === 0 && (projectCitiesError || salesCitiesError)) {
-      return { cities: [], error: "Could not fetch city data from any source."};
+  if (combinedCities.length === 0 && (projectCities.length > 0 || salesCities.length > 0)) {
+    // This case means cities were fetched but somehow resulted in an empty combined list, unlikely but handled.
+     return { cities: [], error: "Fetched city data but resulted in an empty list after processing."};
+  }
+  if (combinedCities.length === 0 && projectCities.length === 0 && salesCities.length === 0) {
+      // Only return error if NO cities could be fetched from ANY source
+      return { cities: [], error: "Could not fetch city data from any source. Check view existence and RLS policies."};
   }
   
   return { cities: combinedCities, error: null };
@@ -207,7 +206,7 @@ export async function fetchProjectData(
 
 
 export async function fetchSalesLeaderboardData(
-  city: string,
+  cityFilter: string, // Renamed from city to cityFilter to avoid confusion with item.city
   role: SalesLeaderboardRole
 ): Promise<{ data: SalesLeaderboardEntry[]; error: string | null }> {
   if (!supabase) {
@@ -216,8 +215,8 @@ export async function fetchSalesLeaderboardData(
     return { data: [], error: errorMsg };
   }
 
-  // Query the new sales_team_performance_view
-  // Columns from the new view: name, role, manager_name, city, record_date, cumulative_score, daily_score
+  // Query the sales_team_performance_view as defined by the user
+  // Columns: name, role, manager_name, city, record_date, daily_score, cumulative_score
   let query = supabase
     .from('sales_team_performance_view') 
     .select<string, RawSalesLeaderboardData>(` 
@@ -226,17 +225,17 @@ export async function fetchSalesLeaderboardData(
       manager_name,
       city,
       record_date,
+      daily_score,
       cumulative_score
     `)
     .eq('role', role); 
 
-  if (city !== 'Pan India' && city !== '') {
-    query = query.eq('city', city);
+  if (cityFilter !== 'Pan India' && cityFilter !== '') {
+    query = query.eq('city', cityFilter);
   }
   
-  // Order by record_date to get the latest records first for each group
+  // Order by record_date to get the latest records first for each group when processing
   query = query.order('record_date', { ascending: false });
-
 
   const { data: rawData, error: supabaseError } = await query;
 
@@ -244,35 +243,36 @@ export async function fetchSalesLeaderboardData(
     let errorMessage = `Error fetching sales leaderboard data for role ${role}.`;
      if (typeof supabaseError === 'object' && supabaseError !== null) {
         if (Object.keys(supabaseError).length === 0) { 
-            errorMessage = `Error fetching sales leaderboard data for role ${role}: Supabase returned an empty error. This is MOST LIKELY due to Row Level Security (RLS) policies preventing access to 'sales_team_performance_view' or its underlying tables (e.g., 'sales_score_tracking'). Please check your RLS policies in Supabase. Other possibilities: the view does not exist, returns no data for the current filters, or there are network issues.`;
+            errorMessage = `Error fetching sales leaderboard data for role ${role}: Supabase returned an empty error. This likely means Row Level Security (RLS) policies are blocking access, or the 'sales_team_performance_view' does not exist or is empty for the current filters. Please verify the view and RLS policies in your Supabase dashboard.`;
         } else if ('message' in supabaseError && typeof supabaseError.message === 'string') {
-            errorMessage = supabaseError.message;
+            errorMessage = `Supabase error: ${supabaseError.message}. Check if 'sales_team_performance_view' exists and RLS policies allow access.`;
         } else {
             try {
                 errorMessage = `Error fetching sales leaderboard data for role ${role}: ${JSON.stringify(supabaseError)}`;
             } catch {
-                errorMessage = `Error fetching sales leaderboard data for role ${role}: Non-serializable error object.`;
+                errorMessage = `Error fetching sales leaderboard data for role ${role}: Non-serializable error object from Supabase.`;
             }
         }
     }
-    console.error(`Error details from Supabase (fetchSalesLeaderboardData for ${role}):`, supabaseError);
+    console.error(`Error details from Supabase (fetchSalesLeaderboardData for ${role} in ${cityFilter}):`, supabaseError);
     console.error(errorMessage);
     return { data: [], error: errorMessage };
   }
 
-  if (!rawData) {
-    return { data: [], error: null };
+  if (!rawData || rawData.length === 0) {
+    return { data: [], error: null }; // No data found, but not an error
   }
 
-  // Process rawData to get the latest cumulative_score for each unique participant
+  // Process rawData: Since the view already groups by name, role, manager_name, city, record_date
+  // and we order by record_date descending, we can pick the first entry for each unique participant.
   const latestEntriesMap = new Map<string, RawSalesLeaderboardData>();
 
   for (const item of rawData) {
-    // Create a unique key for each participant (name, role, city)
-    // City can be null, so handle that for the key
-    const participantKey = `${item.name}-${item.role}-${item.city || 'GLOBAL'}`; 
+    // A unique key for each participant based on their identifying fields from the view
+    const participantKey = `${item.name}-${item.role}-${item.city || 'GLOBAL'}-${item.manager_name || 'NO_MANAGER'}`;
+    
     if (!latestEntriesMap.has(participantKey)) {
-      // Since data is ordered by record_date descending, the first entry encountered for a key is the latest
+      // Since data is ordered by record_date descending, the first entry encountered for a key is the latest one.
       latestEntriesMap.set(participantKey, item);
     }
   }
@@ -282,12 +282,12 @@ export async function fetchSalesLeaderboardData(
   const processedData: SalesLeaderboardEntry[] = uniqueLatestData
     .map(item => ({
       name: item.name,
-      manager_name: item.manager_name || undefined,
-      city: item.city,
-      role: item.role as SalesLeaderboardRole, // Already filtered by role
-      total_runs: item.cumulative_score,
-      record_date: item.record_date, // Keep record_date if needed for display
-      rank: 0, // Rank will be assigned after sorting
+      manager_name: item.manager_name || undefined, // Keep as undefined if null for 'N/A' handling in UI
+      city: item.city, // Keep as null if null for 'N/A' handling in UI
+      role: item.role as SalesLeaderboardRole,
+      total_runs: item.cumulative_score, // Using cumulative_score from the view
+      record_date: item.record_date, 
+      rank: 0, 
     }))
     .sort((a, b) => b.total_runs - a.total_runs) 
     .map((entry, index) => ({
@@ -299,8 +299,6 @@ export async function fetchSalesLeaderboardData(
 }
 
 
-// This function is kept for now, but might be deprecated if SalesLeaderboardTable fully replaces it.
-// It would also need updating if 'channel_partner_performance_view' changes or is replaced.
 export async function fetchChannelPartnerData(
   city: string
 ): Promise<{ data: ChannelPartnerEntry[]; error: string | null }> {
@@ -311,7 +309,7 @@ export async function fetchChannelPartnerData(
   }
 
   let query = supabase
-    .from('channel_partner_performance_view') // This view might need to align with sales_score_tracking or be distinct
+    .from('channel_partner_performance_view') 
     .select<string, RawChannelPartnerData>(`
       partner_id,
       partner_name,
@@ -367,3 +365,4 @@ export async function fetchChannelPartnerData(
 
   return { data: processedData, error: null };
 }
+

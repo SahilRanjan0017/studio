@@ -23,7 +23,7 @@ export interface ScoreTracking {
   created_at?: string; // TIMESTAMPTZ as string
 }
 
-// Represents the structure of data from 'project_performance_view'
+// Represents the structure of data from 'project_performance_view' (for BPL Ops)
 export interface ProjectPerformanceData {
   crn_id: string;
   city: string | null;
@@ -56,29 +56,30 @@ export interface LeaderboardEntry {
 export type LeaderboardRole = 'SPM' | 'TL' | 'OM';
 
 
-// Types for BPL Sales Leaderboard based on the new sales_team_performance_view
+// Types for BPL Sales Leaderboard based on the user-provided sales_team_performance_view
 export type SalesLeaderboardRole = 'OS' | 'IS' | 'CP_OS' | 'CP_IS';
 
-// Raw data structure from the new sales_team_performance_view
+// Raw data structure from the sales_team_performance_view
+// (name, role, manager_name, city, record_date, daily_score, cumulative_score)
 export interface RawSalesLeaderboardData {
   name: string;
   role: SalesLeaderboardRole;
   manager_name: string | null;
   city: string | null;
   record_date: string; // Date of the record
-  cumulative_score: number; // This will be used as total_runs
-  // daily_score is also available if needed: sum(sales_score_tracking.score_change)
+  daily_score: number; // sum(sales_score_tracking.score_change) - Not directly displayed but available
+  cumulative_score: number; // max(sales_score_tracking.cumulative_score) - This will be used as total_runs
 }
 
 // Processed entry for display in the sales leaderboard
 export interface SalesLeaderboardEntry {
   rank: number;
   name: string;
-  manager_name?: string;
-  city: string | null;
+  manager_name?: string; // Displayed as N/A if null
+  city: string | null;    // Displayed as N/A if null
   role: SalesLeaderboardRole;
-  total_runs: number; // Mapped from cumulative_score
-  record_date?: string; // Optional: if we want to display the date of the score
+  total_runs: number;     // Mapped from cumulative_score
+  record_date: string;    // Date of the latest record contributing to total_runs
 }
 
 
@@ -103,3 +104,4 @@ export interface ChannelPartnerEntry {
   total_score: number;
   rank: number;
 }
+
