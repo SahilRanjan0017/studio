@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Users, Search, Loader2, AlertCircle, Target, Zap, Briefcase, UserSquare, Building, MapPin } from 'lucide-react';
+import { Users, Search, Loader2, AlertCircle, Target, Zap, Briefcase, UserSquare, Building } from 'lucide-react';
 import { fetchSalesLeaderboardData, supabase } from '@/lib/supabase';
 import type { SalesLeaderboardEntry, SalesLeaderboardRole } from '@/types/database';
 import { useCityFilter } from '@/contexts/CityFilterContext';
@@ -38,14 +38,14 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
   
   const { 
     selectedCity, 
-    // setSelectedCity, // No longer used for individual selector
-    // availableCities, // No longer used for individual selector
     loadingCities: loadingGlobalCities, 
     cityError: globalCityError 
   } = useCityFilter();
   const { toast } = useToast();
 
   const currentRoleConfig = salesRoleConfig[tableForRole];
+  const cityDisplayName = selectedCity === "Pan India" ? "Pan India" : selectedCity;
+
 
   useEffect(() => {
     async function loadIndividualData() {
@@ -89,11 +89,11 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     if (activeSubView === 'Individual') {
       loadIndividualData();
     } else if (activeSubView === 'ManagerLevel') {
-      setIndividualData([]); // Clear data for placeholder view
+      setIndividualData([]); 
       setLoadingData(false); 
       setError(null);
     } else if (activeSubView === 'CityLevel') {
-      setIndividualData([]); // Clear data for placeholder view
+      setIndividualData([]); 
       setLoadingData(false); 
       setError(null);
     }
@@ -111,8 +111,6 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       (entry.manager_name && entry.manager_name.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   }, [individualData, searchTerm]);
-
-  const cityDisplayName = selectedCity === "Pan India" ? "Pan India" : selectedCity;
 
   const subViewTabs = [
     { value: 'Individual', label: `${currentRoleConfig.label} Staff`, icon: <UserSquare size={16} /> },
@@ -133,19 +131,16 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
                     </CardDescription>
                 </div>
             </div>
-            <div className="flex flex-col sm:flex-row items-center gap-3 w-full">
-                {/* City Selector Removed */}
-                <div className="relative w-full sm:flex-grow">
-                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      type="search"
-                      placeholder={`Search by name or manager...`}
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-8 w-full h-9"
-                      disabled={activeSubView !== 'Individual'}
-                    />
-                </div>
+            <div className="relative w-full sm:flex-grow">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder={`Search by name or manager...`}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-8 w-full h-9"
+                  disabled={activeSubView !== 'Individual'}
+                />
             </div>
             <Tabs 
               value={activeSubView} 
