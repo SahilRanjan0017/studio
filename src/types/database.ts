@@ -64,23 +64,38 @@ export type SalesLeaderboardRole = 'OS' | 'IS' | 'CP_OS' | 'CP_IS';
 // This must exactly match the columns output by your SQL view.
 export interface RawSalesLeaderboardData {
   name: string;
-  role: SalesLeaderboardRole; // Ensure this column exists in your view and is correctly populated
+  role: SalesLeaderboardRole; 
   manager_name: string | null;
   city: string | null;
-  record_date: string; // Date of the record (e.g., "YYYY-MM-DD")
-  daily_score: number; // Corresponds to SUM(sst.score_change)
-  cumulative_score: number; // Corresponds to MAX(sst.cumulative_score)
+  record_date: string; 
+  daily_score: number; 
+  cumulative_score: number; 
 }
 
-// Processed entry for display in the sales leaderboard
+// Processed entry for display in the sales leaderboard (Individual/Staff View)
 export interface SalesLeaderboardEntry {
   rank: number;
   name: string;
-  manager_name?: string;
+  manager_name?: string; // Still needed for manager aggregation
   city: string | null;
   role: SalesLeaderboardRole;
-  total_runs: number;     // Mapped from cumulative_score
-  record_date: string;    // Date of the latest record contributing to total_runs
+  total_runs: number;     
+  record_date: string;    // Kept for processing, but may not be displayed
+}
+
+// Processed entry for Manager Level View
+export interface ManagerLeaderboardEntry {
+  rank: number;
+  name: string; // Manager's Name
+  city: string; // Derived: Manager's primary city or "Multiple Cities"
+  total_runs: number;
+}
+
+// Processed entry for City Level View
+export interface CityLeaderboardEntry {
+  rank: number;
+  name: string; // City Name
+  total_runs: number;
 }
 
 
@@ -105,3 +120,4 @@ export interface ChannelPartnerEntry {
   total_score: number;
   rank: number;
 }
+
