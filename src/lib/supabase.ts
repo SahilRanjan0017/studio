@@ -1,4 +1,3 @@
-
 // src/lib/supabase.ts
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import type {
@@ -9,7 +8,9 @@ import type {
   ChannelPartnerEntry,
   RawSalesLeaderboardData,
   SalesLeaderboardEntry,
-  SalesLeaderboardRole
+  SalesLeaderboardRole,
+  ManagerLeaderboardEntry,
+  CityLeaderboardEntry
 } from '@/types/database';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -40,49 +41,43 @@ export const supabase = supabaseInstance;
 
 export async function fetchCities(): Promise<{ cities: string[]; error: string | null }> {
   if (!supabase) {
-    const errorMsg = "Supabase client is not initialized. Cannot fetch cities. Check environment variables and Supabase setup.";
+    const errorMsg = "Supabase client is not initialized. Cannot fetch cities for the filter. Check environment variables and Supabase setup.";
     console.error(errorMsg);
     return { cities: [], error: errorMsg };
   }
 
-  let projectCities: string[] = [];
-  try {
-    const { data: projectCitiesData, error: projectCitiesError } = await supabase
-      .from('project_performance_view')
-      .select('city');
-    if (projectCitiesError) throw projectCitiesError;
-    if (projectCitiesData) {
-      projectCities = [...new Set(projectCitiesData.map(item => item.city).filter(city => typeof city === 'string' && city.trim() !== '') as string[])];
-    }
-  } catch (e: any) {
-    console.warn('Warning fetching cities from project_performance_view:', e.message);
-  }
-
+  // Fetch cities exclusively from sales_team_performance_view for the BPL Sales filter
   let salesCities: string[] = [];
   try {
     const { data: salesCitiesData, error: salesCitiesError } = await supabase
-      .from('sales_team_performance_view')
+      .from('sales_team_performance_view') // Only query sales view for cities
       .select('city');
+    
     if (salesCitiesError) throw salesCitiesError;
+
     if (salesCitiesData) {
-      salesCities = [...new Set(salesCitiesData.map(item => item.city).filter(city => typeof city === 'string' && city.trim() !== '') as string[])];
+      salesCities = [
+        ...new Set(
+          salesCitiesData
+            .map(item => item.city)
+            .filter(city => typeof city === 'string' && city.trim() !== '') as string[]
+        )
+      ].sort();
     }
   } catch (e: any) {
-    if (projectCities.length === 0) {
-        const errorMsg = `Failed to fetch cities from sales_team_performance_view: ${e.message}. This might indicate the view does not exist or RLS policies are blocking access.`;
-        console.error(errorMsg);
-        return { cities: [], error: errorMsg };
-    }
-    console.warn('Warning fetching cities from sales_team_performance_view:', e.message);
+    const errorMsg = `Failed to fetch cities from sales_team_performance_view: ${e.message}. This view is required for the BPL Sales city filter. Please ensure it exists and RLS policies allow access.`;
+    console.error(errorMsg);
+    return { cities: [], error: errorMsg };
   }
 
-  const combinedCities = [...new Set([...projectCities, ...salesCities])].sort();
-
-  if (combinedCities.length === 0) {
-      return { cities: [], error: "Could not fetch city data from any source. Check if 'project_performance_view' or 'sales_team_performance_view' exist and have data, and review RLS policies."};
+  if (salesCities.length === 0) {
+    // It's possible no cities are found, which isn't an error itself if the view is empty or no cities are assigned.
+    // An error message here might be too strong if the view is simply empty.
+    // The component using this should handle the case of an empty city list.
+    console.warn("No distinct cities found in 'sales_team_performance_view'. The city filter in BPL Sales will be empty or show only 'Pan India'.");
   }
 
-  return { cities: combinedCities, error: null };
+  return { cities: salesCities, error: null };
 }
 
 
@@ -216,10 +211,6 @@ export async function fetchSalesLeaderboardData(
     return { data: [], error: errorMsg };
   }
 
-  // Select only columns that exist in the sales_team_performance_view
-  // and are defined in RawSalesLeaderboardData type.
-  // 'daily_score' is in the view but not directly used for ranking in the current UI.
-  // 'cumulative_score' is used for total_runs.
   let query = supabase
     .from('sales_team_performance_view')
     .select<string, RawSalesLeaderboardData>(`
@@ -237,8 +228,6 @@ export async function fetchSalesLeaderboardData(
     query = query.eq('city', cityFilter);
   }
 
-  // Order by record_date to get the latest entry for each participant if multiple exist
-  // This helps in getting the most recent cumulative_score.
   query = query.order('record_date', { ascending: false });
 
   const { data: rawData, error: supabaseError } = await query;
@@ -249,7 +238,16 @@ export async function fetchSalesLeaderboardData(
         if (Object.keys(supabaseError).length === 0) {
             errorMessage = `Error fetching sales leaderboard data for role ${role}: Supabase returned an empty error. This often means Row Level Security (RLS) policies are blocking access, or the 'sales_team_performance_view' does not exist or is empty for the current filters. Please verify the view and RLS policies in your Supabase dashboard.`;
         } else if ('message' in supabaseError && typeof supabaseError.message === 'string') {
-            errorMessage = `Supabase error: ${supabaseError.message}. Check if 'sales_team_performance_view' exists and RLS policies allow access. This error might indicate a missing column if the view definition is not aligned with the query.`;
+            const lowerMsg = supabaseError.message.toLowerCase();
+            if (lowerMsg.includes('relation') && lowerMsg.includes('does not exist')) {
+              errorMessage = `DATABASE SETUP ERROR: The required database view "public.sales_team_performance_view" could not be found. Please ensure this view is created in your Supabase SQL Editor. Original error: "${supabaseError.message}"`;
+            } else if (lowerMsg.includes('column') && lowerMsg.includes('does not exist')) {
+              const missingColumnMatch = supabaseError.message.match(/column "(.+?)" does not exist/i) || supabaseError.message.match(/column ([a-zA-Z0-9_]+) of relation "sales_team_performance_view" does not exist/i);
+              const missingColumn = missingColumnMatch ? (missingColumnMatch[1] || missingColumnMatch[2]) : "unknown";
+              errorMessage = `DATABASE VIEW MISMATCH: A required column (e.g., '${missingColumn}') is missing from or incorrect in "public.sales_team_performance_view". Please verify your view definition. Original error: "${supabaseError.message}"`;
+            } else {
+              errorMessage = `Supabase error: ${supabaseError.message}. Check view definition and RLS policies.`;
+            }
         } else {
             try {
                 errorMessage = `Error fetching sales leaderboard data for role ${role}: ${JSON.stringify(supabaseError)}`;
@@ -267,16 +265,10 @@ export async function fetchSalesLeaderboardData(
     return { data: [], error: null };
   }
 
-  // Process rawData to get the latest entry for each participant
-  // The participantKey ensures uniqueness based on name, role, city, and manager.
   const latestEntriesMap = new Map<string, RawSalesLeaderboardData>();
 
   for (const item of rawData) {
-    // Ensure role is present for the key, as the query filters by role,
-    // but a robust key should include it if data could theoretically mix roles.
     const participantKey = `${item.name}-${item.role}-${item.city || 'GLOBAL_CITY'}-${item.manager_name || 'NO_MANAGER'}`;
-
-    // Since data is ordered by record_date descending, the first entry encountered for a key is the latest.
     if (!latestEntriesMap.has(participantKey)) {
       latestEntriesMap.set(participantKey, item);
     }
@@ -289,10 +281,10 @@ export async function fetchSalesLeaderboardData(
       name: item.name,
       manager_name: item.manager_name || undefined,
       city: item.city,
-      role: item.role as SalesLeaderboardRole, // Role is already filtered, but good to cast
-      total_runs: item.cumulative_score, // Use cumulative_score for ranking
+      role: item.role as SalesLeaderboardRole, 
+      total_runs: item.cumulative_score, 
       record_date: item.record_date,
-      rank: 0, // Rank will be assigned after sorting
+      rank: 0, 
     }))
     .sort((a, b) => b.total_runs - a.total_runs)
     .map((entry, index) => ({

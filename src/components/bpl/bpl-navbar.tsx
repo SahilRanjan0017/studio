@@ -96,7 +96,7 @@ export function BplNavbar() {
               );
             })}
           </ul>
-          {isOpsSection && (
+          {isSalesSection && ( // Changed from isOpsSection to isSalesSection
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <label htmlFor="city-filter-nav" className="text-sm font-semibold text-foreground whitespace-nowrap sr-only md:not-sr-only">
                 City:
