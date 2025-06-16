@@ -31,7 +31,7 @@ const salesRoleConfig: Record<SalesLeaderboardRole, { icon: React.ReactNode; lab
   'CP_IS': { icon: <Briefcase size={20} />, label: "CP IS", fullTitle: "CP IS Performance" },
 };
 
-type SubView = 'Individual' | 'ManagerLevel' | 'CityManagerDetail'; // Removed 'CityLevel'
+type SubView = 'Individual' | 'ManagerLevel' | 'CityManagerDetail';
 
 interface SalesLeaderboardTableProps {
   tableForRole: SalesLeaderboardRole;
@@ -40,7 +40,7 @@ interface SalesLeaderboardTableProps {
 export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTableProps) {
   const [individualData, setIndividualData] = useState<SalesLeaderboardEntry[]>([]);
   const [managerData, setManagerData] = useState<ManagerLeaderboardEntry[]>([]);
-  const [cityData, setCityData] = useState<CityLeaderboardEntry[]>([]); // Still needed for CityManagerDetail
+  const [cityData, setCityData] = useState<CityLeaderboardEntry[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -89,7 +89,9 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
         if (specificError.includes("relation") && specificError.includes("does not exist") && (specificError.includes("sales_team_performance_view") || specificError.includes("sales_score_tracking")) ) {
              setError(`DATABASE SETUP ERROR: The required database view "public.sales_team_performance_view" or its underlying table "public.sales_score_tracking" could not be found. Please ensure these are created in your Supabase SQL Editor and populated. Error: "${result.error}"`);
         } else if (specificError.includes("column") && specificError.includes("does not exist")) {
-             setError(`DATABASE VIEW MISMATCH: A required column (e.g., '${specificError.split("column ")[1]?.split(" ")[0] || 'unknown'}') is missing from or incorrect in "public.sales_team_performance_view". Error: "${result.error}". Please verify your view definition in Supabase SQL Editor against the application's expectations.`);
+             const missingColumnMatch = result.error.match(/column "(.+?)" of relation "sales_team_performance_view" does not exist/i) || result.error.match(/column ([a-zA-Z0-9_]+) of relation "sales_team_performance_view" does not exist/i);
+             const missingColumn = missingColumnMatch ? (missingColumnMatch[1] || missingColumnMatch[2]) : "unknown";
+             setError(`DATABASE VIEW MISMATCH: A required column (e.g., '${missingColumn}') is missing from or incorrect in "public.sales_team_performance_view". Please verify your view definition in Supabase SQL Editor against the application's expectations. Original error: "${result.error}".`);
         } else {
              setError(result.error);
         }
@@ -177,8 +179,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
   const subViewTabs: { value: SubView; label: string; icon: React.ReactNode; searchPlaceholder: string }[] = [
     { value: 'Individual', label: `${currentRoleConfig.label}`, icon: <UserSquare size={16} />, searchPlaceholder: `Search by ${currentRoleConfig.label} name...` },
     { value: 'ManagerLevel', label: `${currentRoleConfig.label} Managers`, icon: <Users size={16} />, searchPlaceholder: `Search by Manager name...` },
-    { value: 'CityManagerDetail', label: `City & Manager (${currentRoleConfig.label})`, icon: <Briefcase size={16} />, searchPlaceholder: `Search by City or Manager...` },
-    // { value: 'CityLevel', label: `City Rank (${currentRoleConfig.label})`, icon: <Building size={16} />, searchPlaceholder: `Search by City name...` }, // Removed this line
+    { value: 'CityManagerDetail', label: `City (${currentRoleConfig.label})`, icon: <Building size={16} />, searchPlaceholder: `Search by City or Manager...` },
   ];
 
   const selectedSubViewConfig = subViewTabs.find(tab => tab.value === activeSubView) || subViewTabs[0];
@@ -201,10 +202,10 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
   }, [managerData, searchTerm]);
 
   const filteredCityManagerDetailData = useMemo(() => {
-    if (!searchTerm) return cityData; // Uses cityData as base
+    if (!searchTerm) return cityData; 
     return cityData.filter(entry =>
-        entry.name.toLowerCase().includes(searchTerm.toLowerCase()) || // Search by city name
-        (entry.top_manager_name && entry.top_manager_name.toLowerCase().includes(searchTerm.toLowerCase())) // Search by top manager name
+        entry.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        (entry.top_manager_name && entry.top_manager_name.toLowerCase().includes(searchTerm.toLowerCase())) 
     );
   }, [cityData, searchTerm]);
 
@@ -222,7 +223,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
         details = `The required database view "public.sales_team_performance_view" or its underlying table "public.sales_score_tracking" could not be found or is inaccessible. Please ensure these are created in your Supabase SQL Editor, populated, and RLS policies are correctly configured. Original error: "${error}"`;
     } else if (isColumnMissingError) {
         title = "DATABASE VIEW MISMATCH";
-        const missingColumnMatch = error.match(/column "(.+?)" does not exist/i) || error.match(/column ([a-zA-Z0-9_]+) of relation "sales_team_performance_view" does not exist/i);
+        const missingColumnMatch = error.match(/column "(.+?)" of relation "sales_team_performance_view" does not exist/i) || error.match(/column ([a-zA-Z0-9_]+) of relation "sales_team_performance_view" does not exist/i);
         const missingColumn = missingColumnMatch ? (missingColumnMatch[1] || missingColumnMatch[2]) : "unknown";
         details = `A required column (e.g., '${missingColumn}') is missing from or incorrect in "public.sales_team_performance_view". The application expects certain columns based on the SQL view definition. Please verify your view definition in Supabase SQL Editor. Original error: "${error}"`;
     }
@@ -258,7 +259,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
         </TableHeader>
         <TableBody>
           {filteredIndividualData.map((entry) => (
-            <TableRow key={`${entry.name}-${entry.role}-${entry.city || 'global_city'}-${entry.record_date}`} className="hover:bg-muted/50 transition-colors duration-150">
+            <TableRow key={`${entry.name}-${entry.role}-${entry.city || 'global_city'}-${entry.manager_name || 'no_manager_ind'}-${entry.record_date}`} className="hover:bg-muted/50 transition-colors duration-150">
               <TableCell className="text-center px-2 py-2.5">
                 <div className={cn("w-7 h-7 rounded-full flex items-center justify-center font-semibold text-white text-[0.6rem] mx-auto", entry.rank <= 3 ? "bg-accent" : "bg-primary/80")}>
                   {entry.rank}
@@ -302,7 +303,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
         </TableHeader>
         <TableBody>
           {filteredManagerData.map((entry) => (
-            <TableRow key={`${entry.name}-${entry.city || 'global_manager_city'}`} className="hover:bg-muted/50 transition-colors duration-150">
+            <TableRow key={`${entry.name}-${entry.city || 'global_manager_city_mgr_view'}`} className="hover:bg-muted/50 transition-colors duration-150">
               <TableCell className="text-center px-2 py-2.5">
                 <div className={cn("w-7 h-7 rounded-full flex items-center justify-center font-semibold text-white text-[0.6rem] mx-auto", entry.rank <= 3 ? "bg-accent" : "bg-primary/80")}>
                   {entry.rank}
@@ -342,7 +343,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
         </TableHeader>
         <TableBody>
           {filteredCityManagerDetailData.map((entry) => (
-            <TableRow key={`${entry.name}-managerdetail`} className="hover:bg-muted/50 transition-colors duration-150">
+            <TableRow key={`${entry.name}-citymanagerdetail`} className="hover:bg-muted/50 transition-colors duration-150">
               <TableCell className="text-center px-2 py-2.5">
                  <div className={cn("w-7 h-7 rounded-full flex items-center justify-center font-semibold text-white text-[0.6rem] mx-auto", entry.rank <= 3 ? "bg-accent" : "bg-primary/80")}>
                   {entry.rank}
