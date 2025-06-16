@@ -1,20 +1,13 @@
-// @/app/leaderboard/page.tsx
-import { DashboardTitleBlock } from '@/components/bpl/dashboard-title-block';
-import { LeaderboardTable } from '@/components/bpl/leaderboard-table';
-import { ListOrdered } from 'lucide-react';
+// src/app/leaderboard/page.tsx
+import { redirect } from 'next/navigation';
 
-export default function LeaderboardPage() {
-  return (
-    <div className="bg-background min-h-screen py-6">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <DashboardTitleBlock 
-          icon={<ListOrdered size={28} className="text-primary" />}
-          title="BPL Leaderboard"
-          subtitle="View current rankings for SPM, TL, and OM roles across different cities."
-          className="mb-6"
-        />
-        <LeaderboardTable />
-      </div>
-    </div>
-  );
+/**
+ * This page redirects to the BPL Operations Leaderboard page.
+ * The root /leaderboard page was causing build errors as it was not wrapped
+ * by the CityFilterProvider.
+ */
+export default function LeaderboardRedirectPage() {
+  redirect('/bpl-ops/leaderboard');
+  // redirect() throws an error to stop rendering, so this return is mostly for type completeness.
+  return null;
 }
