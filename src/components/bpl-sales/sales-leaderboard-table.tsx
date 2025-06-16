@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Users, Search, AlertCircle, Target, Zap, Briefcase, UserSquare, Building, UserCheck, ListTree, Database } from 'lucide-react';
+import { Users, Search, AlertCircle, Target, Zap, Briefcase, UserSquare, Building, UserCheck } from 'lucide-react';
 import { fetchSalesLeaderboardData, supabase } from '@/lib/supabase';
 import type { SalesLeaderboardEntry, SalesLeaderboardRole, ManagerLeaderboardEntry, CityLeaderboardEntry } from '@/types/database';
 import { useCityFilter } from '@/contexts/CityFilterContext';
@@ -47,14 +47,13 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
   const [activeSubView, setActiveSubView] = useState<SubView>('Individual');
 
   const {
-    selectedCity, // Global city filter from context
+    selectedCity, 
     loadingCities: loadingGlobalCities,
     cityError: globalCityError
   } = useCityFilter();
   const { toast } = useToast();
 
   const currentRoleConfig = salesRoleConfig[tableForRole];
-  // Display name for the global city filter context
   const globalCityDisplayName = selectedCity === "Pan India" ? "Pan India" : selectedCity;
 
 
@@ -67,7 +66,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       }
 
       if (loadingGlobalCities) {
-        setLoadingData(true); // Wait for global city filter to be ready
+        setLoadingData(true); 
         return;
       }
       if (globalCityError) {
@@ -82,7 +81,6 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       setLoadingData(true);
       setError(null);
 
-      // Fetch all individual latest scores for the given role and global city filter
       const result = await fetchSalesLeaderboardData(selectedCity, tableForRole);
 
       if (result.error) {
@@ -93,9 +91,8 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
         setCityData([]);
       } else {
         const fetchedIndividualEntries = result.data;
-        setIndividualData(fetchedIndividualEntries); // Already ranked by fetchSalesLeaderboardData
+        setIndividualData(fetchedIndividualEntries);
 
-        // Process for ManagerLevel View
         if (fetchedIndividualEntries.length > 0) {
           const managers: Record<string, { name: string; total_runs: number; cities: Set<string> }> = {};
           fetchedIndividualEntries.forEach(entry => {
@@ -117,33 +114,35 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
               }))
           );
 
-          // Process for CityLevel View (Only makes sense if global city filter is "Pan India")
-          if (selectedCity === "Pan India") {
-            const cities: Record<string, { name: string; total_runs: number }> = {};
-            fetchedIndividualEntries.forEach(entry => {
-              const cityName = entry.city || 'N/A (No City)';
-              if (!cities[cityName]) {
-                cities[cityName] = { name: cityName, total_runs: 0 };
-              }
-              cities[cityName].total_runs += entry.total_runs;
-            });
-            setCityData(
-              Object.values(cities)
-                .filter(c => c.name !== 'N/A (No City)') // Optionally filter out entries with no city
-                .sort((a, b) => b.total_runs - a.total_runs)
-                .map((c, i) => ({
-                  rank: i + 1,
-                  name: c.name,
-                  total_runs: c.total_runs,
-                }))
-            );
-          } else {
-            // If a specific city is selected globally, the CityLevel view might be redundant or show only that city.
-            // For now, clearing it or showing a message might be appropriate.
-            // Or, show just the selected city's total for that role.
-            const cityTotal = fetchedIndividualEntries.reduce((sum, entry) => sum + entry.total_runs, 0);
-            setCityData([{ rank: 1, name: selectedCity, total_runs: cityTotal}]);
+          const cities: Record<string, { name: string; total_runs: number }> = {};
+          fetchedIndividualEntries.forEach(entry => {
+            const cityName = entry.city || 'N/A (Global)'; // Use a specific label for entries with no city
+            if (!cities[cityName]) {
+              cities[cityName] = { name: cityName, total_runs: 0 };
+            }
+            cities[cityName].total_runs += entry.total_runs;
+          });
+          
+          const cityEntries = Object.values(cities)
+            .filter(c => c.name !== 'N/A (Global)') // Filter out entries explicitly labeled as 'N/A (Global)'
+            .sort((a, b) => b.total_runs - a.total_runs)
+            .map((c, i) => ({
+              rank: i + 1,
+              name: c.name,
+              total_runs: c.total_runs,
+            }));
+
+          // If Pan India is selected and there's a 'N/A (Global)' entry, add it to the list
+          // This is usually for entries that genuinely don't have a city assigned.
+          if (selectedCity === "Pan India" && cities['N/A (Global)']) {
+             cityEntries.push({
+                rank: cityEntries.length + 1, // Assign rank after sorting others
+                name: 'Global/Unassigned', // Or a more descriptive name
+                total_runs: cities['N/A (Global)'].total_runs
+             });
           }
+          setCityData(cityEntries);
+
         } else {
           setManagerData([]);
           setCityData([]);
@@ -189,12 +188,12 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     );
   }, [cityData, searchTerm]);
 
-
   const renderErrorState = () => {
     if (!error) return null;
 
     const isMissingViewError = error.includes("relation \"public.sales_team_performance_view\" does not exist");
     const isMissingColumnError = error.includes("column") && error.includes("does not exist");
+    const isRLSError = error.includes("RLS") || error.includes("empty error object") || error.includes("Supabase error: ") || error.includes("Non-serializable error object");
 
     return (
       <div className="flex flex-col items-center justify-center text-destructive py-8 text-sm bg-destructive/5 border border-destructive/20 rounded-md p-4 space-y-2">
@@ -204,18 +203,18 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
           <>
             <p className="text-center text-lg font-bold text-destructive mt-2">DATABASE SETUP ERROR:</p>
             <p className="text-center">The required database view <code>public.sales_team_performance_view</code> could not be found.</p>
-            <p className="text-center">Please ensure this view is created in your Supabase SQL Editor. Also verify that the underlying table <code>public.sales_score_tracking</code> exists and is populated.</p>
+            <p className="text-center text-xs mt-1">Please ensure this view is created in your Supabase SQL Editor. Also verify that the underlying table <code>public.sales_score_tracking</code> exists, is populated, and contains columns like <code>name</code>, <code>role</code>, <code>manager_name</code>, <code>city</code>, <code>record_date</code>, <code>score_change</code>, and <code>cumulative_score</code>.</p>
           </>
         ) : isMissingColumnError ? (
            <>
             <p className="text-center text-lg font-bold text-destructive mt-2">DATABASE VIEW MISMATCH:</p>
             <p className="text-center">A required column is missing from or incorrect in the <code>public.sales_team_performance_view</code>.</p>
             <p className="text-center text-xs mt-1">The error from Supabase is: "{error}"</p>
-            <p className="text-center text-xs mt-1">Please verify that your <code>public.sales_team_performance_view</code> definition in Supabase SQL Editor includes all necessary columns (e.g., name, role, manager_name, city, record_date, cumulative_score) and matches what the application expects.</p>
+            <p className="text-center text-xs mt-1">Please verify your <code>public.sales_team_performance_view</code> definition in Supabase SQL Editor matches the application's expectations (e.g., includes <code>name</code>, <code>role</code>, <code>manager_name</code>, <code>city</code>, <code>record_date</code>, <code>daily_score</code>, <code>cumulative_score</code>).</p>
           </>
-        ) : error.includes("RLS") || error.includes("empty error object") || error.includes("Supabase error: ") || error.includes("Non-serializable error object") ? (
+        ) : isRLSError ? (
           <p className="text-center text-xs text-destructive/80">
-            Could not fetch data. This might be due to Row Level Security (RLS) policies on <code>public.sales_team_performance_view</code> or its underlying table(s), or the view itself is not returning data for the current filters. Please verify RLS settings and view configuration in Supabase. Original Error: {error}
+            Could not fetch data for {currentRoleConfig.label}. This might be due to Row Level Security (RLS) policies on <code>public.sales_team_performance_view</code> or its underlying table(s), or the view itself is not returning data for the current filters (e.g., for role '{tableForRole}' in city '{globalCityDisplayName}'). Please verify RLS settings and view configuration in Supabase. Original Error: {error}
           </p>
         ) : (
           <p className="text-center text-xs text-destructive/80">An unexpected error occurred: {error}</p>
@@ -273,7 +272,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
        <div className="text-center py-8 text-muted-foreground text-sm">
         {searchTerm
           ? `No Managers found matching "${searchTerm}" for ${currentRoleConfig.label} in ${globalCityDisplayName}.`
-          : `No Manager data available for ${currentRoleConfig.label} in ${globalCityDisplayName}.`}
+          : `No Manager data available for ${currentRoleConfig.label} in ${globalCityDisplayName}. Ensure 'manager_name' is populated in 'sales_score_tracking'.`}
       </div>
     ) : (
       <Table>
@@ -287,7 +286,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
         </TableHeader>
         <TableBody>
           {filteredManagerData.map((entry) => (
-            <TableRow key={entry.name} className="hover:bg-muted/50 transition-colors duration-150">
+            <TableRow key={entry.name + '-' + entry.city} className="hover:bg-muted/50 transition-colors duration-150">
               <TableCell className="text-center px-2 py-2.5">
                 <div className={cn("w-7 h-7 rounded-full flex items-center justify-center font-semibold text-white text-[0.6rem] mx-auto", entry.rank <= 3 ? "bg-accent" : "bg-primary/80")}>
                   {entry.rank}
@@ -313,7 +312,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       <div className="text-center py-8 text-muted-foreground text-sm">
          {searchTerm
           ? `No Cities found matching "${searchTerm}" for ${currentRoleConfig.label} in ${globalCityDisplayName}.`
-          : `No City-wise data available for ${currentRoleConfig.label} in ${globalCityDisplayName}. This view is most effective when "Pan India" is selected.`}
+          : `No City-wise data available for ${currentRoleConfig.label} in ${globalCityDisplayName}. This view is most effective when "Pan India" is selected globally, or if city data exists for '${selectedCity}'.`}
       </div>
     ) : (
       <Table>
