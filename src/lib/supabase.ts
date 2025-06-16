@@ -301,8 +301,8 @@ export async function fetchSalesLeaderboardData(
   if (supabaseError) {
     let errorMessage = `Error fetching sales leaderboard data for role ${role}.`;
      if (typeof supabaseError === 'object' && supabaseError !== null) {
-        if (Object.keys(supabaseError).length === 0) {
-            errorMessage = `Error fetching sales leaderboard data for role ${role}: An empty error object was returned. This could be due to RLS policies, network issues, or the view 'sales_team_performance_view' returning no data. Ensure the view includes a 'manager_name' column.`;
+        if (Object.keys(supabaseError).length === 0) { // Check for empty error object
+            errorMessage = `Error fetching sales leaderboard data for role ${role}: Supabase returned an empty error. This is MOST LIKELY due to Row Level Security (RLS) policies preventing access to 'sales_team_performance_view' or its underlying tables. Please check your RLS policies in Supabase. Other possibilities: the view does not exist, returns no data for the current filters, or there are network issues.`;
         } else if ('message' in supabaseError && typeof supabaseError.message === 'string') {
             errorMessage = supabaseError.message;
         } else {
