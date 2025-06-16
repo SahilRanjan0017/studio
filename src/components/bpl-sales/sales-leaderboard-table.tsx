@@ -15,6 +15,9 @@ import { useCityFilter } from '@/contexts/CityFilterContext';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// Remove Select components as city filter is now global for Sales, displayed textually.
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 
 const salesRoleConfig: Record<SalesLeaderboardRole, { icon: React.ReactNode; label: string; fullTitle: string }> = {
   'OS': { icon: <Target size={20} />, label: "OS", fullTitle: "OS Performance" },
@@ -113,7 +116,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
   }, [individualData, searchTerm]);
 
   const subViewTabs = [
-    { value: 'Individual', label: `${currentRoleConfig.label} Staff`, icon: <UserSquare size={16} /> },
+    { value: 'Individual', label: `${currentRoleConfig.label}`, icon: <UserSquare size={16} /> },
     { value: 'ManagerLevel', label: `${currentRoleConfig.label} Managers`, icon: <Users size={16} /> },
     { value: 'CityLevel', label: `City Rank (${currentRoleConfig.label})`, icon: <Building size={16} /> },
   ];
@@ -184,8 +187,8 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
           filteredIndividualData.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground text-sm">
               {searchTerm
-                ? `No ${currentRoleConfig.label} Staff found matching "${searchTerm}" in ${cityDisplayName}.`
-                : `No data available for ${currentRoleConfig.label} Staff in ${cityDisplayName}.`}
+                ? `No ${currentRoleConfig.label} found matching "${searchTerm}" in ${cityDisplayName}.`
+                : `No data available for ${currentRoleConfig.label} in ${cityDisplayName}.`}
             </div>
           ) : (
             <div className="overflow-x-auto">
