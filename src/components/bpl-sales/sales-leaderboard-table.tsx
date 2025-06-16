@@ -80,13 +80,13 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       const result = await fetchSalesLeaderboardData(selectedCity, tableForRole);
 
       if (result.error) {
-        console.error(`Error details from Supabase (fetchSalesLeaderboardData for ${tableForRole}):`, result.error);
+        // The console.error is already in fetchSalesLeaderboardData
         toast({
             title: `Error Fetching ${currentRoleConfig.label} Data`,
-            description: result.error,
+            description: result.error, // This will now show the more detailed error from supabase.ts
             variant: "destructive",
         });
-        setError(result.error);
+        setError(result.error); // Set the error state with the detailed message
         setIndividualData([]);
       } else {
         setIndividualData(result.data);
@@ -112,14 +112,6 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
 
-  const filteredIndividualData = useMemo(() => {
-    if (!searchTerm) return individualData;
-    return individualData.filter(entry =>
-      entry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (entry.manager_name && entry.manager_name.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
-  }, [individualData, searchTerm]);
-
   const subViewTabs = [
     { value: 'Individual', label: `${currentRoleConfig.label}`, icon: <UserSquare size={16} /> },
     { value: 'ManagerLevel', label: `${currentRoleConfig.label} Managers`, icon: <Users size={16} /> },
@@ -138,7 +130,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
                 <div>
                     <CardTitle className="text-lg font-semibold text-foreground">{currentRoleConfig.fullTitle}</CardTitle>
                     <CardDescription className="text-xs text-muted-foreground mt-0.5">
-                      Role: {currentRoleConfig.label} | City: {cityDisplayName}
+                       Role: {currentRoleConfig.label} | City: {cityDisplayName}
                     </CardDescription>
                 </div>
             </div>
@@ -214,12 +206,19 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
             ))}
           </div>
         ) : error ? (
-          <div className="flex flex-col items-center justify-center text-destructive py-8 text-sm bg-destructive/10 border border-destructive/30 rounded-md p-2.5">
+          <div className="flex flex-col items-center justify-center text-destructive py-8 text-sm bg-destructive/10 border border-destructive/30 rounded-md p-3 space-y-2">
             <AlertCircle size={28} className="mb-1.5" />
-            <p className="text-center font-medium">Failed to load data for {currentRoleConfig.label}</p>
-            <p className="text-center text-xs mt-1">{error}</p>
-             {activeSubView === 'Individual' && error.includes("RLS") && <p className="text-center text-xs mt-2">Please ensure the 'sales_team_performance_view' exists, includes a 'manager_name' column, and is correctly configured in Supabase. Also, check RLS policies.</p>}
-             {activeSubView !== 'Individual' && <p className="text-center text-xs mt-2">This view ({activeSubView}) is planned. It will require a new database view for data aggregation.</p>}
+            <p className="text-center font-semibold">Failed to load data for {currentRoleConfig.label}</p>
+            <p className="text-center text-xs text-destructive/80">
+              {error.includes("relation \"public.sales_team_performance_view\" does not exist") 
+                ? "The required database view 'public.sales_team_performance_view' does not exist. Please create it in your Supabase SQL Editor."
+                : error.includes("RLS") || error.includes("empty error object") 
+                ? "This is likely due to Row Level Security (RLS) policies preventing data access, or the 'sales_team_performance_view' is missing/misconfigured. Please check your RLS policies and ensure the view exists in Supabase."
+                : error
+              }
+            </p>
+             {activeSubView === 'Individual' && (error.includes("RLS") || error.includes("empty error object")) && <p className="text-center text-xs mt-1 text-muted-foreground">The detailed error from Supabase is logged in your browser's developer console.</p>}
+             {activeSubView !== 'Individual' && !error.includes("not yet implemented") && <p className="text-center text-xs mt-1 text-muted-foreground">This view ({activeSubView}) is planned and requires a new database view for data aggregation.</p>}
           </div>
         ) : activeSubView === 'Individual' ? (
           filteredIndividualData.length === 0 ? (
