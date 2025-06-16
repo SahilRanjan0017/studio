@@ -31,7 +31,7 @@ const salesRoleConfig: Record<SalesLeaderboardRole, { icon: React.ReactNode; lab
   'CP_IS': { icon: <Briefcase size={20} />, label: "CP IS", fullTitle: "CP IS Performance" },
 };
 
-type SubView = 'Individual' | 'ManagerLevel' | 'CityManagerDetail' | 'CityLevel';
+type SubView = 'Individual' | 'ManagerLevel' | 'CityManagerDetail'; // Removed 'CityLevel'
 
 interface SalesLeaderboardTableProps {
   tableForRole: SalesLeaderboardRole;
@@ -40,7 +40,7 @@ interface SalesLeaderboardTableProps {
 export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTableProps) {
   const [individualData, setIndividualData] = useState<SalesLeaderboardEntry[]>([]);
   const [managerData, setManagerData] = useState<ManagerLeaderboardEntry[]>([]);
-  const [cityData, setCityData] = useState<CityLeaderboardEntry[]>([]);
+  const [cityData, setCityData] = useState<CityLeaderboardEntry[]>([]); // Still needed for CityManagerDetail
   const [loadingData, setLoadingData] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -178,7 +178,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     { value: 'Individual', label: `${currentRoleConfig.label}`, icon: <UserSquare size={16} />, searchPlaceholder: `Search by ${currentRoleConfig.label} name...` },
     { value: 'ManagerLevel', label: `${currentRoleConfig.label} Managers`, icon: <Users size={16} />, searchPlaceholder: `Search by Manager name...` },
     { value: 'CityManagerDetail', label: `City & Manager (${currentRoleConfig.label})`, icon: <Briefcase size={16} />, searchPlaceholder: `Search by City or Manager...` },
-    { value: 'CityLevel', label: `City Rank (${currentRoleConfig.label})`, icon: <Building size={16} />, searchPlaceholder: `Search by City name...` },
+    // { value: 'CityLevel', label: `City Rank (${currentRoleConfig.label})`, icon: <Building size={16} />, searchPlaceholder: `Search by City name...` }, // Removed this line
   ];
 
   const selectedSubViewConfig = subViewTabs.find(tab => tab.value === activeSubView) || subViewTabs[0];
@@ -208,12 +208,6 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     );
   }, [cityData, searchTerm]);
 
-  const filteredCityData = useMemo(() => {
-    if (!searchTerm) return cityData;
-    return cityData.filter(entry =>
-      entry.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [cityData, searchTerm]);
 
   const renderErrorState = () => {
     if (!error) return null;
@@ -375,41 +369,6 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     )
   );
 
-  const renderCityTable = () => (
-    filteredCityData.length === 0 ? (
-      <div className="text-center py-8 text-muted-foreground text-sm">
-         {searchTerm
-          ? `No Cities found matching "${searchTerm}" for ${currentRoleConfig.label} in ${globalCityDisplayName}.`
-          : `No City-wise data available for ${currentRoleConfig.label} in ${globalCityDisplayName}.`}
-      </div>
-    ) : (
-      <Table>
-        <TableHeader>
-          <TableRow className="border-border/70">
-            <TableHead className="w-[50px] text-center text-xs font-semibold text-foreground px-2">Rank</TableHead>
-            <TableHead className="text-xs font-semibold text-foreground px-2 min-w-[180px]">City</TableHead>
-            <TableHead className="text-right text-xs font-semibold text-foreground px-2">Total Runs ({currentRoleConfig.label})</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredCityData.map((entry) => (
-            <TableRow key={`${entry.name}-citylevel`} className="hover:bg-muted/50 transition-colors duration-150">
-              <TableCell className="text-center px-2 py-2.5">
-                 <div className={cn("w-7 h-7 rounded-full flex items-center justify-center font-semibold text-white text-[0.6rem] mx-auto", entry.rank <= 3 ? "bg-accent" : "bg-primary/80")}>
-                  {entry.rank}
-                </div>
-              </TableCell>
-              <TableCell className="px-2 py-2.5">
-                <div className="font-semibold text-foreground text-sm leading-tight">{entry.name}</div>
-              </TableCell>
-              <TableCell className="text-right font-bold text-sm text-foreground px-2 py-2.5">{entry.total_runs}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    )
-  );
-
 
   return (
     <Card className="shadow-lg rounded-lg">
@@ -467,7 +426,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
                 onValueChange={(value) => { setActiveSubView(value as SubView); setSearchTerm(''); }}
                 className="hidden sm:block w-full"
               >
-                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-4 h-auto sm:h-9">
+                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 h-auto sm:h-9">
                   {subViewTabs.map((tab) => (
                     <TabsTrigger
                       key={tab.value}
@@ -505,7 +464,6 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
             {activeSubView === 'Individual' && renderIndividualTable()}
             {activeSubView === 'ManagerLevel' && renderManagerTable()}
             {activeSubView === 'CityManagerDetail' && renderCityManagerDetailTable()}
-            {activeSubView === 'CityLevel' && renderCityTable()}
           </div>
         )}
       </CardContent>
