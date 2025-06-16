@@ -26,7 +26,7 @@ import {
 const salesRoleConfig: Record<SalesLeaderboardRole, { icon: React.ReactNode; label: string; fullTitle: string }> = {
   'OS': { icon: <Target size={20} />, label: "OS", fullTitle: "OS Performance" },
   'IS': { icon: <Zap size={20} />, label: "IS", fullTitle: "IS Performance" },
-  'CP_OS': { icon: <UserCheck size={20} />, label: "CP OS", fullTitle: "CP OS Performance" }, // Updated Icon
+  'CP_OS': { icon: <UserCheck size={20} />, label: "CP OS", fullTitle: "CP OS Performance" }, 
   'CP_IS': { icon: <Briefcase size={20} />, label: "CP IS", fullTitle: "CP IS Performance" },
 };
 
@@ -75,7 +75,6 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       setLoadingData(true);
       setError(null);
       
-      // Pass selectedCity from context to the fetch function
       const result = await fetchSalesLeaderboardData(selectedCity, tableForRole);
 
       if (result.error) {
@@ -95,7 +94,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
 
     if (activeSubView === 'Individual') {
       loadIndividualData();
-    } else { // For ManagerLevel and CityLevel, which are placeholders
+    } else { 
       setIndividualData([]); 
       setLoadingData(false); 
       const viewName = activeSubView === 'ManagerLevel' ? 'Manager Level' : 'City Level';
@@ -108,7 +107,6 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
 
-  // Sub-view tabs configuration dynamically using currentRoleConfig.label
   const subViewTabs = [
     { value: 'Individual', label: `${currentRoleConfig.label}`, icon: <UserSquare size={16} /> },
     { value: 'ManagerLevel', label: `${currentRoleConfig.label} Managers`, icon: <Users size={16} /> },
@@ -135,7 +133,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
                 <div>
                     <CardTitle className="text-lg font-semibold text-foreground">{currentRoleConfig.fullTitle}</CardTitle>
                     <CardDescription className="text-xs text-muted-foreground mt-0.5">
-                       Role: {currentRoleConfig.label} | City: {cityDisplayName} {/* City display confirmed removed */}
+                       Role: {currentRoleConfig.label} | City: {cityDisplayName} 
                     </CardDescription>
                 </div>
             </div>
@@ -214,15 +212,15 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
             <p className="text-center font-semibold">Failed to load data for {currentRoleConfig.label}</p>
             <p className="text-center text-xs text-destructive/80">
               {error.includes("relation \"public.sales_team_performance_view\" does not exist") 
-                ? "The required database view 'public.sales_team_performance_view' does not exist. Please create it in your Supabase SQL Editor using the provided schema."
+                ? "DATABASE SETUP ERROR: The required database view 'public.sales_team_performance_view' could not be found. Please ensure this view is created in your Supabase SQL Editor. The application cannot fetch sales leaderboard data without it. Refer to the SQL schema provided earlier."
                 : error.includes("RLS") || error.includes("empty error object") || error.includes("Supabase error: ") || error.includes("Non-serializable error object")
-                ? `There was an issue fetching data from Supabase. This is LIKELY due to Row Level Security (RLS) policies preventing data access to 'public.sales_team_performance_view' or its underlying table 'sales_score_tracking'. Please check your RLS policies. Other causes: the view is misconfigured, or there's no data for the current filters. Error: ${error}`
+                ? `Supabase Access Issue: Could not fetch data. This might be due to Row Level Security (RLS) policies on 'public.sales_team_performance_view' or its underlying table 'sales_score_tracking'. Please verify RLS settings and view configuration. Error: ${error}`
                 : error.includes("not yet implemented")
-                ? error // Show the "not yet implemented" message directly
+                ? error 
                 : `An unexpected error occurred: ${error}`
               }
             </p>
-             {(error.includes("RLS") || error.includes("empty error object") || error.includes("Supabase error: ")) && <p className="text-center text-xs mt-1 text-muted-foreground">The detailed error from Supabase is logged in your browser's developer console.</p>}
+             {(error.includes("RLS") || error.includes("empty error object") || error.includes("Supabase error: ")) && !error.includes("does not exist") && <p className="text-center text-xs mt-1 text-muted-foreground">The detailed error from Supabase is logged in your browser's developer console.</p>}
           </div>
         ) : activeSubView === 'Individual' ? (
           filteredIndividualData.length === 0 ? (
@@ -282,7 +280,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
           )
         ) : activeSubView === 'ManagerLevel' ? (
           <div className="text-center py-8 text-muted-foreground text-sm">
-            <ListTree size={28} className="mx-auto mb-2 opacity-50" /> {/* Changed Icon */}
+            <ListTree size={28} className="mx-auto mb-2 opacity-50" />
             Leaderboard for {currentRoleConfig.label} Managers is coming soon.
             <p className="text-xs mt-1">(This requires data aggregation by manager_name from 'sales_score_tracking' or the view.)</p>
           </div>
@@ -297,4 +295,3 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     </Card>
   );
 }
-
