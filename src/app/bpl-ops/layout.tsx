@@ -1,16 +1,13 @@
 // src/app/bpl-ops/layout.tsx
 "use client"; // Add "use client" directive
 
-import type { Metadata } from 'next';
 import { BplHeader } from '@/components/bpl/bpl-header';
 import { BplNavbar } from '@/components/bpl/bpl-navbar';
 import { BplFooter } from '@/components/bpl/bpl-footer';
 import { CityFilterProvider } from '@/contexts/CityFilterContext';
 
-export const metadata: Metadata = {
-  title: 'BPL Operations | Brick & Bolt',
-  description: 'Track performance, celebrate achievements, and compete in the Brick & Bolt Premier League.',
-};
+// Removed metadata export as it's not allowed in "use client" components
+// If metadata is needed, it should be defined in the respective page.tsx files or a parent Server Component.
 
 export default function BplOpsLayout({
   children,
