@@ -2,17 +2,24 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'; // Added CardDescription
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Users, Search, Loader2, AlertCircle, TrendingUp, TrendingDownIcon, Minus, Target, Zap, Briefcase, UserCircle2 } from 'lucide-react';
+import { Users, Search, Loader2, AlertCircle, TrendingUp, TrendingDownIcon, Minus, Target, Zap, Briefcase, UserCircle2, MapPin } from 'lucide-react';
 import { fetchSalesLeaderboardData, supabase } from '@/lib/supabase';
 import type { SalesLeaderboardEntry, SalesLeaderboardRole } from '@/types/database';
 import { useCityFilter } from '@/contexts/CityFilterContext';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const salesRoleConfig: Record<SalesLeaderboardRole, { icon: React.ReactNode; label: string; fullTitle: string }> = {
   'OS': { icon: <Target size={20} />, label: "OS", fullTitle: "OS Performance" },
@@ -27,11 +34,17 @@ interface SalesLeaderboardTableProps {
 
 export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTableProps) {
   const [data, setData] = useState<SalesLeaderboardEntry[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingData, setLoadingData] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   
-  const { selectedCity, loadingCities: loadingGlobalCities, cityError: globalCityError } = useCityFilter();
+  const { 
+    selectedCity, 
+    setSelectedCity, 
+    availableCities, 
+    loadingCities: loadingGlobalCities, 
+    cityError: globalCityError 
+  } = useCityFilter();
   const { toast } = useToast();
 
   const currentRoleConfig = salesRoleConfig[tableForRole];
@@ -40,22 +53,22 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     async function loadData() {
       if (!supabase) {
         setError("Supabase client not initialized. Check .env variables.");
-        setLoading(false);
+        setLoadingData(false);
         return;
       }
       
       if (loadingGlobalCities) {
-        setLoading(true); 
+        setLoadingData(true); 
         return;
       }
       if (globalCityError) {
          setError(`Cannot load data: Error with city filter (${globalCityError}).`);
          setData([]);
-         setLoading(false);
+         setLoadingData(false);
          return;
       }
 
-      setLoading(true);
+      setLoadingData(true);
       setError(null);
       
       const result = await fetchSalesLeaderboardData(selectedCity, tableForRole);
@@ -72,7 +85,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       } else {
         setData(result.data);
       }
-      setLoading(false);
+      setLoadingData(false);
     }
     loadData();
   }, [tableForRole, selectedCity, loadingGlobalCities, globalCityError, toast, currentRoleConfig.label]);
@@ -92,32 +105,63 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
 
   const cityDisplayName = selectedCity === "Pan India" ? "Pan India" : selectedCity;
 
-  const TrendIcon = ({ trend }: { trend?: number }) => {
-    if (trend === undefined) return null; 
-    if (trend > 0) return <TrendingUp size={16} className="text-custom-green" />;
-    if (trend < 0) return <TrendingDownIcon size={16} className="text-primary" />; 
-    return <Minus size={16} className="text-muted-foreground" />;
-  };
-
   return (
     <Card className="shadow-lg rounded-lg">
-      <CardHeader className="border-b border-border/70 pb-3.5">
-         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+      <CardHeader className="border-b border-border/70 pb-4">
+         <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2.5">
                 {React.cloneElement(currentRoleConfig.icon, { className: "text-primary h-6 w-6" })} 
                 <div>
                     <CardTitle className="text-lg font-semibold text-foreground">{currentRoleConfig.fullTitle}</CardTitle>
                     <CardDescription className="text-xs text-muted-foreground mt-0.5">
-                      Role: {currentRoleConfig.label} | City: {cityDisplayName}
+                      Role: {currentRoleConfig.label}
                     </CardDescription>
                 </div>
             </div>
-            <div className="w-full sm:w-auto flex flex-col md:flex-row items-center gap-2">
-                <div className="relative w-full md:w-64 lg:w-72">
+            <div className="flex flex-col sm:flex-row items-center gap-3 w-full">
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <label htmlFor={`city-filter-sales-${tableForRole}`} className="text-sm font-medium text-foreground whitespace-nowrap sr-only md:not-sr-only">
+                    <MapPin size={16} className="inline-block mr-1 text-muted-foreground" /> City:
+                  </label>
+                  <Select 
+                    value={selectedCity} 
+                    onValueChange={setSelectedCity}
+                    disabled={loadingGlobalCities || !!globalCityError}
+                  >
+                    <SelectTrigger 
+                      id={`city-filter-sales-${tableForRole}`}
+                      className="w-full sm:w-[180px] bg-background h-9 text-sm focus:ring-primary/50"
+                      aria-label="City filter for sales dashboard"
+                    >
+                      {loadingGlobalCities ? (
+                        <div className="flex items-center text-xs text-muted-foreground">
+                          <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                          <span>Loading...</span>
+                        </div>
+                      ) : globalCityError ? (
+                         <span className="text-destructive text-xs">Error</span>
+                      ) : (
+                        <SelectValue placeholder="Select City" />
+                      )}
+                    </SelectTrigger>
+                    <SelectContent>
+                      {!loadingGlobalCities && !globalCityError && (
+                        <>
+                          <SelectItem value="Pan India">Pan India</SelectItem>
+                          {availableCities.map((city, index) => (
+                            <SelectItem key={index} value={city}>{city}</SelectItem>
+                          ))}
+                        </>
+                      )}
+                       {globalCityError && <SelectItem value="Error" disabled>Error loading cities</SelectItem>}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="relative w-full sm:flex-grow">
                     <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       type="search"
-                      placeholder={`Search ${currentRoleConfig.label} name or manager...`}
+                      placeholder={`Search by name or manager...`}
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="pl-8 w-full h-9"
@@ -127,7 +171,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
         </div>
       </CardHeader>
       <CardContent className="pt-4 px-2 sm:px-4">
-        {loading ? (
+        {loadingData ? (
           <div className="space-y-3">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="flex items-center space-x-3 p-1.5">
