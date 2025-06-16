@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'; // Added CardDescription
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
@@ -104,9 +104,12 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       <CardHeader className="border-b border-border/70 pb-3.5">
          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div className="flex items-center gap-2.5">
-                {React.cloneElement(currentRoleConfig.icon, { className: "text-primary" })}
+                {React.cloneElement(currentRoleConfig.icon, { className: "text-primary h-6 w-6" })} 
                 <div>
-                    <CardTitle className="text-lg font-semibold text-foreground">{`${currentRoleConfig.fullTitle} - ${cityDisplayName}`}</CardTitle>
+                    <CardTitle className="text-lg font-semibold text-foreground">{currentRoleConfig.fullTitle}</CardTitle>
+                    <CardDescription className="text-xs text-muted-foreground mt-0.5">
+                      Role: {currentRoleConfig.label} | City: {cityDisplayName}
+                    </CardDescription>
                 </div>
             </div>
             <div className="w-full sm:w-auto flex flex-col md:flex-row items-center gap-2">
@@ -206,4 +209,3 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     </Card>
   );
 }
-
