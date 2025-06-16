@@ -67,8 +67,8 @@ export interface RawSalesLeaderboardData {
   manager_name: string | null;
   city: string | null;
   record_date: string; // Date of the record
-  daily_score: number; // sum(sales_score_tracking.score_change) - Not directly displayed but available
-  cumulative_score: number; // max(sales_score_tracking.cumulative_score) - This will be used as total_runs
+  daily_score: number; 
+  cumulative_score: number; // This will be used as total_runs
 }
 
 // Processed entry for display in the sales leaderboard
@@ -104,4 +104,3 @@ export interface ChannelPartnerEntry {
   total_score: number;
   rank: number;
 }
-

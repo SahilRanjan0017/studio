@@ -79,11 +79,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
 
       if (result.error) {
         console.error(`Failed to fetch Sales Leaderboard data for role ${tableForRole} in ${selectedCity}:`, result.error);
-        toast({
-            title: `Error Fetching ${currentRoleConfig.label} Data`,
-            description: result.error, 
-            variant: "destructive",
-        });
+        // No toast here, error will be displayed in the component
         setError(result.error); 
         setIndividualData([]);
       } else {
@@ -97,10 +93,10 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     } else { 
       setIndividualData([]); 
       setLoadingData(false); 
-      const viewName = activeSubView === 'ManagerLevel' ? 'Manager Level' : 'City Level';
-      setError(`${viewName} view for ${currentRoleConfig.label} is not yet implemented. This requires a specific database view for aggregation.`);
+      const viewName = activeSubView === 'ManagerLevel' ? `${currentRoleConfig.label} Managers` : `City Rank (${currentRoleConfig.label})`;
+      setError(`${viewName} view is not yet implemented. This requires specific database aggregation.`);
     }
-  }, [tableForRole, selectedCity, loadingGlobalCities, globalCityError, toast, currentRoleConfig.label, activeSubView]);
+  }, [tableForRole, selectedCity, loadingGlobalCities, globalCityError, currentRoleConfig.label, activeSubView]);
 
   const getInitials = (name: string) => {
     if (!name) return 'N/A';
@@ -141,19 +137,20 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
-                  placeholder={`Search by name or manager...`}
+                  placeholder={`Search by ${currentRoleConfig.label} name or manager...`}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-8 w-full h-9"
-                  disabled={activeSubView !== 'Individual'}
+                  disabled={activeSubView !== 'Individual' || loadingData || !!error}
                 />
             </div>
 
             <div className="w-full mt-2">
-              <div className="sm:hidden">
+              <div className="sm:hidden"> {/* Dropdown for small screens */}
                 <Select
                   value={activeSubView}
                   onValueChange={(value) => setActiveSubView(value as SubView)}
+                  disabled={loadingData}
                 >
                   <SelectTrigger className="w-full h-9 text-xs">
                      <div className="flex items-center gap-2">
@@ -174,14 +171,19 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
                 </Select>
               </div>
 
-              <Tabs
+              <Tabs /* Tabs for medium and larger screens */
                 value={activeSubView}
                 onValueChange={(value) => setActiveSubView(value as SubView)}
                 className="hidden sm:block w-full"
               >
                 <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto sm:h-9">
                   {subViewTabs.map((tab) => (
-                    <TabsTrigger key={tab.value} value={tab.value} className="text-xs sm:text-sm px-2 py-1.5 sm:py-1 flex items-center gap-1.5 whitespace-normal sm:whitespace-nowrap h-full">
+                    <TabsTrigger 
+                      key={tab.value} 
+                      value={tab.value} 
+                      className="text-xs sm:text-sm px-2 py-1.5 sm:py-1 flex items-center gap-1.5 whitespace-normal sm:whitespace-nowrap h-full"
+                      disabled={loadingData}
+                    >
                       {React.cloneElement(tab.icon, { className: "hidden sm:inline-block"})}
                       <span>{tab.label}</span>
                     </TabsTrigger>
@@ -195,7 +197,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
         {loadingData ? (
           <div className="space-y-3">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="flex items-center space-x-3 p-1.5">
+              <div key={`skel-${i}`} className="flex items-center space-x-3 p-1.5">
                 <Skeleton className="h-9 w-9 rounded-full" />
                 <div className="space-y-1.5 flex-grow">
                   <Skeleton className="h-3.5 w-3/4" />
@@ -207,21 +209,28 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
             ))}
           </div>
         ) : error ? (
-          <div className="flex flex-col items-center justify-center text-destructive py-8 text-sm bg-destructive/10 border border-destructive/30 rounded-md p-3 space-y-2">
-            <AlertCircle size={28} className="mb-1.5" />
-            <p className="text-center font-semibold">Failed to load data for {currentRoleConfig.label}</p>
-            <p className="text-center text-xs text-destructive/80">
-              {error.includes("relation \"public.sales_team_performance_view\" does not exist") 
-                ? "DATABASE SETUP ERROR: The required database view 'public.sales_team_performance_view' could not be found. Please ensure this view is created in your Supabase SQL Editor. The application cannot fetch sales leaderboard data without it. Refer to the SQL schema provided earlier."
-                : error.includes("RLS") || error.includes("empty error object") || error.includes("Supabase error: ") || error.includes("Non-serializable error object")
-                ? `Supabase Access Issue: Could not fetch data. This might be due to Row Level Security (RLS) policies on 'public.sales_team_performance_view' or its underlying table 'sales_score_tracking'. Please verify RLS settings and view configuration. Error: ${error}`
-                : error.includes("not yet implemented")
-                ? error 
-                : `An unexpected error occurred: ${error}`
-              }
-            </p>
-             {(error.includes("RLS") || error.includes("empty error object") || error.includes("Supabase error: ")) && !error.includes("does not exist") && <p className="text-center text-xs mt-1 text-muted-foreground">The detailed error from Supabase is logged in your browser's developer console.</p>}
-          </div>
+            <div className="flex flex-col items-center justify-center text-destructive py-8 text-sm bg-destructive/10 border border-destructive/30 rounded-md p-3 space-y-2">
+                <AlertCircle size={28} className="mb-1.5" />
+                <p className="text-center font-semibold">Failed to load data for {currentRoleConfig.label}</p>
+                {error.includes("relation \"public.sales_team_performance_view\" does not exist") || error.includes("relation public.sales_team_performance_view does not exist") ? (
+                    <>
+                        <p className="text-center text-base font-bold text-destructive mt-2">DATABASE SETUP ERROR:</p>
+                        <p className="text-center">The required database view <code>public.sales_team_performance_view</code> could not be found.</p>
+                        <p className="text-center">Please ensure this view is created in your Supabase SQL Editor.</p>
+                        <p className="text-center text-xs mt-1">The application cannot fetch sales leaderboard data without it.</p>
+                        <p className="text-center text-xs mt-1">Make sure the underlying table <code>public.sales_score_tracking</code> also exists and is populated as per the view's requirements.</p>
+                    </>
+                ) : error.includes("RLS") || error.includes("empty error object") || error.includes("Supabase error: ") || error.includes("Non-serializable error object") ? (
+                    <p className="text-center text-xs text-destructive/80">
+                        Could not fetch data. This might be due to Row Level Security (RLS) policies on <code>public.sales_team_performance_view</code> or its underlying table(s). Please verify RLS settings and view configuration in Supabase. Original Error: {error}
+                    </p>
+                ) : error.includes("not yet implemented") ? (
+                    <p className="text-center text-muted-foreground">{error}</p>
+                ) : (
+                    <p className="text-center text-xs text-destructive/80">An unexpected error occurred: {error}</p>
+                )}
+                {(error.includes("RLS") || error.includes("empty error object") || error.includes("Supabase error: ")) && !error.includes("does not exist") && <p className="text-center text-xs mt-1 text-muted-foreground">The detailed error from Supabase is logged in your browser's developer console.</p>}
+            </div>
         ) : activeSubView === 'Individual' ? (
           filteredIndividualData.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground text-sm">
@@ -281,14 +290,14 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
         ) : activeSubView === 'ManagerLevel' ? (
           <div className="text-center py-8 text-muted-foreground text-sm">
             <ListTree size={28} className="mx-auto mb-2 opacity-50" />
-            Leaderboard for {currentRoleConfig.label} Managers is coming soon.
-            <p className="text-xs mt-1">(This requires data aggregation by manager_name from 'sales_score_tracking' or the view.)</p>
+            Leaderboard for {currentRoleConfig.label} Managers is not yet implemented.
+            <p className="text-xs mt-1">(This requires data aggregation by manager_name from 'sales_score_tracking' or your view.)</p>
           </div>
         ) : activeSubView === 'CityLevel' ? (
           <div className="text-center py-8 text-muted-foreground text-sm">
             <Building size={28} className="mx-auto mb-2 opacity-50" />
-            City Ranking for {currentRoleConfig.label} performance is coming soon.
-            <p className="text-xs mt-1">(This requires data aggregation by city from 'sales_score_tracking' or the view.)</p>
+            City Ranking for {currentRoleConfig.label} performance is not yet implemented.
+            <p className="text-xs mt-1">(This requires data aggregation by city from 'sales_score_tracking' or your view.)</p>
           </div>
         ) : null}
       </CardContent>
