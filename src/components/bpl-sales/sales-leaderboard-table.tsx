@@ -15,8 +15,13 @@ import { useCityFilter } from '@/contexts/CityFilterContext';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// Remove Select components as city filter is now global for Sales, displayed textually.
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 
 const salesRoleConfig: Record<SalesLeaderboardRole, { icon: React.ReactNode; label: string; fullTitle: string }> = {
@@ -75,7 +80,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       const result = await fetchSalesLeaderboardData(selectedCity, tableForRole);
 
       if (result.error) {
-        console.error(`Failed to fetch Sales Leaderboard data for role ${tableForRole} in ${selectedCity}:`, result.error);
+        console.error(`Error details from Supabase (fetchSalesLeaderboardData for ${tableForRole}):`, result.error);
         toast({
             title: `Error Fetching ${currentRoleConfig.label} Data`,
             description: result.error,
@@ -94,11 +99,11 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     } else if (activeSubView === 'ManagerLevel') {
       setIndividualData([]); 
       setLoadingData(false); 
-      setError(null);
+      setError("Manager level view is not yet implemented.");
     } else if (activeSubView === 'CityLevel') {
       setIndividualData([]); 
       setLoadingData(false); 
-      setError(null);
+      setError("City level ranking is not yet implemented.");
     }
   }, [tableForRole, selectedCity, loadingGlobalCities, globalCityError, toast, currentRoleConfig.label, activeSubView]);
 
@@ -120,6 +125,9 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     { value: 'ManagerLevel', label: `${currentRoleConfig.label} Managers`, icon: <Users size={16} /> },
     { value: 'CityLevel', label: `City Rank (${currentRoleConfig.label})`, icon: <Building size={16} /> },
   ];
+  
+  const selectedSubViewConfig = subViewTabs.find(tab => tab.value === activeSubView);
+
 
   return (
     <Card className="shadow-lg rounded-lg">
@@ -145,20 +153,49 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
                   disabled={activeSubView !== 'Individual'}
                 />
             </div>
-            <Tabs 
-              value={activeSubView} 
-              onValueChange={(value) => setActiveSubView(value as SubView)} 
-              className="w-full mt-2"
-            >
-              <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto sm:h-9">
-                {subViewTabs.map((tab) => (
-                  <TabsTrigger key={tab.value} value={tab.value} className="text-xs sm:text-sm px-2 py-1.5 sm:py-1 flex items-center gap-1.5 whitespace-normal sm:whitespace-nowrap h-full">
-                    {React.cloneElement(tab.icon, { className: "hidden sm:inline-block"})}
-                    <span>{tab.label}</span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
+
+            <div className="w-full mt-2">
+              {/* Dropdown for small screens */}
+              <div className="sm:hidden">
+                <Select
+                  value={activeSubView}
+                  onValueChange={(value) => setActiveSubView(value as SubView)}
+                >
+                  <SelectTrigger className="w-full h-9 text-xs">
+                     <div className="flex items-center gap-2">
+                        {selectedSubViewConfig && React.cloneElement(selectedSubViewConfig.icon, {className: "h-4 w-4"})}
+                        <SelectValue placeholder="Select view..." />
+                     </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {subViewTabs.map((tab) => (
+                      <SelectItem key={tab.value} value={tab.value} className="text-xs">
+                        <div className="flex items-center gap-2">
+                          {React.cloneElement(tab.icon, {className: "h-4 w-4"})}
+                          <span>{tab.label}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Tabs for sm and larger screens */}
+              <Tabs
+                value={activeSubView}
+                onValueChange={(value) => setActiveSubView(value as SubView)}
+                className="hidden sm:block w-full"
+              >
+                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto sm:h-9">
+                  {subViewTabs.map((tab) => (
+                    <TabsTrigger key={tab.value} value={tab.value} className="text-xs sm:text-sm px-2 py-1.5 sm:py-1 flex items-center gap-1.5 whitespace-normal sm:whitespace-nowrap h-full">
+                      {React.cloneElement(tab.icon, { className: "hidden sm:inline-block"})}
+                      <span>{tab.label}</span>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
+            </div>
         </div>
       </CardHeader>
       <CardContent className="pt-4 px-2 sm:px-4">
@@ -181,7 +218,8 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
             <AlertCircle size={28} className="mb-1.5" />
             <p className="text-center font-medium">Failed to load data for {currentRoleConfig.label}</p>
             <p className="text-center text-xs mt-1">{error}</p>
-             {activeSubView === 'Individual' && <p className="text-center text-xs mt-2">Please ensure the 'sales_team_performance_view' exists, includes a 'manager_name' column, and is correctly configured in Supabase. Also, check RLS policies.</p>}
+             {activeSubView === 'Individual' && error.includes("RLS") && <p className="text-center text-xs mt-2">Please ensure the 'sales_team_performance_view' exists, includes a 'manager_name' column, and is correctly configured in Supabase. Also, check RLS policies.</p>}
+             {activeSubView !== 'Individual' && <p className="text-center text-xs mt-2">This view ({activeSubView}) is planned. It will require a new database view for data aggregation.</p>}
           </div>
         ) : activeSubView === 'Individual' ? (
           filteredIndividualData.length === 0 ? (
@@ -258,3 +296,4 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     </Card>
   );
 }
+
