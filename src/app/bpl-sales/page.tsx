@@ -1,3 +1,4 @@
+
 // @/app/bpl-sales/page.tsx
 'use client';
 
@@ -6,9 +7,16 @@ import { DashboardTitleBlock } from '@/components/bpl/dashboard-title-block';
 import { SalesLeaderboardTable } from '@/components/bpl-sales/sales-leaderboard-table';
 import { Users } from 'lucide-react'; 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { SalesLeaderboardRole } from '@/types/database';
 
-// Define the roles for the tabs
+// Define the roles for the tabs/dropdown
 const salesDashboards: { value: SalesLeaderboardRole; label: string }[] = [
   { value: 'CP_OS', label: 'CP OS Dashboard' },
   { value: 'OS', label: 'OS Dashboard' }, 
@@ -34,13 +42,35 @@ export default function BplSalesDashboardPage() {
           onValueChange={(value) => setActiveDashboard(value as SalesLeaderboardRole)}
           className="w-full"
         >
-          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-4 mb-4">
-            {salesDashboards.map((dashboard) => (
-              <TabsTrigger key={dashboard.value} value={dashboard.value}>
-                {dashboard.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+          {/* Dropdown for small screens */}
+          <div className="sm:hidden mb-4">
+            <Select
+              value={activeDashboard}
+              onValueChange={(value) => setActiveDashboard(value as SalesLeaderboardRole)}
+            >
+              <SelectTrigger className="w-full h-10 text-sm">
+                <SelectValue placeholder="Select Dashboard..." />
+              </SelectTrigger>
+              <SelectContent>
+                {salesDashboards.map((dashboard) => (
+                  <SelectItem key={dashboard.value} value={dashboard.value} className="text-sm">
+                    {dashboard.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Tabs for medium and larger screens */}
+          <div className="hidden sm:block">
+            <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-4 mb-4">
+              {salesDashboards.map((dashboard) => (
+                <TabsTrigger key={dashboard.value} value={dashboard.value}>
+                  {dashboard.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
 
           {salesDashboards.map((dashboard) => (
             <TabsContent key={dashboard.value} value={dashboard.value}>
@@ -52,3 +82,4 @@ export default function BplSalesDashboardPage() {
     </div>
   );
 }
+
