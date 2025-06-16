@@ -29,7 +29,7 @@ const getInitials = (name: string) => {
 
 const TrendIndicator = ({ trend }: { trend: number }) => {
   if (trend > 0) return <ArrowUp size={20} className="text-custom-green" />;
-  if (trend < 0) return <ArrowDown size={20} className="text-primary" />; // Burnt orange
+  if (trend < 0) return <ArrowDown size={20} className="text-destructive" />; 
   return <Minus size={20} className="text-muted-foreground" />;
 };
 
@@ -68,7 +68,7 @@ export function DetailPanel({ isOpen, onClose, entry, roleConfig }: DetailPanelP
             <div className="flex items-center gap-1 text-sm">
               <TrendIndicator trend={entry.trend} />
               <span className={cn(
-                entry.trend > 0 ? 'text-custom-green' : entry.trend < 0 ? 'text-primary' : 'text-muted-foreground',
+                entry.trend > 0 ? 'text-custom-green' : entry.trend < 0 ? 'text-destructive' : 'text-muted-foreground',
                 "font-semibold"
               )}>
                 {entry.trend !== 0 ? `${Math.abs(entry.trend)} pts` : 'No Change'}

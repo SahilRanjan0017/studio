@@ -176,7 +176,7 @@ export function LeaderboardTable() {
                     <TableHead className="hidden md:table-cell text-xs font-semibold text-foreground px-2">City</TableHead>
                     <TableHead className="text-center text-xs font-semibold text-foreground px-2">Projects</TableHead>
                     <TableHead className="text-right text-xs font-semibold text-foreground px-2">Runs</TableHead>
-                    <TableHead className="text-right hidden sm:table-cell text-xs font-semibold text-foreground px-1">Trend</TableHead>
+                    <TableHead className="text-right hidden sm:table-cell text-xs font-semibold text-foreground px-2">Trend</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -210,7 +210,7 @@ export function LeaderboardTable() {
                       <TableCell className="hidden md:table-cell text-xs text-muted-foreground px-2 py-2.5">{player.city || 'N/A'}</TableCell>
                       <TableCell className="text-center text-sm text-muted-foreground px-2 py-2.5">{player.projects}</TableCell>
                       <TableCell className="text-right font-bold text-sm text-foreground px-2 py-2.5">{player.runs}</TableCell>
-                      <TableCell className="text-right hidden sm:table-cell px-1 py-2.5">
+                      <TableCell className="text-right hidden sm:table-cell px-2 py-2.5">
                         <div className="flex items-center justify-end gap-0.5">
                           <TrendIcon trend={player.trend} />
                           <span className={cn(

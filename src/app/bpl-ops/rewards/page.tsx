@@ -60,8 +60,8 @@ function RoleRewardCard({ title, icon, rewards, totalReward, borderColorClass, i
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {rewards.map((item) => (
-                  <TableRow key={item.rank}>
+                {rewards.map((item, index) => (
+                  <TableRow key={item.rank + '-' + index}>
                     <TableCell className="font-medium text-foreground">{item.rank}</TableCell>
                     <TableCell className="text-foreground">{item.reward}</TableCell>
                   </TableRow>

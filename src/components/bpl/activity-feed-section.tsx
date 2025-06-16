@@ -114,7 +114,7 @@ export function ActivityFeedSection() {
   };
 
   return (
-    <Card className="shadow-md rounded-lg bg-card flex flex-col">
+    <Card className="shadow-md rounded-lg bg-card flex flex-col h-full">
       <CardHeader className="border-b border-border/70 pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -145,7 +145,7 @@ export function ActivityFeedSection() {
             <p className="text-sm">No significant score changes today.</p>
           </div>
         ) : (
-          <ScrollArea className="max-h-[450px] pr-2 -mr-2"> 
+          <ScrollArea className="max-h-[450px] h-full pr-2 -mr-2"> 
             <ul className="divide-y divide-border/50">
               {activities.map(renderActivityItem)}
             </ul>

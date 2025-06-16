@@ -116,17 +116,17 @@ export default function CityViewsPage() {
               <p className="text-muted-foreground">Select a specific city from the navbar filter to view its detailed performance metrics and comparisons.</p>
             ) : loadingCityData ? (
               <div className="space-y-3 py-4">
-                <Skeleton className="h-6 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-                <Skeleton className="h-4 w-2/3" />
-                <Skeleton className="h-4 w-1/3" />
+                <Skeleton key="skel-title-alt" className="h-6 w-3/4" />
+                <Skeleton key="skel-line-1-alt" className="h-4 w-1/2" />
+                <Skeleton key="skel-line-2-alt" className="h-4 w-2/3" />
+                <Skeleton key="skel-line-3-alt" className="h-4 w-1/3" />
               </div>
             ) : fetchError ? (
               <p className="text-destructive">{fetchError}</p>
             ) : citySpecificData ? (
               <div className="space-y-2">
                 <p><strong>Total Projects:</strong> {citySpecificData.totalProjects}</p>
-                <p><strong></strong> {citySpecificData.averageScore.toFixed(2)}</p>
+                <p><strong>Average Score:</strong> {citySpecificData.averageScore.toFixed(2)}</p>
                 <p className="text-custom-green"><strong>Green Projects:</strong> {citySpecificData.greenProjects}</p>
                 <p className="text-custom-amber"><strong>Amber Projects:</strong> {citySpecificData.amberProjects}</p>
                 <p className="text-custom-red"><strong>Red Projects:</strong> {citySpecificData.redProjects}</p>

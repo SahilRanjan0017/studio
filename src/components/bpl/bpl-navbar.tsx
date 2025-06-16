@@ -109,7 +109,6 @@ export function BplNavbar() {
                 <SelectTrigger 
                   id="city-filter-nav" 
                   className="w-full sm:w-[170px] bg-background h-9 text-sm focus:ring-primary/50"
-                  aria-label="City filter"
                 >
                   {loadingCities ? (
                     <div className="flex items-center text-xs text-muted-foreground">
