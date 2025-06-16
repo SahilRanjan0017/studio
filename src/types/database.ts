@@ -56,31 +56,29 @@ export interface LeaderboardEntry {
 export type LeaderboardRole = 'SPM' | 'TL' | 'OM';
 
 
-// Types for BPL Sales Leaderboard
+// Types for BPL Sales Leaderboard based on the new sales_team_performance_view
 export type SalesLeaderboardRole = 'OS' | 'IS' | 'CP_OS' | 'CP_IS';
 
+// Raw data structure from the new sales_team_performance_view
 export interface RawSalesLeaderboardData {
-  participant_id: string;
   name: string;
-  manager_name?: string; // Added manager's name
-  city: string | null;
   role: SalesLeaderboardRole;
-  total_runs: number;
-  kpi_types_count?: number;
-  last_update: string | null; // ISO string date from Supabase
+  manager_name: string | null;
+  city: string | null;
+  record_date: string; // Date of the record
+  cumulative_score: number; // This will be used as total_runs
+  // daily_score is also available if needed: sum(sales_score_tracking.score_change)
 }
 
+// Processed entry for display in the sales leaderboard
 export interface SalesLeaderboardEntry {
   rank: number;
-  participant_id: string;
   name: string;
-  manager_name?: string; // Added manager's name
+  manager_name?: string;
   city: string | null;
   role: SalesLeaderboardRole;
-  total_runs: number;
-  kpi_types_count?: number; // Optional, count of distinct KPI types contributing to score
-  last_update_formatted?: string; // Formatted for display, e.g., "Today, 10:30 AM"
-  trend?: number; // Optional: if trend data is available
+  total_runs: number; // Mapped from cumulative_score
+  record_date?: string; // Optional: if we want to display the date of the score
 }
 
 
@@ -105,4 +103,3 @@ export interface ChannelPartnerEntry {
   total_score: number;
   rank: number;
 }
-
