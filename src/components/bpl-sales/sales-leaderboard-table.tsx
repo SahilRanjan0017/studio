@@ -86,8 +86,8 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
 
       if (result.error) {
         const specificError = result.error.toLowerCase();
-        if (specificError.includes("relation") && specificError.includes("does not exist") && specificError.includes("sales_team_performance_view")) {
-             setError(`DATABASE SETUP ERROR: The required database view "public.sales_team_performance_view" could not be found. Please ensure this view is created in your Supabase SQL Editor, and its underlying table "public.sales_score_tracking" exists and is populated.`);
+        if (specificError.includes("relation") && specificError.includes("does not exist") && (specificError.includes("sales_team_performance_view") || specificError.includes("sales_score_tracking")) ) {
+             setError(`DATABASE SETUP ERROR: The required database view "public.sales_team_performance_view" or its underlying table "public.sales_score_tracking" could not be found. Please ensure these are created in your Supabase SQL Editor and populated. Error: "${result.error}"`);
         } else if (specificError.includes("column") && specificError.includes("does not exist")) {
              setError(`DATABASE VIEW MISMATCH: A required column (e.g., '${specificError.split("column ")[1]?.split(" ")[0] || 'unknown'}') is missing from or incorrect in "public.sales_team_performance_view". Error: "${result.error}". Please verify your view definition in Supabase SQL Editor against the application's expectations.`);
         } else {
@@ -187,22 +187,24 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     if (!searchTerm) return individualData;
     return individualData.filter(entry =>
       entry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (entry.manager_name && entry.manager_name.toLowerCase().includes(searchTerm.toLowerCase()))
+      (entry.manager_name && entry.manager_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (entry.city && entry.city.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   }, [individualData, searchTerm]);
 
   const filteredManagerData = useMemo(() => {
     if (!searchTerm) return managerData;
     return managerData.filter(entry =>
-      entry.name.toLowerCase().includes(searchTerm.toLowerCase())
+      entry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (entry.city && entry.city.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   }, [managerData, searchTerm]);
 
   const filteredCityManagerDetailData = useMemo(() => {
-    if (!searchTerm) return cityData;
+    if (!searchTerm) return cityData; // Uses cityData as base
     return cityData.filter(entry =>
-        entry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (entry.top_manager_name && entry.top_manager_name.toLowerCase().includes(searchTerm.toLowerCase()))
+        entry.name.toLowerCase().includes(searchTerm.toLowerCase()) || // Search by city name
+        (entry.top_manager_name && entry.top_manager_name.toLowerCase().includes(searchTerm.toLowerCase())) // Search by top manager name
     );
   }, [cityData, searchTerm]);
 
@@ -215,7 +217,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
 
   const renderErrorState = () => {
     if (!error) return null;
-    const isViewMissingError = error.includes("relation") && error.includes("does not exist") && error.includes("sales_team_performance_view");
+    const isViewMissingError = error.includes("relation") && error.includes("does not exist") && (error.includes("sales_team_performance_view") || error.includes("sales_score_tracking"));
     const isColumnMissingError = error.includes("column") && error.includes("does not exist");
 
     let title = `Failed to load data for ${currentRoleConfig.label}`;
@@ -223,7 +225,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
 
     if (isViewMissingError) {
         title = "DATABASE SETUP ERROR";
-        details = `The required database view "public.sales_team_performance_view" could not be found. Please ensure this view is created in your Supabase SQL Editor using the provided SQL, and its underlying table "public.sales_score_tracking" exists and is populated with relevant data for the role "${tableForRole}". Check RLS policies.`;
+        details = `The required database view "public.sales_team_performance_view" or its underlying table "public.sales_score_tracking" could not be found or is inaccessible. Please ensure these are created in your Supabase SQL Editor, populated, and RLS policies are correctly configured. Original error: "${error}"`;
     } else if (isColumnMissingError) {
         title = "DATABASE VIEW MISMATCH";
         const missingColumnMatch = error.match(/column "(.+?)" does not exist/i) || error.match(/column ([a-zA-Z0-9_]+) of relation "sales_team_performance_view" does not exist/i);
@@ -257,7 +259,6 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
             <TableHead className="text-xs font-semibold text-foreground px-2 min-w-[180px]">Name / Role</TableHead>
             <TableHead className="text-xs font-semibold text-foreground px-2 hidden md:table-cell">Manager</TableHead>
             <TableHead className="text-xs font-semibold text-foreground px-2 hidden md:table-cell">City</TableHead>
-            <TableHead className="text-xs font-semibold text-foreground px-2 hidden sm:table-cell">Record Date</TableHead>
             <TableHead className="text-right text-xs font-semibold text-foreground px-2">Total Runs</TableHead>
           </TableRow>
         </TableHeader>
@@ -280,7 +281,6 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
               </TableCell>
               <TableCell className="text-xs text-muted-foreground px-2 py-2.5 hidden md:table-cell">{entry.manager_name || 'N/A'}</TableCell>
               <TableCell className="text-xs text-muted-foreground px-2 py-2.5 hidden md:table-cell">{entry.city || 'N/A'}</TableCell>
-              <TableCell className="text-xs text-muted-foreground px-2 py-2.5 hidden sm:table-cell">{entry.record_date}</TableCell>
               <TableCell className="text-right font-bold text-sm text-foreground px-2 py-2.5">{entry.total_runs}</TableCell>
             </TableRow>
           ))}
