@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LayoutDashboard, Award, BookOpen, Loader2, BarChartBig } from 'lucide-react';
+import { LayoutDashboard, Award, BookOpen, Loader2, BarChartBig, ShoppingCart, Briefcase, Building } from 'lucide-react';
 import { useCityFilter } from '@/contexts/CityFilterContext'; 
 import { cn } from '@/lib/utils';
 
@@ -21,16 +21,40 @@ interface NavLink {
   icon: React.ReactNode;
 }
 
-const opsNavLinks: NavLink[] = [
-  { hrefRoot: "/dashboard", label: "Dashboard", icon: <LayoutDashboard size={18}/> },
-  { hrefRoot: "/rewards", label: "Rewards", icon: <Award size={18}/> },
-  { hrefRoot: "/rules", label: "Rules", icon: <BookOpen size={18}/> },
-];
+const navConfig: Record<string, { links: NavLink[]; basePath: string }> = {
+  'bpl-ops': {
+    basePath: '/bpl-ops',
+    links: [
+      { hrefRoot: "/dashboard", label: "Dashboard", icon: <Building size={18}/> },
+      { hrefRoot: "/rewards", label: "Rewards", icon: <Award size={18}/> },
+      { hrefRoot: "/rules", label: "Rules", icon: <BookOpen size={18}/> },
+    ],
+  },
+  'bpl-channel-partner': {
+    basePath: '/bpl-channel-partner',
+    links: [
+      { hrefRoot: "", label: "Dashboard", icon: <BarChartBig size={18}/> }, 
+      { hrefRoot: "/rules", label: "Rules", icon: <BookOpen size={18}/> },
+    ],
+  },
+  'bpl-sales': {
+    basePath: '/bpl-sales',
+    links: [
+      { hrefRoot: "/dashboard", label: "Dashboard", icon: <Briefcase size={18}/> },
+      { hrefRoot: "/rewards", label: "Rewards", icon: <Award size={18}/> },
+      { hrefRoot: "/rules", label: "Rules", icon: <BookOpen size={18}/> },
+    ],
+  },
+  'bpl-scm': {
+    basePath: '/bpl-scm',
+    links: [
+      { hrefRoot: "/dashboard", label: "Dashboard", icon: <ShoppingCart size={18}/> },
+      { hrefRoot: "/rewards", label: "Rewards", icon: <Award size={18}/> },
+      { hrefRoot: "/rules", label: "Rules", icon: <BookOpen size={18}/> },
+    ],
+  },
+};
 
-const salesNavLinks: NavLink[] = [
-  { hrefRoot: "", label: "Dashboard", icon: <BarChartBig size={18}/> }, 
-  { hrefRoot: "/rules", label: "Rules", icon: <BookOpen size={18}/> },
-];
 
 export function BplNavbar() {
   const pathname = usePathname();
@@ -42,27 +66,18 @@ export function BplNavbar() {
     cityError 
   } = useCityFilter(); 
 
-  const isOpsSection = pathname.startsWith('/bpl-ops');
-  const isSalesSection = pathname.startsWith('/bpl-sales');
+  const currentSectionKey = Object.keys(navConfig).find(key => pathname.startsWith(`/${key}`));
+  const currentNav = currentSectionKey ? navConfig[currentSectionKey] : navConfig['bpl-ops'];
+  const { links: currentNavLinks, basePath } = currentNav;
   
-  let currentNavLinks: NavLink[] = [];
-  let basePath = '';
-
-  if (isOpsSection) {
-    currentNavLinks = opsNavLinks;
-    basePath = '/bpl-ops';
-  } else if (isSalesSection) {
-    currentNavLinks = salesNavLinks;
-    basePath = '/bpl-sales';
-  }
+  const isChannelPartnerSection = basePath === '/bpl-channel-partner';
 
   const activeLink = currentNavLinks.find(link => {
     const fullLinkPath = `${basePath}${link.hrefRoot || ''}`;
-    // Handle root path for sales dashboard correctly
-    if (link.hrefRoot === "" && basePath === "/bpl-sales") {
+    if (link.hrefRoot === "") {
       return pathname === basePath || pathname === `${basePath}/`;
     }
-    return pathname.startsWith(fullLinkPath) && fullLinkPath !== basePath; // ensure it's not just the base path if hrefRoot is not empty
+    return pathname.startsWith(fullLinkPath) && fullLinkPath !== basePath;
   }) || (pathname === basePath && currentNavLinks[0]?.hrefRoot === "" ? currentNavLinks[0] : undefined) || (pathname === `${basePath}/` && currentNavLinks[0]?.hrefRoot === "" ? currentNavLinks[0] : undefined) ;
   
   const activeLabel = activeLink?.label || (currentNavLinks[0]?.label || "");
@@ -82,7 +97,7 @@ export function BplNavbar() {
                     className={cn(
                       `relative flex items-center gap-2 font-medium px-3.5 py-2.5 rounded-md transition-all duration-200 text-sm group`,
                       isActive
-                        ? 'text-primary' // Active text color uses primary (orange)
+                        ? 'text-primary'
                         : 'text-foreground hover:bg-muted hover:text-primary'
                     )}
                   >
@@ -96,7 +111,7 @@ export function BplNavbar() {
               );
             })}
           </ul>
-          {isSalesSection && ( // Changed from isOpsSection to isSalesSection
+          {isChannelPartnerSection && (
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <label htmlFor="city-filter-nav" className="text-sm font-semibold text-foreground whitespace-nowrap sr-only md:not-sr-only">
                 City:
