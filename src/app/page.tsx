@@ -34,7 +34,7 @@ export default function LandingPage() {
     <div
       className="relative flex flex-col items-center justify-center min-h-screen p-6 bg-cover bg-center"
       style={{ backgroundImage: "url('https://i.postimg.cc/Y9vyjM7V/contractors-playing-cricket-at-construction-site-dark-theme-with-orange-and-slate-grey.jpg')" }}
-      data-ai-hint="architectural velocity abstract dark charcoal silver-grey burnt orange"
+      data-ai-hint="cricket stadium construction"
     >
       <div className="absolute inset-0 bg-black/70 z-0"></div>
 
@@ -45,25 +45,25 @@ export default function LandingPage() {
 
         <header className="text-center mb-10 md:mb-12">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-[hsl(20,100%,98%)] mb-3 tracking-tight" style={{color: 'hsl(20, 100%, 98%)'}}>
-            Welcome to Brick & Bolt Premier League
+            Brick & Bolt Premier League
           </h1>
           <p className="text-lg sm:text-xl text-[hsl(20,100%,98%)] opacity-90" style={{color: 'hsl(20, 100%, 98%)'}}>
             Drill Down into Team Stats
           </p>
         </header>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 w-full">
             <PortalLinkButton href="/bpl-ops/dashboard" icon={<Building size={24} />}>
-                BPL Operations
+                Operations
             </PortalLinkButton>
             <PortalLinkButton href="/bpl-channel-partner" icon={<Users size={24} />}>
-                BPL Channel Partner
+                Channel Partner
             </PortalLinkButton>
             <PortalLinkButton href="/bpl-sales/dashboard" icon={<Briefcase size={24} />}>
-                BPL Sales
+                Sales
             </PortalLinkButton>
             <PortalLinkButton href="/bpl-scm/dashboard" icon={<ShoppingCart size={24} />}>
-                BPL SCM
+                SCM
             </PortalLinkButton>
         </div>
       </div>
