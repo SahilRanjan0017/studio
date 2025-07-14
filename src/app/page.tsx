@@ -1,34 +1,69 @@
 // src/app/page.tsx
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ShoppingCart, Users, Briefcase, Building } from 'lucide-react';
 import CompanyLogo from '@/components/CompanyLogo';
+import { cn } from '@/lib/utils';
 
-const PortalLinkButton = ({ href, children, icon }: { href: string, children: React.ReactNode, icon: React.ReactNode }) => (
-    <Link href={href} passHref>
-        <Button
-          variant="outline"
-          size="lg"
-          className="w-full h-24 md:h-28 text-lg md:text-xl font-bold 
-                     border-2 border-green-400 text-[hsl(20,100%,98%)]
-                     focus-visible:ring-green-400
-                     relative group overflow-hidden
-                     before:content-[''] before:absolute before:inset-0 before:w-full before:h-full 
-                     before:bg-orange-400
-                     before:transition-transform before:duration-500 before:ease-out 
-                     before:scale-x-0 before:origin-left group-hover:before:scale-x-100 
-                     before:z-[-1] hover:border-transparent hover:shadow-xl"
-        >
-          <div className="flex flex-col items-center justify-center gap-2 relative z-10">
-            {icon}
-            <span className="flex items-center">{children} <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" /></span>
-          </div>
-        </Button>
-    </Link>
+const portalButtons = [
+    {
+        href: "/bpl-ops/dashboard",
+        icon: <Building size={24} />,
+        label: "Operations",
+        id: "ops"
+    },
+    {
+        href: "/bpl-channel-partner",
+        icon: <Users size={24} />,
+        label: "Channel Partner",
+        id: "cp"
+    },
+    {
+        href: "/bpl-sales/dashboard",
+        icon: <Briefcase size={24} />,
+        label: "Sales",
+        id: "sales"
+    },
+    {
+        href: "/bpl-scm/dashboard",
+        icon: <ShoppingCart size={24} />,
+        label: "SCM",
+        id: "scm"
+    }
+];
+
+const PortalLinkButton = ({ href, children, icon, onMouseEnter, className }: { href: string, children: React.ReactNode, icon: React.ReactNode, onMouseEnter: () => void, className?: string }) => (
+    <div onMouseEnter={onMouseEnter} className={cn("transition-opacity duration-300", className)}>
+        <Link href={href} passHref>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full h-24 md:h-28 text-lg md:text-xl font-bold 
+                         border-2 border-green-400 text-[hsl(20,100%,98%)]
+                         focus-visible:ring-green-400
+                         relative group overflow-hidden
+                         before:content-[''] before:absolute before:inset-0 before:w-full before:h-full 
+                         before:bg-orange-400
+                         before:transition-transform before:duration-500 before:ease-out 
+                         before:scale-x-0 before:origin-left group-hover:before:scale-x-100 
+                         before:z-[-1] hover:border-transparent hover:shadow-xl"
+            >
+              <div className="flex flex-col items-center justify-center gap-2 relative z-10">
+                {icon}
+                <span className="flex items-center">{children} <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" /></span>
+              </div>
+            </Button>
+        </Link>
+    </div>
 );
 
 
 export default function LandingPage() {
+  const [hoveredButton, setHoveredButton] = useState<string | null>(null);
+
   return (
     <div
       className="relative flex flex-col items-center justify-center min-h-screen p-6 bg-cover bg-center"
@@ -51,19 +86,21 @@ export default function LandingPage() {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 w-full">
-            <PortalLinkButton href="/bpl-ops/dashboard" icon={<Building size={24} />}>
-                Operations
-            </PortalLinkButton>
-            <PortalLinkButton href="/bpl-channel-partner" icon={<Users size={24} />}>
-                Channel Partner
-            </PortalLinkButton>
-            <PortalLinkButton href="/bpl-sales/dashboard" icon={<Briefcase size={24} />}>
-                Sales
-            </PortalLinkButton>
-            <PortalLinkButton href="/bpl-scm/dashboard" icon={<ShoppingCart size={24} />}>
-                SCM
-            </PortalLinkButton>
+        <div 
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 w-full"
+          onMouseLeave={() => setHoveredButton(null)}
+        >
+            {portalButtons.map((button) => (
+                <PortalLinkButton 
+                    key={button.id}
+                    href={button.href} 
+                    icon={button.icon}
+                    onMouseEnter={() => setHoveredButton(button.id)}
+                    className={hoveredButton && hoveredButton !== button.id ? 'opacity-20' : 'opacity-100'}
+                >
+                    {button.label}
+                </PortalLinkButton>
+            ))}
         </div>
       </div>
 
