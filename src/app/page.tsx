@@ -15,7 +15,7 @@ const PortalLinkButton = ({ href, children, icon }: { href: string, children: Re
                      focus-visible:ring-[hsl(var(--primary))]
                      relative group overflow-hidden
                      before:content-[''] before:absolute before:inset-0 before:w-full before:h-full 
-                     before:bg-gradient-to-r before:from-[hsl(var(--primary-darker))] before:to-[hsl(var(--primary-lighter))] 
+                     before:bg-gradient-to-r before:from-yellow-400 before:via-orange-500 before:to-yellow-400
                      before:transition-transform before:duration-500 before:ease-out 
                      before:scale-x-0 before:origin-left group-hover:before:scale-x-100 
                      before:z-[-1] hover:border-transparent hover:shadow-xl"
@@ -33,10 +33,10 @@ export default function LandingPage() {
   return (
     <div
       className="relative flex flex-col items-center justify-center min-h-screen p-6 bg-cover bg-center"
-      style={{ backgroundImage: "url('https://i.postimg.cc/Y9vyjM7V/contractors-playing-cricket-at-construction-site-dark-theme-with-orange-and-slate-grey.jpg')" }}
-      data-ai-hint="cricket stadium construction"
+      style={{ backgroundImage: "url('https://i.postimg.cc/zfcXMH2H/mario-klassen-70-Yx-STWa2-Zw-unsplash.jpg')" }}
+      data-ai-hint="cricket stadium floodlights"
     >
-      <div className="absolute inset-0 bg-black/70 z-0"></div>
+      <div className="absolute inset-0 bg-black/60 z-0"></div>
 
       <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-4xl animate-page-fade-in">
         <div className="mb-8 md:mb-10 transition-transform duration-300 ease-out hover:scale-105">
