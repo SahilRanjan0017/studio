@@ -42,17 +42,16 @@ const PortalLinkButton = ({ href, children, icon, onMouseEnter, className }: { h
               variant="outline"
               size="lg"
               className="w-full h-24 md:h-28 text-lg md:text-xl font-bold 
-                         border-2 border-green-400 text-green-400
-                         focus-visible:ring-green-400
+                         border-2 border-orange-500 text-orange-500
+                         hover:bg-orange-500 hover:text-white
+                         focus-visible:ring-orange-500
                          relative group overflow-hidden
                          bg-transparent
-                         transition-colors duration-300 ease-in-out
-                         after:content-[''] after:absolute after:bottom-[-50%] after:left-0 after:w-full after:h-full after:bg-orange-500 after:origin-bottom-center after:transition-transform after:duration-500 after:ease-[cubic-bezier(0.48,0,0.12,1)] after:transform after:skew-y-[9.3deg] after:scale-y-0 group-hover:after:scale-y-[2]
-                         "
+                         transition-colors duration-300 ease-in-out"
             >
               <div className="flex flex-col items-center justify-center gap-2 relative z-10">
                 {icon}
-                <span className="flex items-center transition-colors duration-500 ease-[cubic-bezier(0.48,0,0.12,1)] group-hover:text-white">
+                <span className="flex items-center transition-colors duration-300">
                   {children} <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
                 </span>
               </div>
