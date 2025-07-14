@@ -11,11 +11,10 @@ const PortalLinkButton = ({ href, children, icon }: { href: string, children: Re
           size="lg"
           className="w-full h-24 md:h-28 text-lg md:text-xl font-bold 
                      border-2 border-green-400 text-[hsl(20,100%,98%)]
-                     hover:text-[hsl(258,82%,18%)]
                      focus-visible:ring-green-400
                      relative group overflow-hidden
                      before:content-[''] before:absolute before:inset-0 before:w-full before:h-full 
-                     before:bg-gradient-to-r before:from-yellow-400 before:via-orange-500 before:to-yellow-400
+                     before:bg-orange-400
                      before:transition-transform before:duration-500 before:ease-out 
                      before:scale-x-0 before:origin-left group-hover:before:scale-x-100 
                      before:z-[-1] hover:border-transparent hover:shadow-xl"
