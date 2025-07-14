@@ -42,16 +42,22 @@ const PortalLinkButton = ({ href, children, icon, onMouseEnter, className }: { h
               variant="outline"
               size="lg"
               className="w-full h-24 md:h-28 text-lg md:text-xl font-bold 
-                         border-2 border-green-400 text-[hsl(20,100%,98%)]
+                         border-2 border-green-400 text-green-400
                          focus-visible:ring-green-400
                          relative group overflow-hidden
-                         bg-transparent hover:bg-orange-400
+                         bg-transparent
                          transition-colors duration-300 ease-in-out
-                         hover:border-transparent hover:shadow-xl"
+                         after:content-[''] after:absolute after:bottom-[-50%] after:left-0 after:w-full after:h-full after:bg-black after:origin-bottom-center after:transition-transform after:duration-500 after:ease-[cubic-bezier(0.48,0,0.12,1)] after:transform after:skew-y-[9.3deg] after:scale-y-0 group-hover:after:scale-y-[2]
+                         "
             >
               <div className="flex flex-col items-center justify-center gap-2 relative z-10">
                 {icon}
-                <span className="flex items-center">{children} <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" /></span>
+                <span className="flex items-center transition-colors duration-500 ease-[cubic-bezier(0.48,0,0.12,1)] group-hover:text-white">
+                  {children} <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                </span>
+                <span className="text-white absolute bottom-0 transition-all duration-500 ease-[cubic-bezier(0.48,0,0.12,1)] z-[100] opacity-0 top-1/2 left-1/2 transform translate-y-[225%] -translate-x-1/2 h-14 leading-[13px] group-hover:opacity-100 group-hover:-translate-y-full group-hover:transition-all group-hover:duration-[900ms]">
+                  Go to {children}
+                </span>
               </div>
             </Button>
         </Link>
