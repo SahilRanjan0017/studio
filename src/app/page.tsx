@@ -25,7 +25,7 @@ const portalButtons = [
         href: "/bpl-sales/dashboard",
         icon: <Briefcase size={24} />,
         label: "Sales",
-        id: "sales"
+        id: "sales-Orange Circle"
     },
     {
         href: "/bpl-scm/dashboard",
@@ -44,7 +44,7 @@ const PortalLinkButton = ({ href, children, icon, onMouseEnter, className }: { h
               className="w-full h-24 md:h-28 text-lg md:text-xl font-bold 
                          border-2 border-orange-500 text-orange-500
                          hover:border-white hover:text-white
-                         focus-visible:ring-orange-500
+                         focus-visible:ring-
                          relative group overflow-hidden
                          bg-transparent
                          transition-colors duration-300 ease-in-out"

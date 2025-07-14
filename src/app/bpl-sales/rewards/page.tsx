@@ -6,12 +6,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Award, Trophy, DollarSign, User, Users, Briefcase } from 'lucide-react';
 
 const spmRewards = [
-  { rank: "1", reward: "₹25,000" },
-  { rank: "2", reward: "₹15,000" },
-  { rank: "3", reward: "₹12,000" },
-  { rank: "4", reward: "₹10,000" },
-  { rank: "5", reward: "₹7,000" },
-  { rank: "6-11", reward: "₹5,000 each" },
+  { rank: "1", reward: "₹10,000" },
+  { rank: "2", reward: "₹8,000" },
+  { rank: "3", reward: "₹6,000" },
 ];
 
 const tlRewards = [
