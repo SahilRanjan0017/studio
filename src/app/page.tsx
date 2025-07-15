@@ -30,7 +30,7 @@ const portalButtons = [
     {
         href: "/bpl-scm/dashboard",
         icon: <ShoppingCart size={24} />,
-        label: "Supply Chain Management",
+        label: "SCM",
         id: "scm"
     }
 ];
