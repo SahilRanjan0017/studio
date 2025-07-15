@@ -24,13 +24,13 @@ const portalButtons = [
     {
         href: "/bpl-sales/dashboard",
         icon: <Briefcase size={24} />,
-        label: "Sales",
-        id: "sales-Orange Circle"
+        label: "Sales Orange Circle",
+        id: "sales"
     },
     {
         href: "/bpl-scm/dashboard",
         icon: <ShoppingCart size={24} />,
-        label: "SCM",
+        label: "Supply Chain Management",
         id: "scm"
     }
 ];
@@ -41,7 +41,7 @@ const PortalLinkButton = ({ href, children, icon, onMouseEnter, className }: { h
             <Button
               variant="outline"
               size="lg"
-              className="w-full h-24 md:h-28 text-lg md:text-xl font-bold 
+              className="w-full h-24 md:h-28 text-base md:text-lg font-bold p-2
                          border-2 border-orange-500 text-orange-500
                          hover:border-white hover:text-white
                          focus-visible:ring-
@@ -49,7 +49,7 @@ const PortalLinkButton = ({ href, children, icon, onMouseEnter, className }: { h
                          bg-transparent
                          transition-colors duration-300 ease-in-out"
             >
-              <div className="flex flex-col items-center justify-center gap-2 relative z-10">
+              <div className="flex flex-col items-center justify-center text-center gap-2 relative z-10">
                 {icon}
                 <span className="flex items-center transition-colors duration-300">
                   {children} <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
@@ -79,7 +79,7 @@ export default function LandingPage() {
 
         <header className="text-center mb-10 md:mb-12">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-[hsl(20,100%,98%)] mb-3 tracking-tight" style={{color: 'hsl(20, 100%, 98%)'}}>
-            Brick & Bolt Premier League
+            <em>Brick & Bolt Premier League</em>
           </h1>
           <p className="text-lg sm:text-xl text-[hsl(20,100%,98%)] opacity-90" style={{color: 'hsl(20, 100%, 98%)'}}>
             Drill Down into Team Stats
