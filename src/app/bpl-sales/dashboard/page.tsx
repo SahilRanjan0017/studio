@@ -1,7 +1,6 @@
 // @/app/bpl-sales/dashboard/page.tsx
 import { DashboardTitleBlock } from '@/components/bpl/dashboard-title-block';
 import { SalesOpsLeaderboardTable } from '@/components/bpl-sales/sales-ops-leaderboard-table'; // Changed to sales-specific leaderboard
-import { ActivityFeedSection } from '@/components/bpl/activity-feed-section';
 import { Briefcase } from 'lucide-react';
 
 export default function BplSalesDashboardPage() {
@@ -19,13 +18,8 @@ export default function BplSalesDashboardPage() {
           className="mb-6"
         />
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <SalesOpsLeaderboardTable />
-          </div>
-          <div className="lg:col-span-1">
-            <ActivityFeedSection />
-          </div>
+        <div className="grid grid-cols-1 gap-6">
+          <SalesOpsLeaderboardTable />
         </div>
       </div>
     </div>
