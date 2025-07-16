@@ -3,7 +3,8 @@ import React from 'react';
 import { DashboardTitleBlock } from '@/components/bpl/dashboard-title-block';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Award, Trophy, DollarSign, User, Users, Truck, Warehouse } from 'lucide-react';
+import { Award, User, Users, Truck, Warehouse } from 'lucide-react';
+import { TrophyIcon } from '@/components/icons/TrophyIcon';
 
 const procurementRewards = [
   { rank: "1", reward: "₹25,000" },
@@ -84,7 +85,7 @@ export default function RewardsPage() {
     <div className="bg-background min-h-screen py-6">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <DashboardTitleBlock 
-          icon={<Trophy size={32} className="text-primary animate-pulse-scale" />} 
+          icon={<TrophyIcon className="w-10 h-10 text-primary animate-pulse-scale" />} 
           title="BPL SCM: Rewards Breakdown"
           subtitle="Recognizing efficiency and excellence in the supply chain."
           className="mb-10"
