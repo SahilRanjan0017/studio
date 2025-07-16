@@ -1,3 +1,4 @@
+
 // @/components/bpl-sales/sales-ops-leaderboard-table.tsx
 'use client';
 
@@ -114,31 +115,31 @@ export function SalesOpsLeaderboardTable() {
 
   return (
     <>
-      <Card className="shadow-md rounded-lg bg-card">
-        <CardHeader className="border-b border-border/70 pb-3.5">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-            <div className="flex items-center gap-2.5">
-              <Trophy size={24} className="text-accent" />
+      <Card className="shadow-2xl rounded-xl bg-background/60 backdrop-blur-md border-primary/20">
+        <CardHeader className="border-b-2 border-primary/20 pb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex items-center gap-3">
+              <Trophy size={32} className="text-accent animate-pulse-scale" />
               <div>
-                <CardTitle className="text-lg font-semibold text-foreground">{`BPL ${roleConfig[activeRole].label} Leaderboard`}</CardTitle>
-                <p className="text-xs text-muted-foreground">{DisplayName}</p>
+                <CardTitle className="text-xl font-extrabold text-foreground tracking-wider">{`BPL ${roleConfig[activeRole].label} Leaderboard`}</CardTitle>
+                <p className="text-xs text-muted-foreground font-medium">{DisplayName}</p>
               </div>
             </div>
-            <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center gap-2">
-              <div className="relative w-full sm:w-56 md:w-64 sm:-ml-2">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center gap-3">
+              <div className="relative w-full sm:w-56 md:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
-                  placeholder={`Search ${roleConfig[activeRole].label} name...`}
+                  placeholder={`Search ${roleConfig[activeRole].label}...`}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-8 w-full h-9"
+                  className="pl-9 w-full h-10 bg-background/70 rounded-full focus:ring-accent"
                 />
               </div>
               <Tabs value={activeRole} onValueChange={(value) => setActiveRole(value as SalesOpsLeaderboardRole)} className="w-full sm:w-auto">
-                <TabsList className="grid w-full grid-cols-4 h-9 bg-muted/70">
+                <TabsList className="grid w-full grid-cols-4 h-10 bg-muted/70 rounded-full">
                   {(Object.keys(roleConfig) as SalesOpsLeaderboardRole[]).map(roleKey => (
-                    <TabsTrigger key={roleKey} value={roleKey} className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 text-xs data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm">
+                    <TabsTrigger key={roleKey} value={roleKey} className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 text-xs rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg">
                       {React.cloneElement(roleConfig[roleKey].icon, { className: "hidden sm:inline" })}
                       {roleConfig[roleKey].label}
                     </TabsTrigger>
@@ -148,82 +149,83 @@ export function SalesOpsLeaderboardTable() {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="pt-4 px-2 sm:px-4">
+        <CardContent className="pt-2 px-2 sm:px-4">
           {loadingData ? ( 
-            <div className="space-y-3">
+            <div className="space-y-2 py-4">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="flex items-center space-x-3 p-1.5">
-                  <Skeleton className="h-9 w-9 rounded-full" />
-                  <div className="space-y-1.5 flex-grow">
-                    <Skeleton className="h-3.5 w-3/4" />
-                    <Skeleton className="h-2.5 w-1/2" />
+                <div key={i} className="flex items-center space-x-4 p-2">
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <div className="space-y-2 flex-grow">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/2" />
                   </div>
-                  <Skeleton className="h-7 w-14 rounded-md" />
-                  <Skeleton className="h-7 w-10 rounded-md" />
+                  <Skeleton className="h-8 w-16 rounded-md" />
                 </div>
               ))}
             </div>
           ) : dataError ? (
-             <div className="text-center py-3 text-destructive bg-destructive/10 border border-destructive/30 rounded-md p-2.5 text-sm">{dataError}</div>
+             <div className="text-center py-6 text-destructive bg-destructive/10 border border-destructive/30 rounded-lg p-4 text-sm">{dataError}</div>
           ) : filteredLeaderboardData.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground text-sm">
+            <div className="text-center py-10 text-muted-foreground text-sm">
+              <p className="font-semibold">
               {searchTerm 
                 ? `No ${roleConfig[activeRole].label} found matching "${searchTerm}".`
                 : `No ${roleConfig[activeRole].label} data available for ${selectedCity === "Pan India" ? "Pan India" : selectedCity}.`
               }
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <Table>
+              <Table className="w-full">
                 <TableHeader>
-                  <TableRow className="border-border/70">
-                    <TableHead className="w-[50px] text-center text-xs font-semibold text-foreground px-2">Rank</TableHead>
-                    <TableHead className="text-xs font-semibold text-foreground px-2">Name</TableHead>
-                    <TableHead className="hidden md:table-cell text-xs font-semibold text-foreground px-2">City</TableHead>
-                    <TableHead className="text-center text-xs font-semibold text-foreground px-2">Projects</TableHead>
-                    <TableHead className="text-right text-xs font-semibold text-foreground px-2">Runs</TableHead>
-                    <TableHead className="text-right hidden sm:table-cell text-xs font-semibold text-foreground px-2">Trend</TableHead>
+                  <TableRow className="border-b-primary/10">
+                    <TableHead className="w-[60px] text-center text-xs font-semibold uppercase text-muted-foreground tracking-wider px-2">Rank</TableHead>
+                    <TableHead className="text-xs font-semibold uppercase text-muted-foreground tracking-wider px-2">Player</TableHead>
+                    <TableHead className="hidden md:table-cell text-xs font-semibold uppercase text-muted-foreground tracking-wider px-2">City</TableHead>
+                    <TableHead className="text-center text-xs font-semibold uppercase text-muted-foreground tracking-wider px-2">Projects</TableHead>
+                    <TableHead className="text-right text-xs font-semibold uppercase text-muted-foreground tracking-wider px-2">Runs</TableHead>
+                    <TableHead className="text-right hidden sm:table-cell text-xs font-semibold uppercase text-muted-foreground tracking-wider px-2">Trend</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredLeaderboardData.map((player) => (
                     <TableRow 
                       key={player.name + player.rank + player.city} 
-                      className="hover:bg-muted/50 cursor-pointer transition-colors duration-150"
+                      className="border-b border-primary/10 hover:bg-primary/5 cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-lg"
                       onClick={() => handleRowClick(player)}
                     >
-                      <TableCell className="text-center px-2 py-2.5">
+                      <TableCell className="text-center px-2 py-3">
                         <div className={cn(
-                          "w-7 h-7 rounded-full flex items-center justify-center font-semibold text-white text-[0.6rem] mx-auto",
-                          player.rank <= 3 ? "bg-accent" : "bg-primary/80"
+                          "w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg mx-auto border-2",
+                          player.rank <= 3 ? "bg-accent/10 border-accent text-accent" : "bg-muted/50 border-border text-foreground"
                         )}>
                           {player.rank}
                         </div>
                       </TableCell>
-                      <TableCell className="px-2 py-2.5">
-                        <div className="flex items-center gap-2.5">
-                          <Avatar className="w-8 h-8">
-                            <AvatarFallback className="bg-muted text-muted-foreground font-semibold text-[0.65rem]">
+                      <TableCell className="px-2 py-3">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-10 h-10 border-2 border-primary/20">
+                            <AvatarFallback className="bg-muted text-muted-foreground font-semibold text-sm">
                               {getInitials(player.name)}
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <div className="font-semibold text-foreground text-sm leading-tight">{player.name}</div>
-                            <div className="text-xs text-muted-foreground leading-tight">{roleConfig[activeRole].label}</div>
+                            <div className="font-bold text-foreground text-base leading-tight">{player.name}</div>
+                            <div className="text-xs text-muted-foreground font-medium leading-tight">{roleConfig[activeRole].label}</div>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="hidden md:table-cell text-xs text-muted-foreground px-2 py-2.5">{player.city || 'N/A'}</TableCell>
-                      <TableCell className="text-center text-sm text-muted-foreground px-2 py-2.5">{player.projects}</TableCell>
-                      <TableCell className="text-right font-bold text-sm text-foreground px-2 py-2.5">{player.runs}</TableCell>
-                      <TableCell className="text-right hidden sm:table-cell px-2 py-2.5">
-                        <div className="flex items-center justify-end gap-0.5">
+                      <TableCell className="hidden md:table-cell text-sm text-muted-foreground font-medium px-2 py-3">{player.city || 'N/A'}</TableCell>
+                      <TableCell className="text-center text-base font-medium text-foreground px-2 py-3">{player.projects}</TableCell>
+                      <TableCell className="text-right font-extrabold text-lg text-primary px-2 py-3">{player.runs}</TableCell>
+                      <TableCell className="text-right hidden sm:table-cell px-2 py-3">
+                        <div className="flex items-center justify-end gap-1">
                           <TrendIcon trend={player.trend} />
                           <span className={cn(
-                            "text-xs",
+                            "text-sm font-semibold",
                             player.trend > 0 ? 'text-custom-green' : player.trend < 0 ? 'text-primary' : 'text-muted-foreground'
                           )}>
-                            {player.trend !== 0 ? Math.abs(player.trend) : ''}
+                            {player.trend !== 0 ? Math.abs(player.trend) : '0'}
                           </span>
                         </div>
                       </TableCell>
