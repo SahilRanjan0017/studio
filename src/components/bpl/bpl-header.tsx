@@ -23,7 +23,7 @@ export function BplHeader() {
   }, []);
 
   return (
-    <header className="bg-primary text-primary-foreground shadow-md">
+    <header className="bg-gradient-to-r from-[hsl(var(--primary-darker))] to-[hsl(var(--primary-lighter))] text-primary-foreground shadow-lg">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between py-4 md:py-5">
           {/* Left side: Logo and Title */}
