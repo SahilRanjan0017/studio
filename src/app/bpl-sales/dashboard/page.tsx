@@ -10,10 +10,10 @@ export default function BplSalesDashboardPage() {
       style={{ backgroundImage: "url('https://i.postimg.cc/zfcXMH2H/mario-klassen-70-Yx-STWa2-Zw-unsplash.jpg')" }}
       data-ai-hint="cricket stadium floodlights"
     >
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-0"></div>
+      <div className="absolute inset-0 bg-black/60 z-0"></div>
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
         <DashboardTitleBlock 
-          icon={<Briefcase size={28} className="text-primary" />}
+          icon={<Briefcase size={28} className="text-primary-foreground" />}
           title="BPL Sales Dashboard"
           className="mb-6"
         />

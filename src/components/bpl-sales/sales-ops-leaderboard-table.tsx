@@ -121,8 +121,8 @@ export function SalesOpsLeaderboardTable() {
             <div className="flex items-center gap-3">
               <Trophy size={32} className="text-accent animate-pulse-scale" />
               <div>
-                <CardTitle className="text-xl font-extrabold text-foreground tracking-wider">{`BPL ${roleConfig[activeRole].label} Leaderboard`}</CardTitle>
-                <p className="text-xs text-muted-foreground font-medium">{DisplayName}</p>
+                <CardTitle className="text-xl font-extrabold text-primary-foreground tracking-wider">{`BPL ${roleConfig[activeRole].label} Leaderboard`}</CardTitle>
+                <p className="text-xs text-primary-foreground/80 font-medium">{DisplayName}</p>
               </div>
             </div>
             <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center gap-3">
@@ -167,7 +167,7 @@ export function SalesOpsLeaderboardTable() {
              <div className="text-center py-6 text-destructive bg-destructive/10 border border-destructive/30 rounded-lg p-4 text-sm">{dataError}</div>
           ) : filteredLeaderboardData.length === 0 ? (
             <div className="text-center py-10 text-muted-foreground text-sm">
-              <p className="font-semibold">
+              <p className="font-semibold text-primary-foreground/70">
               {searchTerm 
                 ? `No ${roleConfig[activeRole].label} found matching "${searchTerm}".`
                 : `No ${roleConfig[activeRole].label} data available for ${selectedCity === "Pan India" ? "Pan India" : selectedCity}.`
@@ -179,12 +179,12 @@ export function SalesOpsLeaderboardTable() {
               <Table className="w-full">
                 <TableHeader>
                   <TableRow className="border-b-primary/10">
-                    <TableHead className="w-[60px] text-center text-xs font-semibold uppercase text-muted-foreground tracking-wider px-2">Rank</TableHead>
-                    <TableHead className="text-xs font-semibold uppercase text-muted-foreground tracking-wider px-2">Player</TableHead>
-                    <TableHead className="hidden md:table-cell text-xs font-semibold uppercase text-muted-foreground tracking-wider px-2">City</TableHead>
-                    <TableHead className="text-center text-xs font-semibold uppercase text-muted-foreground tracking-wider px-2">Projects</TableHead>
-                    <TableHead className="text-right text-xs font-semibold uppercase text-muted-foreground tracking-wider px-2">Runs</TableHead>
-                    <TableHead className="text-right hidden sm:table-cell text-xs font-semibold uppercase text-muted-foreground tracking-wider px-2">Trend</TableHead>
+                    <TableHead className="w-[60px] text-center text-xs font-semibold uppercase text-primary-foreground/60 tracking-wider px-2">Rank</TableHead>
+                    <TableHead className="text-xs font-semibold uppercase text-primary-foreground/60 tracking-wider px-2">Player</TableHead>
+                    <TableHead className="hidden md:table-cell text-xs font-semibold uppercase text-primary-foreground/60 tracking-wider px-2">City</TableHead>
+                    <TableHead className="text-center text-xs font-semibold uppercase text-primary-foreground/60 tracking-wider px-2">Projects</TableHead>
+                    <TableHead className="text-right text-xs font-semibold uppercase text-primary-foreground/60 tracking-wider px-2">Runs</TableHead>
+                    <TableHead className="text-right hidden sm:table-cell text-xs font-semibold uppercase text-primary-foreground/60 tracking-wider px-2">Trend</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -197,7 +197,7 @@ export function SalesOpsLeaderboardTable() {
                       <TableCell className="text-center px-2 py-3">
                         <div className={cn(
                           "w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg mx-auto border-2",
-                          player.rank <= 3 ? "bg-accent/10 border-accent text-accent" : "bg-muted/50 border-border text-foreground"
+                          player.rank <= 3 ? "bg-accent/10 border-accent text-accent" : "bg-muted/50 border-border text-primary-foreground"
                         )}>
                           {player.rank}
                         </div>
@@ -210,20 +210,20 @@ export function SalesOpsLeaderboardTable() {
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <div className="font-bold text-foreground text-base leading-tight">{player.name}</div>
-                            <div className="text-xs text-muted-foreground font-medium leading-tight">{roleConfig[activeRole].label}</div>
+                            <div className="font-bold text-primary-foreground text-base leading-tight">{player.name}</div>
+                            <div className="text-xs text-primary-foreground/70 font-medium leading-tight">{roleConfig[activeRole].label}</div>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="hidden md:table-cell text-sm text-muted-foreground font-medium px-2 py-3">{player.city || 'N/A'}</TableCell>
-                      <TableCell className="text-center text-base font-medium text-foreground px-2 py-3">{player.projects}</TableCell>
+                      <TableCell className="hidden md:table-cell text-sm text-primary-foreground/80 font-medium px-2 py-3">{player.city || 'N/A'}</TableCell>
+                      <TableCell className="text-center text-base font-medium text-primary-foreground px-2 py-3">{player.projects}</TableCell>
                       <TableCell className="text-right font-extrabold text-lg text-primary px-2 py-3">{player.runs}</TableCell>
                       <TableCell className="text-right hidden sm:table-cell px-2 py-3">
                         <div className="flex items-center justify-end gap-1">
                           <TrendIcon trend={player.trend} />
                           <span className={cn(
                             "text-sm font-semibold",
-                            player.trend > 0 ? 'text-custom-green' : player.trend < 0 ? 'text-primary' : 'text-muted-foreground'
+                            player.trend > 0 ? 'text-custom-green' : player.trend < 0 ? 'text-primary' : 'text-primary-foreground/60'
                           )}>
                             {player.trend !== 0 ? Math.abs(player.trend) : '0'}
                           </span>
