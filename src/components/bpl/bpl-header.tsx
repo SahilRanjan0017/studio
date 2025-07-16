@@ -1,13 +1,18 @@
-// @/components/bpl/bpl-header.tsx
+// src/components/bpl/bpl-header.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import CompanyLogo from '../CompanyLogo'; 
 
 export function BplHeader() {
   const [championsText, setChampionsText] = useState("Construction Champions 2025");
   const [currentDate, setCurrentDate] = useState<string | null>(null);
+  const pathname = usePathname();
+
+  const isSalesSection = pathname.startsWith('/bpl-sales');
+  const headerTitle = isSalesSection ? "Brick & Bolt Sales Premier League" : "Brick & Bolt Premier League";
 
   useEffect(() => {
     // Example: setChampionsText(fetchDynamicText()); 
@@ -36,7 +41,7 @@ export function BplHeader() {
             <div>
               <Link href="/" passHref>
                 <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-primary-foreground cursor-pointer hover:opacity-90 transition-opacity">
-                  Brick & Bolt Premier League
+                  {headerTitle}
                 </h1>
               </Link>
               <p className="text-xs opacity-80 font-light text-primary-foreground/90">{championsText}</p>
