@@ -1,17 +1,33 @@
+
 // src/app/bpl-sales/rules/page.tsx
 import { DashboardTitleBlock } from '@/components/bpl/dashboard-title-block';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'; 
-import { BookOpen, TrendingUp, TrendingDown, CheckCircle, FolderCheck, MessageSquare, AlertCircle, Users } from 'lucide-react'; 
+import { BookOpen, User, Users, UserCheck, Target } from 'lucide-react'; 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-const scoringRules = [
-  { event: "Lead → Qualified Lead", runs: "+2 Runs", description: "Lead meets qualification criteria", icon: <TrendingUp className="text-custom-amber" /> },
-  { event: "Qualified Lead → Deal Won", runs: "+6 Runs", description: "Successful deal closure", icon: <TrendingUp className="text-custom-green" /> },
-  { event: "High-Value Deal Won", runs: "+10 Runs", description: "Closing a deal above a certain threshold", icon: <TrendingUp className="text-custom-green" /> },
-  { event: "Deal Lost", runs: "-4 Runs", description: "Losing a qualified lead", icon: <TrendingDown className="text-custom-red" /> },
-  { event: "Lead → Unqualified", runs: "-1 Run", description: "Lead does not meet criteria", icon: <TrendingDown className="text-custom-amber" /> },
-  { event: "Cross-Sell / Up-Sell", runs: "+4 Runs", description: "Successful expansion within an existing account", icon: <CheckCircle className="text-custom-green" /> },
-  { event: "Referral Client Signed", runs: "+6 Runs", description: "New client from a referral", icon: <Users className="text-primary" /> },
+const meScoringRules = [
+  { kpi: "Management Contacts (Valid)", runs: "4" },
+  { kpi: "New Site Added with Details", runs: "1" },
+];
+
+const isScoringRules = [
+  { kpi: "High Tea Done (Orange Circle) per attendee", runs: "1" },
+  { kpi: "CEM Meetings", runs: "6" },
+  { kpi: "Normal M2C Meetings Done (Non - Orange Circle)", runs: "4" },
+];
+
+const mitraOsScoringRules = [
+  { kpi: "Management Meeting - CP Onboarded", runs: "6" },
+  { kpi: "High Tea Done (More than 10) - online", runs: "6" },
+  { kpi: "High Tea Done (More than 20) - online", runs: "12" },
+  { kpi: "High Tea Done (More than 10) - offline", runs: "12" },
+  { kpi: "High Tea Done (More than 20) - offline", runs: "24" },
+  { kpi: "CEM Done", runs: "6" },
+  { kpi: "per 5 Lacs of GMV", runs: "1" },
+];
+
+const osScoringRules = [
+  { kpi: "per 2 Lacs of GMV", runs: "1" },
 ];
 
 export default function RulesPage() {
@@ -27,33 +43,64 @@ export default function RulesPage() {
         <Card className="shadow-lg rounded-lg">
           <CardHeader>
             <CardTitle>BPL Sales Scoring System - "Runs" Calculation</CardTitle>
-            <CardDescription>Each sales activity can gain or lose “Runs” based on outcomes and achievements.</CardDescription>
+            <CardDescription>Each sales activity gains “Runs” based on outcomes and achievements specific to each role.</CardDescription>
           </CardHeader>
-          <CardContent className="prose dark:prose-invert max-w-none">
+          <CardContent className="prose dark:prose-invert max-w-none space-y-8">
             
-            <div className="overflow-x-auto rounded-md border mt-4">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted hover:bg-muted">
-                    <TableHead className="w-[40px] px-3 py-3 text-center">Icon</TableHead>
-                    <TableHead className="min-w-[250px] px-4 py-3">Event / Milestone</TableHead>
-                    <TableHead className="px-4 py-3 text-center">Runs</TableHead>
-                    <TableHead className="px-4 py-3">Description</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {scoringRules.map((rule, index) => (
-                    <TableRow key={index} className="hover:bg-muted/50">
-                      <TableCell className="px-3 py-3 text-center">{rule.icon}</TableCell>
-                      <TableCell className="px-4 py-3 font-medium">{rule.event}</TableCell>
-                      <TableCell className={`px-4 py-3 text-center font-semibold ${rule.runs.startsWith('+') ? 'text-custom-green' : rule.runs.startsWith('-') ? 'text-custom-red' : 'text-foreground'}`}>
-                        {rule.runs}
-                      </TableCell>
-                      <TableCell className="px-4 py-3 text-sm text-muted-foreground">{rule.description}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <div>
+              <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><User size={20}/> ME Scoring</h3>
+              <div className="overflow-x-auto rounded-md border mt-2">
+                <Table>
+                  <TableHeader><TableRow><TableHead>KPI / Event</TableHead><TableHead className="text-center w-[100px]">Runs</TableHead></TableRow></TableHeader>
+                  <TableBody>
+                    {meScoringRules.map(item => (
+                      <TableRow key={item.kpi}><TableCell>{item.kpi}</TableCell><TableCell className="text-center font-semibold text-custom-green">+{item.runs}</TableCell></TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><Users size={20}/> IS Scoring</h3>
+              <div className="overflow-x-auto rounded-md border mt-2">
+                <Table>
+                  <TableHeader><TableRow><TableHead>KPI / Event</TableHead><TableHead className="text-center w-[100px]">Runs</TableHead></TableRow></TableHeader>
+                  <TableBody>
+                    {isScoringRules.map(item => (
+                      <TableRow key={item.kpi}><TableCell>{item.kpi}</TableCell><TableCell className="text-center font-semibold text-custom-green">+{item.runs}</TableCell></TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><UserCheck size={20}/> Mitra OS Scoring</h3>
+              <div className="overflow-x-auto rounded-md border mt-2">
+                <Table>
+                  <TableHeader><TableRow><TableHead>KPI / Event</TableHead><TableHead className="text-center w-[100px]">Runs</TableHead></TableRow></TableHeader>
+                  <TableBody>
+                    {mitraOsScoringRules.map(item => (
+                      <TableRow key={item.kpi}><TableCell>{item.kpi}</TableCell><TableCell className="text-center font-semibold text-custom-green">+{item.runs}</TableCell></TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold text-primary flex items-center gap-2"><Target size={20}/> OS Scoring</h3>
+              <div className="overflow-x-auto rounded-md border mt-2">
+                <Table>
+                  <TableHeader><TableRow><TableHead>KPI / Event</TableHead><TableHead className="text-center w-[100px]">Runs</TableHead></TableRow></TableHeader>
+                  <TableBody>
+                    {osScoringRules.map(item => (
+                      <TableRow key={item.kpi}><TableCell>{item.kpi}</TableCell><TableCell className="text-center font-semibold text-custom-green">+{item.runs}</TableCell></TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </div>
 
             <h3 className="mt-8 text-xl font-semibold text-primary">General League Rules</h3>
