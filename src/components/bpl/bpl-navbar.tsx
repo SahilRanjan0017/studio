@@ -104,7 +104,7 @@ export function BplNavbar() {
                     {React.cloneElement(link.icon as React.ReactElement, { className: cn(isActive ? "text-primary" : "") })}
                     {link.label}
                     {isActive && (
-                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t-full animate-fadeInUp" style={{animationDuration: '0.3s'}}></span>
+                      <span className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-full animate-fadeInUp" style={{animationDuration: '0.3s'}}></span>
                     )}
                   </Link>
                 </li>
