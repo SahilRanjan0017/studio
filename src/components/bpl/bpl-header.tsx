@@ -8,11 +8,11 @@ import { usePathname } from 'next/navigation';
 import CompanyLogo from '../CompanyLogo'; 
 
 export function BplHeader() {
-  const [championsText, setChampionsText] = useState("Games of Champions");
+  const [championsText, setChampionsText] = useState("Presents League of Sales");
   const pathname = usePathname();
 
   const isSalesSection = pathname.startsWith('/bpl-sales');
-  const headerTitle = isSalesSection ? "Brick & Bolt Sales Premier League" : "Brick & Bolt Premier League";
+  const headerTitle = "Brick & Bolt Premier League";
 
   useEffect(() => {
     // This championsText part is pre-existing and might be intended for future dynamic updates.
