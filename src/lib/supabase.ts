@@ -41,42 +41,48 @@ export const supabase = supabaseInstance;
 
 export async function fetchCities(): Promise<{ cities: string[]; error: string | null }> {
   if (!supabase) {
-    const errorMsg = "Supabase client is not initialized. Cannot fetch cities for the filter. Check environment variables and Supabase setup.";
+    const errorMsg = "Supabase client is not initialized. Cannot fetch cities. Check environment variables.";
     console.error(errorMsg);
     return { cities: [], error: errorMsg };
   }
 
-  // Fetch cities exclusively from sale_view for the BPL Sales filter
-  let salesCities: string[] = [];
   try {
-    const { data: salesCitiesData, error: salesCitiesError } = await supabase
-      .from('sale_view') // Only query sales view for cities
-      .select('city');
-    
-    if (salesCitiesError) throw salesCitiesError;
+    // Fetch cities from both views in parallel to get a complete list for all dashboards
+    const [opsCitiesResult, salesCitiesResult] = await Promise.all([
+      supabase.from('project_performance_view').select('city'),
+      supabase.from('sale_view').select('city')
+    ]);
 
-    if (salesCitiesData) {
-      salesCities = [
-        ...new Set(
-          salesCitiesData
-            .map(item => item.city)
-            .filter(city => typeof city === 'string' && city.trim() !== '') as string[]
-        )
-      ].sort();
+    if (opsCitiesResult.error) {
+      // Log as a warning instead of a hard error, as one view might not exist yet
+      console.warn(`Could not fetch cities from project_performance_view: ${opsCitiesResult.error.message}`);
     }
+     if (salesCitiesResult.error) {
+      console.warn(`Could not fetch cities from sale_view: ${salesCitiesResult.error.message}`);
+    }
+
+    // Combine and deduplicate cities from both sources
+    const opsCities = opsCitiesResult.data?.map(item => item.city).filter(Boolean) as string[] || [];
+    const salesCities = salesCitiesResult.data?.map(item => item.city).filter(Boolean) as string[] || [];
+    
+    const allCities = [...new Set([...opsCities, ...salesCities])];
+    
+    const validCities = allCities
+      .filter(city => typeof city === 'string' && city.trim() !== '')
+      .sort();
+
+    if (validCities.length === 0 && (opsCitiesResult.error || salesCitiesResult.error)) {
+       const combinedError = `Failed to fetch cities from both 'project_performance_view' and 'sale_view'. Please ensure at least one view exists, is populated, and has RLS policies allowing access. Ops Error: ${opsCitiesResult.error?.message || 'N/A'}. Sales Error: ${salesCitiesResult.error?.message || 'N/A'}`;
+       return { cities: [], error: combinedError };
+    }
+
+    return { cities: validCities, error: null };
+
   } catch (e: any) {
-    const errorMsg = `Failed to fetch cities from sale_view: ${e.message}. This view is required for the BPL Sales city filter. Please ensure it exists and RLS policies allow access.`;
+    const errorMsg = `An unexpected error occurred while fetching cities: ${e.message}`;
     console.error(errorMsg);
     return { cities: [], error: errorMsg };
   }
-
-  if (salesCities.length === 0) {
-    // It's possible no cities are found, which isn't an error itself if the view is empty or no cities are assigned.
-    // An error message here might be too strong if the view is simply empty.
-    console.warn("No distinct cities found in 'sale_view'. The city filter in BPL Sales will be empty or show only 'Pan India'.");
-  }
-
-  return { cities: salesCities, error: null };
 }
 
 
