@@ -8,7 +8,6 @@ import { ArrowRight, ShoppingCart, Users, Briefcase, Building } from 'lucide-rea
 import CompanyLogo from '@/components/CompanyLogo';
 import { cn } from '@/lib/utils';
 import { PopupBanner } from '@/components/bpl/PopupBanner';
-import { TrophyIcon } from '@/components/icons/TrophyIcon';
 
 const portalButtons = [
     {
@@ -16,28 +15,28 @@ const portalButtons = [
         icon: <Building size={24} />,
         label: "Operations",
         id: "ops",
-        colorClasses: "border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+        colorClasses: "border-red-500/50 hover:bg-red-500/20 hover:border-red-500 text-red-400 hover:text-red-300"
     },
     {
         href: "/bpl-channel-partner",
         icon: <Users size={24} />,
         label: "Channel Partner",
         id: "cp",
-        colorClasses: "border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-white"
+        colorClasses: "border-orange-500/50 hover:bg-orange-500/20 hover:border-orange-500 text-orange-400 hover:text-orange-300"
     },
     {
         href: "/bpl-sales/dashboard",
         icon: <Briefcase size={24} />,
         label: "Orange Club",
         id: "sales",
-        colorClasses: "border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
+        colorClasses: "border-green-500/50 hover:bg-green-500/20 hover:border-green-500 text-green-400 hover:text-green-300"
     },
     {
         href: "/bpl-scm/dashboard",
         icon: <ShoppingCart size={24} />,
         label: "SCM",
         id: "scm",
-        colorClasses: "border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
+        colorClasses: "border-blue-500/50 hover:bg-blue-500/20 hover:border-blue-500 text-blue-400 hover:text-blue-300"
     }
 ];
 
@@ -47,12 +46,13 @@ const PortalLinkButton = ({ href, children, icon, onMouseEnter, className, color
             <Button
               variant="outline"
               size="lg"
-              className={cn(`w-full h-24 md:h-28 text-base md:text-lg font-bold p-2
+              className={cn(`w-full h-28 md:h-32 text-lg md:text-xl font-bold p-4
                          border-2
                          focus-visible:ring-ring
                          relative group overflow-hidden
-                         bg-transparent
-                         transition-colors duration-300 ease-in-out`, colorClasses)}
+                         bg-black/20 backdrop-blur-sm
+                         transition-all duration-300 ease-in-out
+                         hover:shadow-lg hover:shadow-current`, colorClasses)}
             >
               <div className="flex flex-col items-center justify-center text-center gap-2 relative z-10">
                 {icon}
@@ -90,12 +90,12 @@ export default function LandingPage() {
           </div>
 
           <header className="text-center mb-10 md:mb-12">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white"
-                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white animate-glow"
+                style={{ textShadow: '0 0 8px rgba(255,255,255,0.3), 0 0 20px rgba(240,90,41,0.4)' }}
             >
               Brick &amp; Bolt Premier League
             </h1>
-            <p className="text-lg sm:text-xl text-[hsl(20,100%,98%)] opacity-90 mt-2" style={{color: 'hsl(20, 100%, 98%)'}}>
+            <p className="text-lg sm:text-xl text-white/80 mt-2">
               Drill Down into Team Stats
             </p>
           </header>
@@ -110,7 +110,7 @@ export default function LandingPage() {
                       href={button.href} 
                       icon={button.icon}
                       onMouseEnter={() => setHoveredButton(button.id)}
-                      className={hoveredButton && hoveredButton !== button.id ? 'opacity-20' : 'opacity-100'}
+                      className={hoveredButton && hoveredButton !== button.id ? 'opacity-50' : 'opacity-100'}
                       colorClasses={button.colorClasses}
                   >
                       {button.label}
@@ -119,7 +119,7 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <footer className="absolute bottom-4 w-full text-center text-xs md:text-sm py-2 z-10" style={{color: 'hsla(20, 100%, 98%, 0.7)'}}>
+        <footer className="absolute bottom-4 w-full text-center text-xs md:text-sm py-2 z-10 text-white/60">
           © {new Date().getFullYear()} Brick & Bolt. All rights reserved.
         </footer>
       </div>
