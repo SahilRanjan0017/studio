@@ -25,7 +25,7 @@ const portalButtons = [
     {
         href: "/bpl-sales/dashboard",
         icon: <Briefcase size={24} />,
-        label: "Sales Orange Circle",
+        label: "Orange Club",
         id: "sales"
     },
     {
