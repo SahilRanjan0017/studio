@@ -46,8 +46,8 @@ const unifiedColorClasses = `
   hover:before:scale-x-100
 `;
 
-const PortalLinkButton = ({ href, children, icon, onMouseEnter, className, colorClasses }: { href: string, children: React.ReactNode, icon: React.ReactNode, onMouseEnter: () => void, className?: string, colorClasses?: string }) => (
-    <div onMouseEnter={onMouseEnter} className={cn("transition-opacity duration-300", className)}>
+const PortalLinkButton = ({ href, children, icon, className, colorClasses }: { href: string, children: React.ReactNode, icon: React.ReactNode, className?: string, colorClasses?: string }) => (
+    <div className={cn("transition-opacity duration-300", className)}>
         <Link href={href} passHref>
             <Button
               variant="outline"
@@ -73,7 +73,7 @@ const PortalLinkButton = ({ href, children, icon, onMouseEnter, className, color
 
 
 export default function LandingPage() {
-  const [hoveredButton, setHoveredButton] = useState<string | null>(null);
+  const [isButtonHovered, setIsButtonHovered] = useState(false);
 
   return (
     <>
@@ -96,8 +96,13 @@ export default function LandingPage() {
           </div>
 
           <header className="text-center mb-10 md:mb-12">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white animate-glow"
-                style={{ textShadow: '0 0 8px rgba(255,255,255,0.3), 0 0 20px rgba(240,90,41,0.4)' }}
+            <h1 className={cn(
+                "text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white transition-all duration-300",
+                isButtonHovered 
+                  ? 'bg-gradient-to-r from-primary to-red-600 bg-clip-text text-transparent drop-shadow-[0_2px_4px_rgba(240,90,41,0.5)]'
+                  : 'animate-glow'
+                )}
+                style={{ textShadow: isButtonHovered ? 'none' : '0 0 8px rgba(255,255,255,0.3), 0 0 20px rgba(240,90,41,0.4)' }}
             >
               Brick &amp; Bolt Premier League
             </h1>
@@ -108,15 +113,15 @@ export default function LandingPage() {
 
           <div 
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 w-full"
-            onMouseLeave={() => setHoveredButton(null)}
+            onMouseEnter={() => setIsButtonHovered(true)}
+            onMouseLeave={() => setIsButtonHovered(false)}
           >
               {portalButtons.map((button) => (
                   <PortalLinkButton 
                       key={button.id}
                       href={button.href} 
                       icon={button.icon}
-                      onMouseEnter={() => setHoveredButton(button.id)}
-                      className={hoveredButton && hoveredButton !== button.id ? 'opacity-60' : 'opacity-100'}
+                      className={'opacity-100'}
                       colorClasses={unifiedColorClasses}
                   >
                       {button.label}
