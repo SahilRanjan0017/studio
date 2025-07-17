@@ -121,18 +121,18 @@ export function SalesOpsLeaderboardTable() {
 
   const filteredLeaderboardData = useMemo(() => {
     if (!searchTerm) return leaderboardData;
-    return leaderboardData.filter(player =>
+    return leaderboardboardData.filter(player =>
       player.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [leaderboardData, searchTerm]);
 
   return (
     <>
-      <Card className="shadow-2xl rounded-xl bg-background/60 backdrop-blur-md border-primary/20">
-        <CardHeader className="border-b-2 border-primary/20 pb-4">
+      <Card className="shadow-2xl rounded-xl bg-white/10 backdrop-blur-lg border-white/20">
+        <CardHeader className="border-b-2 border-white/20 pb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center gap-3">
-              <Trophy size={32} className="text-accent animate-pulse-scale" />
+              <Trophy size={32} className="text-primary-foreground animate-pulse-scale" />
               <div>
                 <CardTitle className="text-xl font-extrabold text-primary-foreground tracking-wider">{`BPL ${roleConfig[activeRole].label} Leaderboard`}</CardTitle>
                 <p className="text-xs text-primary-foreground/80 font-medium">{DisplayName}</p>
@@ -140,17 +140,17 @@ export function SalesOpsLeaderboardTable() {
             </div>
             <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center gap-3">
               <div className="relative w-full sm:w-56 md:w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary-foreground/60" />
                 <Input
                   type="search"
                   placeholder={`Search ${roleConfig[activeRole].label}...`}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-9 w-full h-10 bg-background/70 rounded-full focus:ring-accent"
+                  className="pl-9 w-full h-10 bg-white/10 text-primary-foreground placeholder:text-primary-foreground/60 rounded-full focus:ring-accent border-white/20"
                 />
               </div>
               <Tabs value={activeRole} onValueChange={(value) => setActiveRole(value as SalesOpsLeaderboardRole)} className="w-full sm:w-auto">
-                <TabsList className="grid w-full grid-cols-4 h-10 bg-muted/70 rounded-full">
+                <TabsList className="grid w-full grid-cols-4 h-10 bg-black/20 rounded-full text-primary-foreground/70">
                   {(Object.keys(roleConfig) as SalesOpsLeaderboardRole[]).map(roleKey => (
                     <TabsTrigger key={roleKey} value={roleKey} className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 text-xs rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg">
                       {React.cloneElement(roleConfig[roleKey].icon, { className: "hidden sm:inline" })}
@@ -167,19 +167,19 @@ export function SalesOpsLeaderboardTable() {
             <div className="space-y-2 py-4">
               {[...Array(5)].map((_, i) => (
                 <div key={i} className="flex items-center space-x-4 p-2">
-                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <Skeleton className="h-10 w-10 rounded-full bg-white/10" />
                   <div className="space-y-2 flex-grow">
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-3 w-1/2" />
+                    <Skeleton className="h-4 w-3/4 bg-white/10" />
+                    <Skeleton className="h-3 w-1/2 bg-white/10" />
                   </div>
-                  <Skeleton className="h-8 w-16 rounded-md" />
+                  <Skeleton className="h-8 w-16 rounded-md bg-white/10" />
                 </div>
               ))}
             </div>
           ) : dataError ? (
              <div className="text-center py-6 text-destructive bg-destructive/10 border border-destructive/30 rounded-lg p-4 text-sm">{dataError}</div>
           ) : filteredLeaderboardData.length === 0 ? (
-            <div className="text-center py-10 text-muted-foreground text-sm">
+            <div className="text-center py-10 text-muted-foreground">
               <p className="font-semibold text-primary-foreground/70">
               {searchTerm 
                 ? `No ${roleConfig[activeRole].label} found matching "${searchTerm}".`
@@ -191,7 +191,7 @@ export function SalesOpsLeaderboardTable() {
             <div className="overflow-x-auto">
               <Table className="w-full">
                 <TableHeader>
-                  <TableRow className="border-b-primary/10">
+                  <TableRow className="border-b-white/10">
                     <TableHead className="w-[60px] text-center text-xs font-semibold uppercase text-primary-foreground/60 tracking-wider px-2">Rank</TableHead>
                     <TableHead className="text-xs font-semibold uppercase text-primary-foreground/60 tracking-wider px-2">Player</TableHead>
                     <TableHead className="hidden md:table-cell text-xs font-semibold uppercase text-primary-foreground/60 tracking-wider px-2">City</TableHead>
@@ -202,20 +202,20 @@ export function SalesOpsLeaderboardTable() {
                   {filteredLeaderboardData.map((player) => (
                     <TableRow 
                       key={player.name + player.rank + player.city} 
-                      className="border-b border-primary/10 hover:bg-primary/5 cursor-pointer transition-all duration-200"
+                      className="border-b border-white/10 hover:bg-white/5 cursor-pointer transition-all duration-200"
                     >
                       <TableCell className="text-center px-2 py-3">
                         <div className={cn(
                           "w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg mx-auto border-2",
-                          player.rank <= 3 ? "bg-accent/10 border-accent text-accent" : "bg-muted/50 border-border text-primary-foreground"
+                          player.rank <= 3 ? "bg-accent/10 border-accent text-accent" : "bg-white/10 border-white/20 text-primary-foreground"
                         )}>
                           {player.rank}
                         </div>
                       </TableCell>
                       <TableCell className="px-2 py-3">
                         <div className="flex items-center gap-3">
-                          <Avatar className="w-10 h-10 border-2 border-primary/20">
-                            <AvatarFallback className="bg-muted text-muted-foreground font-semibold text-sm">
+                          <Avatar className="w-10 h-10 border-2 border-white/20">
+                            <AvatarFallback className="bg-black/20 text-primary-foreground/80 font-semibold text-sm">
                               {getInitials(player.name)}
                             </AvatarFallback>
                           </Avatar>
