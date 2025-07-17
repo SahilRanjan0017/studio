@@ -11,6 +11,7 @@ interface PopupBannerProps {
   imageUrl: string;
   linkHref: string;
   winnerText?: string;
+  showConfetti?: boolean;
 }
 
 interface ConfettiPiece {
@@ -23,7 +24,7 @@ const confettiColors = [
   'bg-primary', 'bg-yellow-400', 'bg-green-500', 'bg-blue-500', 'bg-pink-500'
 ];
 
-export function PopupBanner({ imageUrl, linkHref, winnerText }: PopupBannerProps) {
+export function PopupBanner({ imageUrl, linkHref, winnerText, showConfetti }: PopupBannerProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [confetti, setConfetti] = useState<ConfettiPiece[]>([]);
 
@@ -32,19 +33,21 @@ export function PopupBanner({ imageUrl, linkHref, winnerText }: PopupBannerProps
       setIsVisible(true);
     }, 500);
 
-    const confettiPieces: ConfettiPiece[] = Array.from({ length: 50 }).map((_, i) => ({
-      id: i,
-      style: {
-        left: `${Math.random() * 100}%`,
-        animationDuration: `${Math.random() * 3 + 4}s`, // 4s to 7s
-        animationDelay: `${Math.random() * 5}s`, // 0s to 5s
-      },
-      colorClass: confettiColors[Math.floor(Math.random() * confettiColors.length)]
-    }));
-    setConfetti(confettiPieces);
+    if (showConfetti) {
+      const confettiPieces: ConfettiPiece[] = Array.from({ length: 50 }).map((_, i) => ({
+        id: i,
+        style: {
+          left: `${Math.random() * 100}%`,
+          animationDuration: `${Math.random() * 3 + 4}s`, // 4s to 7s
+          animationDelay: `${Math.random() * 5}s`, // 0s to 5s
+        },
+        colorClass: confettiColors[Math.floor(Math.random() * confettiColors.length)]
+      }));
+      setConfetti(confettiPieces);
+    }
     
     return () => clearTimeout(timer);
-  }, []);
+  }, [showConfetti]);
 
   const handleClose = () => {
     setIsVisible(false);
@@ -63,15 +66,17 @@ export function PopupBanner({ imageUrl, linkHref, winnerText }: PopupBannerProps
       onClick={handleClose} // Close if clicking on the overlay
     >
       {/* Confetti container */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {confetti.map(piece => (
-          <div
-            key={piece.id}
-            className={cn('confetti', piece.colorClass)}
-            style={piece.style}
-          />
-        ))}
-      </div>
+      {showConfetti && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {confetti.map(piece => (
+            <div
+              key={piece.id}
+              className={cn('confetti', piece.colorClass)}
+              style={piece.style}
+            />
+          ))}
+        </div>
+      )}
 
       <div
         className={cn(

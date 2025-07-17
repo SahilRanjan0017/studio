@@ -13,6 +13,7 @@ export default function BplDashboardPage() {
         imageUrl="https://i.postimg.cc/vTHHdh27/Whats-App-Image-2025-07-17-at-6-52-38-PM.jpg"
         linkHref="/bpl-ops/rewards"
         winnerText="WINNER!"
+        showConfetti={true}
       />
       <div className="bg-background min-h-screen py-6">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">

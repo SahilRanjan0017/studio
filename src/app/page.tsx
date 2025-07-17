@@ -16,24 +16,28 @@ const portalButtons = [
         icon: <Building size={24} />,
         label: "Operations",
         id: "ops",
+        hoverText: "Game Over — BLR-1, crowned in honor, champions forever."
     },
     {
         href: "/bpl-channel-partner",
         icon: <Users size={24} />,
         label: "Channel Partner",
         id: "cp",
+        hoverText: "Game in Motion — The Crown Awaits the Worthy."
     },
     {
         href: "/bpl-sales/dashboard",
         icon: <Briefcase size={24} />,
         label: "Orange Club",
         id: "sales",
+        hoverText: "Game in Motion — The Crown Awaits the Worthy."
     },
     {
         href: "/bpl-scm/dashboard",
         icon: <ShoppingCart size={24} />,
         label: "SCM",
         id: "scm",
+        hoverText: "Next Game Loading… History Awaits."
     }
 ];
 
@@ -79,6 +83,8 @@ const PortalLinkButton = ({ href, children, icon, className, colorClasses, onMou
 
 export default function LandingPage() {
   const [hoveredButtonId, setHoveredButtonId] = useState<string | null>(null);
+
+  const currentHoverText = portalButtons.find(b => b.id === hoveredButtonId)?.hoverText;
 
   return (
     <>
@@ -128,19 +134,14 @@ export default function LandingPage() {
               "text-lg sm:text-xl text-white/80 mt-2 relative",
               hoveredButtonId && "animate-glitter"
               )}>
-              {/* Drill Down into Team Stats */}
-              Feel the fire. Play with heart. Win with honor.            </p>
+              Feel the fire. Play with heart. Win with honor.
+            </p>
           </header>
 
           <div className="h-10 mb-2">
-            {hoveredButtonId === 'ops' && (
+            {currentHoverText && (
               <p className="text-center text-lg font-semibold text-white/90 animate-fadeInUp animate-glow">
-                Game Over — BLR-1, crowned in honor, champions forever.
-              </p>
-            )}
-            {(hoveredButtonId === 'cp' || hoveredButtonId === 'sales') && (
-              <p className="text-center text-lg font-semibold text-white/90 animate-fadeInUp animate-glow">
-                Live in Action — Write the Story They’ll Remember.
+                {currentHoverText}
               </p>
             )}
           </div>
