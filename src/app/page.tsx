@@ -14,41 +14,44 @@ const portalButtons = [
         href: "/bpl-ops/dashboard",
         icon: <Building size={24} />,
         label: "Operations",
-        id: "ops"
+        id: "ops",
+        colorClasses: "border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
     },
     {
         href: "/bpl-channel-partner",
         icon: <Users size={24} />,
         label: "Channel Partner",
-        id: "cp"
+        id: "cp",
+        colorClasses: "border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-white"
     },
     {
         href: "/bpl-sales/dashboard",
         icon: <Briefcase size={24} />,
         label: "Orange Club",
-        id: "sales"
+        id: "sales",
+        colorClasses: "border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
     },
     {
         href: "/bpl-scm/dashboard",
         icon: <ShoppingCart size={24} />,
         label: "SCM",
-        id: "scm"
+        id: "scm",
+        colorClasses: "border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
     }
 ];
 
-const PortalLinkButton = ({ href, children, icon, onMouseEnter, className }: { href: string, children: React.ReactNode, icon: React.ReactNode, onMouseEnter: () => void, className?: string }) => (
+const PortalLinkButton = ({ href, children, icon, onMouseEnter, className, colorClasses }: { href: string, children: React.ReactNode, icon: React.ReactNode, onMouseEnter: () => void, className?: string, colorClasses?: string }) => (
     <div onMouseEnter={onMouseEnter} className={cn("transition-opacity duration-300", className)}>
         <Link href={href} passHref>
             <Button
               variant="outline"
               size="lg"
-              className="w-full h-24 md:h-28 text-base md:text-lg font-bold p-2
-                         border-2 border-[hsl(180,82%,50%)] text-[hsl(180,82%,50%)]
-                         hover:bg-[hsl(180,82%,50%)] hover:border-[hsl(180,82%,50%)] hover:text-gray-900
-                         focus-visible:ring-[hsl(180,82%,50%)]
+              className={cn(`w-full h-24 md:h-28 text-base md:text-lg font-bold p-2
+                         border-2
+                         focus-visible:ring-ring
                          relative group overflow-hidden
                          bg-transparent
-                         transition-colors duration-300 ease-in-out"
+                         transition-colors duration-300 ease-in-out`, colorClasses)}
             >
               <div className="flex flex-col items-center justify-center text-center gap-2 relative z-10">
                 {icon}
@@ -79,14 +82,14 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-black/60 z-0"></div>
 
         <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-4xl animate-page-fade-in">
-          <div className="mb-8 md:mb-10 transition-transform duration-300 ease-out hover:scale-105">
+          <div className="mb-4 md:mb-6 transition-transform duration-300 ease-out hover:scale-105">
             <CompanyLogo />
           </div>
 
           <header className="text-center mb-10 md:mb-12">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 tracking-tight 
-                           text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-primary to-red-600
-                           animate-fadeInUp"
+                           text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-yellow-400 to-blue-500
+                           animate-fadeInUp -rotate-2"
                 style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
             >
               <em>Brick & Bolt Premier League</em>
@@ -107,6 +110,7 @@ export default function LandingPage() {
                       icon={button.icon}
                       onMouseEnter={() => setHoveredButton(button.id)}
                       className={hoveredButton && hoveredButton !== button.id ? 'opacity-20' : 'opacity-100'}
+                      colorClasses={button.colorClasses}
                   >
                       {button.label}
                   </PortalLinkButton>
