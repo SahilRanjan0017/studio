@@ -8,15 +8,18 @@ import { usePathname } from 'next/navigation';
 import CompanyLogo from '../CompanyLogo'; 
 
 export function BplHeader() {
-  const [championsText, setChampionsText] = useState("Presents League of Sales");
   const pathname = usePathname();
+  const [championsText, setChampionsText] = useState("Presents League of Sales");
 
-  const isSalesSection = pathname.startsWith('/bpl-sales');
   const headerTitle = "Brick & Bolt Premier League";
 
   useEffect(() => {
-    // This championsText part is pre-existing and might be intended for future dynamic updates.
-  }, []);
+    if (pathname.startsWith('/bpl-ops')) {
+      setChampionsText("League of Operation");
+    } else {
+      setChampionsText("Presents League of Sales");
+    }
+  }, [pathname]);
 
   return (
     <header style={{ backgroundColor: '#5DB996' }} className="text-white shadow-lg">
