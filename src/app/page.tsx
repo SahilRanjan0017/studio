@@ -90,9 +90,6 @@ export default function LandingPage() {
           </div>
 
           <header className="text-center mb-10 md:mb-12">
-            <div className="flex justify-center items-center mb-4">
-              <TrophyIcon className="w-20 h-20 text-yellow-400 drop-shadow-[0_4px_8px_rgba(252,204,2,0.4)]" />
-            </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white"
                 style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }}
             >
