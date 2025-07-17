@@ -214,7 +214,6 @@
   left: 0;
   width: 10px;
   height: 10px;
-  background-color: #f05a29; /* Primary color */
   opacity: 0;
   animation: confetti-fall 5s linear infinite;
   z-index: 100;
