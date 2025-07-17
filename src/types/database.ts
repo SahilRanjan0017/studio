@@ -1,4 +1,3 @@
-
 // src/types/database.ts
 
 export interface ProjectScore {
@@ -57,19 +56,19 @@ export interface LeaderboardEntry {
 export type LeaderboardRole = 'SPM' | 'TL' | 'OM';
 
 
-// Types for BPL Sales Leaderboard based on the user-provided sales_team_performance_view
+// Types for BPL Sales Leaderboard based on the user-provided sale_view
 export type SalesLeaderboardRole = 'OS' | 'IS' | 'CP_OS' | 'CP_IS';
 
-// Raw data structure from the sales_team_performance_view.
+// Raw data structure from the sale_view.
 // This must exactly match the columns output by your SQL view.
 export interface RawSalesLeaderboardData {
+  record_date: string;
   name: string;
-  role: SalesLeaderboardRole; 
+  role: string;
   manager_name: string | null;
   city: string | null;
-  record_date: string; 
-  daily_score: number; // Sum of score_change for that day
-  cumulative_score: number; // Max cumulative_score up to that day
+  daily_score: number;
+  cumulative_score: number;
 }
 
 // Processed entry for display in the sales leaderboard (Individual/Staff View)

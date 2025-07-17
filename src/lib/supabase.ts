@@ -200,10 +200,7 @@ export async function fetchProjectData(
 }
 
 
-export async function fetchSalesLeaderboardData(
-  cityFilter: string,
-  role: SalesLeaderboardRole
-): Promise<{ data: SalesLeaderboardEntry[]; error: string | null }> {
+export async function fetchSalesLeaderboardData(): Promise<{ data: RawSalesLeaderboardData[]; error: string | null }> {
   if (!supabase) {
     const errorMsg = "Supabase client is not initialized. Cannot fetch sales leaderboard data.";
     console.error(errorMsg);
@@ -212,7 +209,7 @@ export async function fetchSalesLeaderboardData(
 
   const { data: rawData, error: supabaseError } = await supabase
     .from('sale_view')
-    .select<string, RawSalesLeaderboardData>('*')
+    .select('*')
     .order('record_date', { ascending: false });
 
   if (supabaseError) {
@@ -239,50 +236,12 @@ export async function fetchSalesLeaderboardData(
             }
         }
     }
-    console.error(`Error details from Supabase (fetchSalesLeaderboardData for ${role} in ${cityFilter}):`, supabaseError);
+    console.error(`Error details from Supabase (fetchSalesLeaderboardData):`, supabaseError);
     console.error(errorMessage);
     return { data: [], error: errorMessage };
   }
-
-  if (!rawData || rawData.length === 0) {
-    return { data: [], error: null };
-  }
   
-  // Filter data based on role and city after fetching
-  const filteredRawData = rawData.filter(item => {
-    const roleMatch = item.role === role;
-    const cityMatch = cityFilter === 'Pan India' || cityFilter === '' || item.city === cityFilter;
-    return roleMatch && cityMatch;
-  });
-
-  const latestEntriesMap = new Map<string, RawSalesLeaderboardData>();
-
-  for (const item of filteredRawData) {
-    const participantKey = `${item.name}-${item.role}-${item.city || 'GLOBAL_CITY'}-${item.manager_name || 'NO_MANAGER'}`;
-    if (!latestEntriesMap.has(participantKey)) {
-      latestEntriesMap.set(participantKey, item);
-    }
-  }
-
-  const uniqueLatestData = Array.from(latestEntriesMap.values());
-
-  const processedData: SalesLeaderboardEntry[] = uniqueLatestData
-    .map(item => ({
-      name: item.name,
-      manager_name: item.manager_name || undefined,
-      city: item.city,
-      role: item.role as SalesLeaderboardRole, 
-      total_runs: item.cumulative_score, 
-      record_date: item.record_date,
-      rank: 0, 
-    }))
-    .sort((a, b) => b.total_runs - a.total_runs)
-    .map((entry, index) => ({
-      ...entry,
-      rank: index + 1,
-    }));
-
-  return { data: processedData, error: null };
+  return { data: rawData || [], error: null };
 }
 
 

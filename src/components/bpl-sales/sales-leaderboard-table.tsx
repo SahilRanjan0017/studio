@@ -37,6 +37,7 @@ interface SalesLeaderboardTableProps {
 }
 
 export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTableProps) {
+  const [rawData, setRawData] = useState<RawSalesLeaderboardData[]>([]);
   const [individualData, setIndividualData] = useState<SalesLeaderboardEntry[]>([]);
   const [managerData, setManagerData] = useState<ManagerLeaderboardEntry[]>([]);
   const [cityData, setCityData] = useState<CityLeaderboardEntry[]>([]);
@@ -57,7 +58,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
 
 
   useEffect(() => {
-    async function loadAndProcessData() {
+    async function loadData() {
       if (!supabase) {
         setError("Supabase client not initialized. Check environment variables.");
         setLoadingData(false);
@@ -70,9 +71,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       }
       if (globalCityError) {
          setError(`Cannot load data: Error with city filter (${globalCityError}).`);
-         setIndividualData([]);
-         setManagerData([]);
-         setCityData([]);
+         setRawData([]);
          setLoadingData(false);
          return;
       }
@@ -81,94 +80,121 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       setError(null);
       setSearchTerm('');
 
-      const result = await fetchSalesLeaderboardData(selectedCity, tableForRole);
+      const result = await fetchSalesLeaderboardData();
 
       if (result.error) {
-        const specificError = result.error.toLowerCase();
-        if (specificError.includes("relation") && specificError.includes("does not exist") && (specificError.includes("sale_view") || specificError.includes("bpl_sales")) ) {
-             setError(`DATABASE SETUP ERROR: The required database view "public.sale_view" or its underlying table "public.bpl_sales" could not be found. Please ensure these are created in your Supabase SQL Editor and populated. Error: "${result.error}"`);
-        } else if (specificError.includes("column") && specificError.includes("does not exist")) {
-             const missingColumnMatch = result.error.match(/column "(.+?)" of relation "sale_view" does not exist/i) || result.error.match(/column ([a-zA-Z0-9_]+) of relation "sale_view" does not exist/i);
-             const missingColumn = missingColumnMatch ? (missingColumnMatch[1] || missingColumnMatch[2]) : "unknown";
-             setError(`DATABASE VIEW MISMATCH: A required column (e.g., '${missingColumn}') is missing from or incorrect in "public.sale_view". Please verify your view definition in Supabase SQL Editor against the application's expectations. Original error: "${result.error}".`);
-        } else {
-             setError(result.error);
-        }
-        console.error(`Failed to fetch Sales Leaderboard data for role ${tableForRole} in ${selectedCity}:`, result.error);
-        setIndividualData([]);
-        setManagerData([]);
-        setCityData([]);
+         setError(result.error);
+         console.error(`Failed to fetch Sales Leaderboard data:`, result.error);
       } else {
-        const fetchedIndividualEntries = result.data;
-        setIndividualData(fetchedIndividualEntries);
-
-        if (fetchedIndividualEntries.length > 0) {
-          const managers: Record<string, { name: string; total_runs: number; cities: Set<string> }> = {};
-          fetchedIndividualEntries.forEach(entry => {
-            const managerName = entry.manager_name || 'No Manager Assigned';
-            if (!managers[managerName]) {
-              managers[managerName] = { name: managerName, total_runs: 0, cities: new Set() };
-            }
-            managers[managerName].total_runs += entry.total_runs;
-            if (entry.city) managers[managerName].cities.add(entry.city);
-          });
-          setManagerData(
-            Object.values(managers)
-              .sort((a, b) => b.total_runs - a.total_runs)
-              .map((m, i) => ({
-                rank: i + 1,
-                name: m.name,
-                city: m.cities.size === 1 ? Array.from(m.cities)[0] : (m.cities.size > 1 ? 'Multiple Cities' : (selectedCity === "Pan India" ? "N/A" : selectedCity)),
-                total_runs: m.total_runs,
-              }))
-          );
-
-          const citiesAgg: Record<string, { name: string; total_runs: number; managersInCity: Record<string, number> }> = {};
-          fetchedIndividualEntries.forEach(entry => {
-            const cityNameKey = entry.city && entry.city.trim() !== '' ? entry.city.trim() : 'N/A (Global)';
-            if (!citiesAgg[cityNameKey]) {
-              citiesAgg[cityNameKey] = { name: cityNameKey, total_runs: 0, managersInCity: {} };
-            }
-            citiesAgg[cityNameKey].total_runs += entry.total_runs;
-
-            if (entry.manager_name) {
-                if (!citiesAgg[cityNameKey].managersInCity[entry.manager_name]) {
-                    citiesAgg[cityNameKey].managersInCity[entry.manager_name] = 0;
-                }
-                citiesAgg[cityNameKey].managersInCity[entry.manager_name] += entry.total_runs;
-            }
-          });
-
-          const cityProcessedEntries: CityLeaderboardEntry[] = Object.values(citiesAgg)
-            .map(cityAgg => {
-                let topManagerNameInCity: string | undefined = undefined;
-                if (Object.keys(cityAgg.managersInCity).length > 0) {
-                    topManagerNameInCity = Object.entries(cityAgg.managersInCity).reduce((topMgr, [currentMgrName, currentMgrRuns]) => {
-                        return currentMgrRuns > (cityAgg.managersInCity[topMgr] || 0) ? currentMgrName : topMgr;
-                    }, Object.keys(cityAgg.managersInCity)[0]);
-                }
-
-                return {
-                    rank: 0,
-                    name: cityAgg.name === 'N/A (Global)' ? 'Global/Unassigned' : cityAgg.name,
-                    total_runs: cityAgg.total_runs,
-                    top_manager_name: topManagerNameInCity,
-                };
-            })
-            .sort((a, b) => b.total_runs - a.total_runs)
-            .map((c, i) => ({ ...c, rank: i + 1 }));
-          setCityData(cityProcessedEntries);
-
-        } else {
-          setManagerData([]);
-          setCityData([]);
-        }
+        setRawData(result.data);
       }
       setLoadingData(false);
     }
 
-    loadAndProcessData();
-  }, [tableForRole, selectedCity, loadingGlobalCities, globalCityError, toast]);
+    loadData();
+  }, [loadingGlobalCities, globalCityError, toast]);
+  
+  useEffect(() => {
+    if (loadingData || !rawData) return;
+    
+    // 1. Filter raw data by selected role and city
+    const filteredRaw = rawData.filter(item => {
+      const roleMatch = item.role === tableForRole;
+      const cityMatch = selectedCity === 'Pan India' || item.city === selectedCity;
+      return roleMatch && cityMatch;
+    });
+
+    // 2. Get latest entry for each participant
+    const latestEntriesMap = new Map<string, RawSalesLeaderboardData>();
+    for (const item of filteredRaw) {
+      // Unique key for each person
+      const participantKey = `${item.name}-${item.role}`;
+      if (!latestEntriesMap.has(participantKey)) {
+        latestEntriesMap.set(participantKey, item);
+      }
+    }
+    const uniqueLatestData = Array.from(latestEntriesMap.values());
+    
+    // 3. Process for Individual View
+    const processedIndividual = uniqueLatestData
+      .map(item => ({
+        name: item.name,
+        manager_name: item.manager_name || undefined,
+        city: item.city,
+        role: item.role as SalesLeaderboardRole,
+        total_runs: item.cumulative_score,
+        record_date: item.record_date,
+        rank: 0,
+      }))
+      .sort((a, b) => b.total_runs - a.total_runs)
+      .map((entry, index) => ({ ...entry, rank: index + 1 }));
+
+    setIndividualData(processedIndividual);
+    
+    // 4. Process for Manager and City views (based on the same filtered individual data)
+     if (processedIndividual.length > 0) {
+      const managers: Record<string, { name: string; total_runs: number; cities: Set<string> }> = {};
+      processedIndividual.forEach(entry => {
+        const managerName = entry.manager_name || 'No Manager Assigned';
+        if (!managers[managerName]) {
+          managers[managerName] = { name: managerName, total_runs: 0, cities: new Set() };
+        }
+        managers[managerName].total_runs += entry.total_runs;
+        if (entry.city) managers[managerName].cities.add(entry.city);
+      });
+      setManagerData(
+        Object.values(managers)
+          .sort((a, b) => b.total_runs - a.total_runs)
+          .map((m, i) => ({
+            rank: i + 1,
+            name: m.name,
+            city: m.cities.size === 1 ? Array.from(m.cities)[0] : (m.cities.size > 1 ? 'Multiple Cities' : (selectedCity === "Pan India" ? "N/A" : selectedCity)),
+            total_runs: m.total_runs,
+          }))
+      );
+
+      const citiesAgg: Record<string, { name: string; total_runs: number; managersInCity: Record<string, number> }> = {};
+      processedIndividual.forEach(entry => {
+        const cityNameKey = entry.city && entry.city.trim() !== '' ? entry.city.trim() : 'N/A (Global)';
+        if (!citiesAgg[cityNameKey]) {
+          citiesAgg[cityNameKey] = { name: cityNameKey, total_runs: 0, managersInCity: {} };
+        }
+        citiesAgg[cityNameKey].total_runs += entry.total_runs;
+
+        if (entry.manager_name) {
+            if (!citiesAgg[cityNameKey].managersInCity[entry.manager_name]) {
+                citiesAgg[cityNameKey].managersInCity[entry.manager_name] = 0;
+            }
+            citiesAgg[cityNameKey].managersInCity[entry.manager_name] += entry.total_runs;
+        }
+      });
+
+      const cityProcessedEntries: CityLeaderboardEntry[] = Object.values(citiesAgg)
+        .map(cityAgg => {
+            let topManagerNameInCity: string | undefined = undefined;
+            if (Object.keys(cityAgg.managersInCity).length > 0) {
+                topManagerNameInCity = Object.entries(cityAgg.managersInCity).reduce((topMgr, [currentMgrName, currentMgrRuns]) => {
+                    return currentMgrRuns > (cityAgg.managersInCity[topMgr] || 0) ? currentMgrName : topMgr;
+                }, Object.keys(cityAgg.managersInCity)[0]);
+            }
+
+            return {
+                rank: 0,
+                name: cityAgg.name === 'N/A (Global)' ? 'Global/Unassigned' : cityAgg.name,
+                total_runs: cityAgg.total_runs,
+                top_manager_name: topManagerNameInCity,
+            };
+        })
+        .sort((a, b) => b.total_runs - a.total_runs)
+        .map((c, i) => ({ ...c, rank: i + 1 }));
+      setCityData(cityProcessedEntries);
+
+    } else {
+      setManagerData([]);
+      setCityData([]);
+    }
+
+  }, [rawData, tableForRole, selectedCity, loadingData]);
 
   const getInitials = (name: string) => {
     if (!name) return 'N/A';
