@@ -1,3 +1,4 @@
+
 // @/app/bpl-sales/dashboard/page.tsx
 import { DashboardTitleBlock } from '@/components/bpl/dashboard-title-block';
 import { SalesOpsLeaderboardTable } from '@/components/bpl-sales/sales-ops-leaderboard-table'; // Changed to sales-specific leaderboard
@@ -12,13 +13,8 @@ export default function BplSalesDashboardPage() {
     >
       <div className="absolute inset-0 bg-black/60 z-0"></div>
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
-        <DashboardTitleBlock 
-          icon={<Briefcase size={28} className="text-primary-foreground" />}
-          title="BPL Sales Dashboard"
-          className="mb-6"
-        />
         
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 gap-6 pt-6">
           <SalesOpsLeaderboardTable />
         </div>
       </div>
