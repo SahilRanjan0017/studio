@@ -16,6 +16,8 @@ export function BplHeader() {
   useEffect(() => {
     if (pathname.startsWith('/bpl-ops')) {
       setChampionsText("League of Operation");
+    } else if (pathname.startsWith('/bpl-channel-partner')) {
+      setChampionsText("League of Channel Partner");
     } else {
       setChampionsText("Presents League of Sales");
     }
