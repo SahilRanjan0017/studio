@@ -42,7 +42,7 @@ const PortalLinkButton = ({ href, children, icon, onMouseEnter, className }: { h
               variant="outline"
               size="lg"
               className="w-full h-24 md:h-28 text-base md:text-lg font-bold p-2
-                         border-2 border-orange-500 text-orange-500
+                         border-2 border-[#E9F5BE] text-[#E9F5BE]
                          hover:border-white hover:text-white
                          focus-visible:ring-
                          relative group overflow-hidden
