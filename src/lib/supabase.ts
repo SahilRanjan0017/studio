@@ -210,32 +210,16 @@ export async function fetchSalesLeaderboardData(
     return { data: [], error: errorMsg };
   }
 
-  let query = supabase
+  const { data: rawData, error: supabaseError } = await supabase
     .from('sale_view')
-    .select<string, RawSalesLeaderboardData>(`
-      name,
-      role,
-      manager_name,
-      city,
-      record_date,
-      daily_score,
-      cumulative_score
-    `)
-    .eq('role', role);
-
-  if (cityFilter !== 'Pan India' && cityFilter !== '') {
-    query = query.eq('city', cityFilter);
-  }
-
-  query = query.order('record_date', { ascending: false });
-
-  const { data: rawData, error: supabaseError } = await query;
+    .select<string, RawSalesLeaderboardData>('*')
+    .order('record_date', { ascending: false });
 
   if (supabaseError) {
-    let errorMessage = `Error fetching sales leaderboard data for role ${role}.`;
+    let errorMessage = `Error fetching sales leaderboard data.`;
      if (typeof supabaseError === 'object' && supabaseError !== null) {
         if (Object.keys(supabaseError).length === 0) {
-            errorMessage = `Error fetching sales leaderboard data for role ${role}: Supabase returned an empty error. This often means Row Level Security (RLS) policies are blocking access, or the 'sale_view' does not exist or is empty for the current filters. Please verify the view and RLS policies in your Supabase dashboard.`;
+            errorMessage = `Error fetching sales leaderboard data: Supabase returned an empty error. This often means Row Level Security (RLS) policies are blocking access, or the 'sale_view' does not exist or is empty. Please verify the view and RLS policies in your Supabase dashboard.`;
         } else if ('message' in supabaseError && typeof supabaseError.message === 'string') {
             const lowerMsg = supabaseError.message.toLowerCase();
             if (lowerMsg.includes('relation') && lowerMsg.includes('does not exist')) {
@@ -249,9 +233,9 @@ export async function fetchSalesLeaderboardData(
             }
         } else {
             try {
-                errorMessage = `Error fetching sales leaderboard data for role ${role}: ${JSON.stringify(supabaseError)}`;
+                errorMessage = `Error fetching sales leaderboard data: ${JSON.stringify(supabaseError)}`;
             } catch {
-                errorMessage = `Error fetching sales leaderboard data for role ${role}: Non-serializable error object from Supabase.`;
+                errorMessage = `Error fetching sales leaderboard data: Non-serializable error object from Supabase.`;
             }
         }
     }
@@ -263,10 +247,17 @@ export async function fetchSalesLeaderboardData(
   if (!rawData || rawData.length === 0) {
     return { data: [], error: null };
   }
+  
+  // Filter data based on role and city after fetching
+  const filteredRawData = rawData.filter(item => {
+    const roleMatch = item.role === role;
+    const cityMatch = cityFilter === 'Pan India' || cityFilter === '' || item.city === cityFilter;
+    return roleMatch && cityMatch;
+  });
 
   const latestEntriesMap = new Map<string, RawSalesLeaderboardData>();
 
-  for (const item of rawData) {
+  for (const item of filteredRawData) {
     const participantKey = `${item.name}-${item.role}-${item.city || 'GLOBAL_CITY'}-${item.manager_name || 'NO_MANAGER'}`;
     if (!latestEntriesMap.has(participantKey)) {
       latestEntriesMap.set(participantKey, item);
