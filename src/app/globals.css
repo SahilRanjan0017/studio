@@ -154,3 +154,16 @@
 .animate-glow {
   animation: glow 3s ease-in-out infinite;
 }
+
+@keyframes logo-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 8px hsl(var(--primary)));
+  }
+  50% {
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 1)) drop-shadow(0 0 15px hsl(var(--primary)));
+  }
+}
+
+.animate-logo-glow {
+  animation: logo-glow 1.5s ease-in-out infinite;
+}

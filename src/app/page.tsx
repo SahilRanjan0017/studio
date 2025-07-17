@@ -46,8 +46,12 @@ const unifiedColorClasses = `
   hover:before:scale-x-100
 `;
 
-const PortalLinkButton = ({ href, children, icon, className, colorClasses }: { href: string, children: React.ReactNode, icon: React.ReactNode, className?: string, colorClasses?: string }) => (
-    <div className={cn("transition-opacity duration-300", className)}>
+const PortalLinkButton = ({ href, children, icon, className, colorClasses, onMouseEnter, onMouseLeave }: { href: string, children: React.ReactNode, icon: React.ReactNode, className?: string, colorClasses?: string, onMouseEnter?: () => void, onMouseLeave?: () => void }) => (
+    <div 
+        className={cn("transition-opacity duration-300", className)}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+    >
         <Link href={href} passHref>
             <Button
               variant="outline"
@@ -73,7 +77,7 @@ const PortalLinkButton = ({ href, children, icon, className, colorClasses }: { h
 
 
 export default function LandingPage() {
-  const [isButtonHovered, setIsButtonHovered] = useState(false);
+  const [hoveredButtonId, setHoveredButtonId] = useState<string | null>(null);
 
   return (
     <>
@@ -89,7 +93,11 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-black/60 z-0"></div>
 
         <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-4xl animate-page-fade-in">
-          <div className="mb-4 md:mb-6 transition-transform duration-300 ease-out hover:scale-105">
+          <div className={cn(
+              "mb-4 md:mb-6 transition-all duration-300 ease-out hover:scale-105",
+              hoveredButtonId && "animate-logo-glow"
+            )}
+          >
             <Link href="/" aria-label="Home">
                 <CompanyLogo />
             </Link>
@@ -98,11 +106,11 @@ export default function LandingPage() {
           <header className="text-center mb-10 md:mb-12">
             <h1 className={cn(
                 "text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white transition-all duration-300",
-                isButtonHovered 
+                hoveredButtonId 
                   ? 'bg-gradient-to-r from-primary to-red-600 bg-clip-text text-transparent drop-shadow-[0_2px_4px_rgba(240,90,41,0.5)]'
                   : 'animate-glow'
                 )}
-                style={{ textShadow: isButtonHovered ? 'none' : '0 0 8px rgba(255,255,255,0.3), 0 0 20px rgba(240,90,41,0.4)' }}
+                style={{ textShadow: hoveredButtonId ? 'none' : '0 0 8px rgba(255,255,255,0.3), 0 0 20px rgba(240,90,41,0.4)' }}
             >
               Brick &amp; Bolt Premier League
             </h1>
@@ -113,16 +121,19 @@ export default function LandingPage() {
 
           <div 
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 w-full"
-            onMouseEnter={() => setIsButtonHovered(true)}
-            onMouseLeave={() => setIsButtonHovered(false)}
+            onMouseLeave={() => setHoveredButtonId(null)}
           >
               {portalButtons.map((button) => (
                   <PortalLinkButton 
                       key={button.id}
                       href={button.href} 
                       icon={button.icon}
-                      className={'opacity-100'}
+                      className={cn(
+                        'transition-opacity duration-300',
+                        hoveredButtonId && hoveredButtonId !== button.id ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+                      )}
                       colorClasses={unifiedColorClasses}
+                      onMouseEnter={() => setHoveredButtonId(button.id)}
                   >
                       {button.label}
                   </PortalLinkButton>
