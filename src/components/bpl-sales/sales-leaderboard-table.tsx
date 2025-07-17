@@ -107,8 +107,9 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     // 2. Get latest entry for each participant
     const latestEntriesMap = new Map<string, RawSalesLeaderboardData>();
     for (const item of filteredRaw) {
-      // Unique key for each person
+      // A person is unique by their name and role.
       const participantKey = `${item.name}-${item.role}`;
+      // Since the raw data is ordered by date descending, the first one we see is the latest.
       if (!latestEntriesMap.has(participantKey)) {
         latestEntriesMap.set(participantKey, item);
       }
