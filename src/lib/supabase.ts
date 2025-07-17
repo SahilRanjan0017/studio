@@ -46,11 +46,11 @@ export async function fetchCities(): Promise<{ cities: string[]; error: string |
     return { cities: [], error: errorMsg };
   }
 
-  // Fetch cities exclusively from sales_team_performance_view for the BPL Sales filter
+  // Fetch cities exclusively from sale_view for the BPL Sales filter
   let salesCities: string[] = [];
   try {
     const { data: salesCitiesData, error: salesCitiesError } = await supabase
-      .from('sales_team_performance_view') // Only query sales view for cities
+      .from('sale_view') // Only query sales view for cities
       .select('city');
     
     if (salesCitiesError) throw salesCitiesError;
@@ -65,7 +65,7 @@ export async function fetchCities(): Promise<{ cities: string[]; error: string |
       ].sort();
     }
   } catch (e: any) {
-    const errorMsg = `Failed to fetch cities from sales_team_performance_view: ${e.message}. This view is required for the BPL Sales city filter. Please ensure it exists and RLS policies allow access.`;
+    const errorMsg = `Failed to fetch cities from sale_view: ${e.message}. This view is required for the BPL Sales city filter. Please ensure it exists and RLS policies allow access.`;
     console.error(errorMsg);
     return { cities: [], error: errorMsg };
   }
@@ -73,8 +73,7 @@ export async function fetchCities(): Promise<{ cities: string[]; error: string |
   if (salesCities.length === 0) {
     // It's possible no cities are found, which isn't an error itself if the view is empty or no cities are assigned.
     // An error message here might be too strong if the view is simply empty.
-    // The component using this should handle the case of an empty city list.
-    console.warn("No distinct cities found in 'sales_team_performance_view'. The city filter in BPL Sales will be empty or show only 'Pan India'.");
+    console.warn("No distinct cities found in 'sale_view'. The city filter in BPL Sales will be empty or show only 'Pan India'.");
   }
 
   return { cities: salesCities, error: null };
@@ -212,7 +211,7 @@ export async function fetchSalesLeaderboardData(
   }
 
   let query = supabase
-    .from('sales_team_performance_view')
+    .from('sale_view')
     .select<string, RawSalesLeaderboardData>(`
       name,
       role,
@@ -236,15 +235,15 @@ export async function fetchSalesLeaderboardData(
     let errorMessage = `Error fetching sales leaderboard data for role ${role}.`;
      if (typeof supabaseError === 'object' && supabaseError !== null) {
         if (Object.keys(supabaseError).length === 0) {
-            errorMessage = `Error fetching sales leaderboard data for role ${role}: Supabase returned an empty error. This often means Row Level Security (RLS) policies are blocking access, or the 'sales_team_performance_view' does not exist or is empty for the current filters. Please verify the view and RLS policies in your Supabase dashboard.`;
+            errorMessage = `Error fetching sales leaderboard data for role ${role}: Supabase returned an empty error. This often means Row Level Security (RLS) policies are blocking access, or the 'sale_view' does not exist or is empty for the current filters. Please verify the view and RLS policies in your Supabase dashboard.`;
         } else if ('message' in supabaseError && typeof supabaseError.message === 'string') {
             const lowerMsg = supabaseError.message.toLowerCase();
             if (lowerMsg.includes('relation') && lowerMsg.includes('does not exist')) {
-              errorMessage = `DATABASE SETUP ERROR: The required database view "public.sales_team_performance_view" could not be found. Please ensure this view is created in your Supabase SQL Editor. Original error: "${supabaseError.message}"`;
+              errorMessage = `DATABASE SETUP ERROR: The required database view "public.sale_view" could not be found. Please ensure this view is created in your Supabase SQL Editor. Original error: "${supabaseError.message}"`;
             } else if (lowerMsg.includes('column') && lowerMsg.includes('does not exist')) {
-              const missingColumnMatch = supabaseError.message.match(/column "(.+?)" does not exist/i) || supabaseError.message.match(/column ([a-zA-Z0-9_]+) of relation "sales_team_performance_view" does not exist/i);
+              const missingColumnMatch = supabaseError.message.match(/column "(.+?)" does not exist/i) || supabaseError.message.match(/column ([a-zA-Z0-9_]+) of relation "sale_view" does not exist/i);
               const missingColumn = missingColumnMatch ? (missingColumnMatch[1] || missingColumnMatch[2]) : "unknown";
-              errorMessage = `DATABASE VIEW MISMATCH: A required column (e.g., '${missingColumn}') is missing from or incorrect in "public.sales_team_performance_view". Please verify your view definition. Original error: "${supabaseError.message}"`;
+              errorMessage = `DATABASE VIEW MISMATCH: A required column (e.g., '${missingColumn}') is missing from or incorrect in "public.sale_view". Please verify your view definition. Original error: "${supabaseError.message}"`;
             } else {
               errorMessage = `Supabase error: ${supabaseError.message}. Check view definition and RLS policies.`;
             }
