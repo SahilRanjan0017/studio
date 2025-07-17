@@ -48,7 +48,7 @@ const unifiedColorClasses = `
 
 const PortalLinkButton = ({ href, children, icon, className, colorClasses, onMouseEnter, onMouseLeave }: { href: string, children: React.ReactNode, icon: React.ReactNode, className?: string, colorClasses?: string, onMouseEnter?: () => void, onMouseLeave?: () => void }) => (
     <div 
-        className={cn("transition-opacity duration-300", className)}
+        className={cn("transition-all duration-300", className)}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
     >
@@ -86,7 +86,7 @@ export default function LandingPage() {
         linkHref="/bpl-sales/dashboard"
       />
       <div
-        className="relative flex flex-col items-center justify-center min-h-screen p-6 bg-cover bg-center"
+        className="relative flex flex-col items-center justify-center min-h-screen p-6 bg-cover bg-center overflow-hidden"
         style={{ backgroundImage: "url('https://i.postimg.cc/zfcXMH2H/mario-klassen-70-Yx-STWa2-Zw-unsplash.jpg')" }}
         data-ai-hint="cricket stadium floodlights"
       >
@@ -114,7 +114,10 @@ export default function LandingPage() {
             >
               Brick &amp; Bolt Premier League
             </h1>
-            <p className="text-lg sm:text-xl text-white/80 mt-2">
+            <p className={cn(
+              "text-lg sm:text-xl text-white/80 mt-2 relative",
+              hoveredButtonId && "animate-glitter"
+              )}>
               Drill Down into Team Stats
             </p>
           </header>
@@ -129,8 +132,11 @@ export default function LandingPage() {
                       href={button.href} 
                       icon={button.icon}
                       className={cn(
-                        'transition-opacity duration-300',
-                        hoveredButtonId && hoveredButtonId !== button.id ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+                        'transition-all duration-300',
+                        hoveredButtonId && hoveredButtonId !== button.id 
+                          ? 'opacity-0 scale-95' 
+                          : 'opacity-100 scale-100',
+                        hoveredButtonId === button.id && 'scale-105 -translate-y-2'
                       )}
                       colorClasses={unifiedColorClasses}
                       onMouseEnter={() => setHoveredButtonId(button.id)}
