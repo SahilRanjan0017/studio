@@ -43,9 +43,9 @@ const PortalLinkButton = ({ href, children, icon, onMouseEnter, className }: { h
               variant="outline"
               size="lg"
               className="w-full h-24 md:h-28 text-base md:text-lg font-bold p-2
-                         border-2 border-primary text-primary
-                         hover:bg-[#ACC572] hover:border-[#ACC572] hover:text-primary-foreground
-                         focus-visible:ring-
+                         border-2 border-[hsl(180,82%,50%)] text-[hsl(180,82%,50%)]
+                         hover:bg-[hsl(180,82%,50%)] hover:border-[hsl(180,82%,50%)] hover:text-gray-900
+                         focus-visible:ring-[hsl(180,82%,50%)]
                          relative group overflow-hidden
                          bg-transparent
                          transition-colors duration-300 ease-in-out"
