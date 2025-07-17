@@ -8,6 +8,7 @@ import { ArrowRight, ShoppingCart, Users, Briefcase, Building } from 'lucide-rea
 import CompanyLogo from '@/components/CompanyLogo';
 import { cn } from '@/lib/utils';
 import { PopupBanner } from '@/components/bpl/PopupBanner';
+import { TrophyIcon } from '@/components/icons/TrophyIcon';
 
 const portalButtons = [
     {
@@ -83,18 +84,21 @@ export default function LandingPage() {
 
         <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-4xl animate-page-fade-in">
           <div className="mb-4 md:mb-6 transition-transform duration-300 ease-out hover:scale-105">
-            <CompanyLogo />
+            <Link href="/" aria-label="Home">
+                <CompanyLogo />
+            </Link>
           </div>
 
           <header className="text-center mb-10 md:mb-12">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 tracking-tight 
-                           text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-yellow-400 to-blue-500
-                           animate-fadeInUp -rotate-2"
-                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
+            <div className="flex justify-center items-center mb-4">
+              <TrophyIcon className="w-20 h-20 text-yellow-400 drop-shadow-[0_4px_8px_rgba(252,204,2,0.4)]" />
+            </div>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white"
+                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }}
             >
-              <em>Brick & Bolt Premier League</em>
+              Brick &amp; Bolt Premier League
             </h1>
-            <p className="text-lg sm:text-xl text-[hsl(20,100%,98%)] opacity-90" style={{color: 'hsl(20, 100%, 98%)'}}>
+            <p className="text-lg sm:text-xl text-[hsl(20,100%,98%)] opacity-90 mt-2" style={{color: 'hsl(20, 100%, 98%)'}}>
               Drill Down into Team Stats
             </p>
           </header>
