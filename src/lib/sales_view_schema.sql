@@ -1,26 +1,4 @@
--- This SQL code defines a view named 'sale_view' to aggregate and calculate scores
--- for the BPL Sales dashboard.
--- To use this, you must have a table named 'bpl_sales' with the required columns.
-
--- 1. Create your raw data table (if it doesn't exist)
--- Example:
--- CREATE TABLE public.bpl_sales (
---   id SERIAL PRIMARY KEY,
---   record_date DATE NOT NULL,
---   name TEXT NOT NULL,
---   role TEXT NOT NULL, -- e.g., 'OS', 'IS', 'ME'
---   manager_name TEXT,
---   city TEXT,
---   score_change INTEGER NOT NULL,
---   created_at TIMESTAMPTZ DEFAULT NOW()
--- );
-
--- 2. Run the CREATE VIEW statement below in your Supabase SQL Editor.
-
--- This view calculates daily scores and then computes a cumulative score over time
--- for each participant, partitioned by their name, role, manager, and city.
-
-create or replace view public.sale_view as
+create view public.sale_view as
 with
   daily_scores as (
     select

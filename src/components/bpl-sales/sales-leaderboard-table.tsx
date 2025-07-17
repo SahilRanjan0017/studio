@@ -1,4 +1,3 @@
-
 // src/components/bpl-sales/sales-leaderboard-table.tsx
 'use client';
 
@@ -86,12 +85,12 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
 
       if (result.error) {
         const specificError = result.error.toLowerCase();
-        if (specificError.includes("relation") && specificError.includes("does not exist") && (specificError.includes("sales_team_performance_view") || specificError.includes("sales_score_tracking")) ) {
-             setError(`DATABASE SETUP ERROR: The required database view "public.sales_team_performance_view" or its underlying table "public.sales_score_tracking" could not be found. Please ensure these are created in your Supabase SQL Editor and populated. Error: "${result.error}"`);
+        if (specificError.includes("relation") && specificError.includes("does not exist") && (specificError.includes("sale_view") || specificError.includes("bpl_sales")) ) {
+             setError(`DATABASE SETUP ERROR: The required database view "public.sale_view" or its underlying table "public.bpl_sales" could not be found. Please ensure these are created in your Supabase SQL Editor and populated. Error: "${result.error}"`);
         } else if (specificError.includes("column") && specificError.includes("does not exist")) {
-             const missingColumnMatch = result.error.match(/column "(.+?)" of relation "sales_team_performance_view" does not exist/i) || result.error.match(/column ([a-zA-Z0-9_]+) of relation "sales_team_performance_view" does not exist/i);
+             const missingColumnMatch = result.error.match(/column "(.+?)" of relation "sale_view" does not exist/i) || result.error.match(/column ([a-zA-Z0-9_]+) of relation "sale_view" does not exist/i);
              const missingColumn = missingColumnMatch ? (missingColumnMatch[1] || missingColumnMatch[2]) : "unknown";
-             setError(`DATABASE VIEW MISMATCH: A required column (e.g., '${missingColumn}') is missing from or incorrect in "public.sales_team_performance_view". Please verify your view definition in Supabase SQL Editor against the application's expectations. Original error: "${result.error}".`);
+             setError(`DATABASE VIEW MISMATCH: A required column (e.g., '${missingColumn}') is missing from or incorrect in "public.sale_view". Please verify your view definition in Supabase SQL Editor against the application's expectations. Original error: "${result.error}".`);
         } else {
              setError(result.error);
         }
@@ -212,7 +211,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
 
   const renderErrorState = () => {
     if (!error) return null;
-    const isViewMissingError = error.includes("relation") && error.includes("does not exist") && (error.includes("sales_team_performance_view") || error.includes("sales_score_tracking"));
+    const isViewMissingError = error.includes("relation") && error.includes("does not exist") && (error.includes("sale_view") || error.includes("bpl_sales"));
     const isColumnMissingError = error.includes("column") && error.includes("does not exist");
 
     let title = `Failed to load data for ${currentRoleConfig.label}`;
@@ -220,12 +219,12 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
 
     if (isViewMissingError) {
         title = "DATABASE SETUP ERROR";
-        details = `The required database view "public.sales_team_performance_view" or its underlying table "public.sales_score_tracking" could not be found or is inaccessible. Please ensure these are created in your Supabase SQL Editor, populated, and RLS policies are correctly configured. Original error: "${error}"`;
+        details = `The required database view "public.sale_view" or its underlying table "public.bpl_sales" could not be found or is inaccessible. Please ensure these are created in your Supabase SQL Editor, populated, and RLS policies are correctly configured. Original error: "${error}"`;
     } else if (isColumnMissingError) {
         title = "DATABASE VIEW MISMATCH";
-        const missingColumnMatch = error.match(/column "(.+?)" of relation "sales_team_performance_view" does not exist/i) || error.match(/column ([a-zA-Z0-9_]+) of relation "sales_team_performance_view" does not exist/i);
+        const missingColumnMatch = error.match(/column "(.+?)" of relation "sale_view" does not exist/i) || error.match(/column ([a-zA-Z0-9_]+) of relation "sale_view" does not exist/i);
         const missingColumn = missingColumnMatch ? (missingColumnMatch[1] || missingColumnMatch[2]) : "unknown";
-        details = `A required column (e.g., '${missingColumn}') is missing from or incorrect in "public.sales_team_performance_view". The application expects certain columns based on the SQL view definition. Please verify your view definition in Supabase SQL Editor. Original error: "${error}"`;
+        details = `A required column (e.g., '${missingColumn}') is missing from or incorrect in "public.sale_view". The application expects certain columns based on the SQL view definition. Please verify your view definition in Supabase SQL Editor. Original error: "${error}"`;
     }
 
 
@@ -244,7 +243,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
       <div className="text-center py-8 text-muted-foreground text-sm">
         {searchTerm
           ? `No ${currentRoleConfig.label} found matching "${searchTerm}" in ${globalCityDisplayName}.`
-          : `No data available for ${currentRoleConfig.label} in ${globalCityDisplayName}. Check if 'sales_team_performance_view' table has relevant entries for this role and city.`}
+          : `No data available for ${currentRoleConfig.label} in ${globalCityDisplayName}. Check if 'sale_view' table has relevant entries for this role and city.`}
       </div>
     ) : (
       <Table>
@@ -289,7 +288,7 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
        <div className="text-center py-8 text-muted-foreground text-sm">
         {searchTerm
           ? `No Managers found matching "${searchTerm}" for ${currentRoleConfig.label} in ${globalCityDisplayName}.`
-          : `No Manager data available for ${currentRoleConfig.label} in ${globalCityDisplayName}. Ensure 'manager_name' is populated in 'sales_team_performance_view'.`}
+          : `No Manager data available for ${currentRoleConfig.label} in ${globalCityDisplayName}. Ensure 'manager_name' is populated in 'sale_view'.`}
       </div>
     ) : (
       <Table>
@@ -471,4 +470,3 @@ export function SalesLeaderboardTable({ tableForRole }: SalesLeaderboardTablePro
     </Card>
   );
 }
-
