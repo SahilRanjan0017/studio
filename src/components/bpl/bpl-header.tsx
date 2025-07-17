@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import CompanyLogo from '../CompanyLogo'; 
 
@@ -22,10 +23,21 @@ export function BplHeader() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-3 md:py-4">
           
-          {/* Logo on the left */}
+          {/* Logos on the left */}
           <Link href="/" passHref aria-label="Go to homepage" className="flex-shrink-0">
-            <div className="w-10 h-10">
-              <CompanyLogo />
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10">
+                <CompanyLogo />
+              </div>
+              <span className="text-2xl font-light text-white/70">×</span>
+              <Image
+                src="https://i.postimg.cc/pXt2P0wf/Screenshot-2025-07-17-at-4-51-05-PM.png"
+                alt="Collaboration Logo"
+                width={40}
+                height={40}
+                className="w-10 h-10 object-contain"
+                data-ai-hint="company logo"
+              />
             </div>
           </Link>
 
@@ -40,7 +52,7 @@ export function BplHeader() {
           </div>
           
           {/* Empty div for spacing, ensures title stays centered */}
-          <div className="w-10 flex-shrink-0"></div>
+          <div className="w-24 flex-shrink-0"></div>
 
         </div>
       </div>
