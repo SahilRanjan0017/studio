@@ -28,7 +28,7 @@ export function BplHeader() {
   }, []);
 
   return (
-    <header className="bg-primary text-primary-foreground shadow-lg">
+    <header style={{ backgroundColor: '#5DB996' }} className="text-white shadow-lg">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between py-4 md:py-5">
           {/* Left side: Logo and Title */}
@@ -40,17 +40,17 @@ export function BplHeader() {
             </Link>
             <div>
               <Link href="/" passHref>
-                <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-primary-foreground cursor-pointer hover:opacity-90 transition-opacity">
+                <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-white cursor-pointer hover:opacity-90 transition-opacity">
                   {headerTitle}
                 </h1>
               </Link>
-              <p className="text-xs opacity-80 font-light text-primary-foreground/90">{championsText}</p>
+              <p className="text-xs opacity-80 font-light text-white/90">{championsText}</p>
             </div>
           </div>
 
           {/* Right side: Date */}
           {currentDate && (
-            <div className="text-2xl lg:text-3xl font-extrabold text-primary-foreground/90 mt-2 md:mt-0 self-center md:self-auto">
+            <div className="text-2xl lg:text-3xl font-extrabold text-white/90 mt-2 md:mt-0 self-center md:self-auto">
               {currentDate}
             </div>
           )}
