@@ -11,13 +11,10 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { fetchProjectData, type LeaderboardEntry, supabase } from '@/lib/supabase';
+import { fetchSalesLeaderboardData, supabase } from '@/lib/supabase';
+import type { RawSalesLeaderboardData, SalesOpsLeaderboardRole } from '@/types/database';
 import { useToast } from '@/hooks/use-toast';
 import { useCityFilter } from '@/contexts/CityFilterContext';
-import { DetailPanel } from '@/components/bpl/detail-panel';
-
-// Define a new type for the sales-specific roles
-export type SalesOpsLeaderboardRole = 'Captain' | 'OS' | 'ME' | 'IS';
 
 const roleConfig: Record<SalesOpsLeaderboardRole, { icon: React.ReactNode; label: string }> = {
   Captain: { icon: <User size={14} />, label: "Captain" },
@@ -25,6 +22,13 @@ const roleConfig: Record<SalesOpsLeaderboardRole, { icon: React.ReactNode; label
   ME: { icon: <Shield size={14} />, label: "ME" },
   IS: { icon: <Shield size={14} />, label: "IS" },
 };
+
+interface LeaderboardEntry {
+    rank: number;
+    name: string;
+    city: string | null;
+    runs: number;
+}
 
 export function SalesOpsLeaderboardTable() {
   const [activeRole, setActiveRole] = useState<SalesOpsLeaderboardRole>('Captain');
@@ -35,14 +39,6 @@ export function SalesOpsLeaderboardTable() {
   
   const { selectedCity, loadingCities: loadingGlobalCities, cityError: globalCityError } = useCityFilter();
   const { toast } = useToast();
-
-  const [isDetailPanelOpen, setIsDetailPanelOpen] = useState(false);
-  const [selectedEntry, setSelectedEntry] = useState<LeaderboardEntry | null>(null);
-
-  const handleRowClick = (entry: LeaderboardEntry) => {
-    setSelectedEntry(entry);
-    setIsDetailPanelOpen(true);
-  };
 
   useEffect(() => {
     async function loadData() {
@@ -66,22 +62,45 @@ export function SalesOpsLeaderboardTable() {
       setLoadingData(true);
       setDataError(null);
       
-      // The fetchProjectData function needs to be adapted or a new one created if the underlying data/view is different for sales roles.
-      // For now, we cast the role, assuming the existing function can handle it or will be adapted.
-      // A more robust solution might require a dedicated fetchSalesOpsData function.
-      const result = await fetchProjectData(selectedCity, activeRole as any);
+      const result = await fetchSalesLeaderboardData();
 
       if (result.error) {
-        console.error(`Failed to fetch ${activeRole} leaderboard data for ${selectedCity}:`, result.error);
+        console.error(`Failed to fetch sales leaderboard data:`, result.error);
         toast({
-            title: `Error Fetching ${activeRole} Data`,
+            title: `Error Fetching Sales Data`,
             description: result.error,
             variant: "destructive",
         });
         setDataError(result.error);
         setLeaderboardData([]);
       } else {
-        setLeaderboardData(result.data);
+        // Post-process the raw data here
+        const filteredRaw = result.data.filter(item => {
+            const roleMatch = item.role === activeRole;
+            const cityMatch = selectedCity === 'Pan India' || item.city === selectedCity;
+            return roleMatch && cityMatch;
+        });
+        
+        const latestEntriesMap = new Map<string, RawSalesLeaderboardData>();
+        for (const item of filteredRaw) {
+          const participantKey = `${item.name}-${item.role}`;
+          if (!latestEntriesMap.has(participantKey)) {
+            latestEntriesMap.set(participantKey, item);
+          }
+        }
+        const uniqueLatestData = Array.from(latestEntriesMap.values());
+        
+        const processedData: LeaderboardEntry[] = uniqueLatestData
+            .map(item => ({
+                name: item.name,
+                city: item.city,
+                runs: item.cumulative_score,
+                rank: 0, 
+            }))
+            .sort((a,b) => b.runs - a.runs)
+            .map((entry, index) => ({...entry, rank: index + 1}));
+
+        setLeaderboardData(processedData);
       }
       setLoadingData(false);
     }
@@ -99,12 +118,6 @@ export function SalesOpsLeaderboardTable() {
     }
     return `Displaying ${roleConfig[activeRole].label} rankings for ${selectedCity}.`;
   }, [activeRole, selectedCity]);
-
-  const TrendIcon = ({ trend }: { trend: number }) => {
-    if (trend > 0) return <TrendingUp size={16} className="text-custom-green" />;
-    if (trend < 0) return <TrendingDownIcon size={16} className="text-primary" />;
-    return <Minus size={16} className="text-muted-foreground" />;
-  };
 
   const filteredLeaderboardData = useMemo(() => {
     if (!searchTerm) return leaderboardData;
@@ -182,17 +195,14 @@ export function SalesOpsLeaderboardTable() {
                     <TableHead className="w-[60px] text-center text-xs font-semibold uppercase text-primary-foreground/60 tracking-wider px-2">Rank</TableHead>
                     <TableHead className="text-xs font-semibold uppercase text-primary-foreground/60 tracking-wider px-2">Player</TableHead>
                     <TableHead className="hidden md:table-cell text-xs font-semibold uppercase text-primary-foreground/60 tracking-wider px-2">City</TableHead>
-                    <TableHead className="text-center text-xs font-semibold uppercase text-primary-foreground/60 tracking-wider px-2">Projects</TableHead>
                     <TableHead className="text-right text-xs font-semibold uppercase text-primary-foreground/60 tracking-wider px-2">Runs</TableHead>
-                    <TableHead className="text-right hidden sm:table-cell text-xs font-semibold uppercase text-primary-foreground/60 tracking-wider px-2">Trend</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredLeaderboardData.map((player) => (
                     <TableRow 
                       key={player.name + player.rank + player.city} 
-                      className="border-b border-primary/10 hover:bg-primary/5 cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-lg"
-                      onClick={() => handleRowClick(player)}
+                      className="border-b border-primary/10 hover:bg-primary/5 cursor-pointer transition-all duration-200"
                     >
                       <TableCell className="text-center px-2 py-3">
                         <div className={cn(
@@ -216,19 +226,7 @@ export function SalesOpsLeaderboardTable() {
                         </div>
                       </TableCell>
                       <TableCell className="hidden md:table-cell text-sm text-primary-foreground/80 font-medium px-2 py-3">{player.city || 'N/A'}</TableCell>
-                      <TableCell className="text-center text-base font-medium text-primary-foreground px-2 py-3">{player.projects}</TableCell>
                       <TableCell className="text-right font-extrabold text-lg text-primary px-2 py-3">{player.runs}</TableCell>
-                      <TableCell className="text-right hidden sm:table-cell px-2 py-3">
-                        <div className="flex items-center justify-end gap-1">
-                          <TrendIcon trend={player.trend} />
-                          <span className={cn(
-                            "text-sm font-semibold",
-                            player.trend > 0 ? 'text-custom-green' : player.trend < 0 ? 'text-primary' : 'text-primary-foreground/60'
-                          )}>
-                            {player.trend !== 0 ? Math.abs(player.trend) : '0'}
-                          </span>
-                        </div>
-                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -237,14 +235,6 @@ export function SalesOpsLeaderboardTable() {
           )}
         </CardContent>
       </Card>
-      {selectedEntry && (
-        <DetailPanel
-          isOpen={isDetailPanelOpen}
-          onClose={() => setIsDetailPanelOpen(false)}
-          entry={selectedEntry}
-          roleConfig={roleConfig[activeRole]}
-        />
-      )}
     </>
   );
 }

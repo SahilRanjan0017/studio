@@ -59,6 +59,9 @@ export type LeaderboardRole = 'SPM' | 'TL' | 'OM';
 // Types for BPL Sales Leaderboard based on the user-provided sale_view
 export type SalesLeaderboardRole = 'OS' | 'IS' | 'CP_OS' | 'CP_IS';
 
+// Specific roles for the Sales Ops Leaderboard table
+export type SalesOpsLeaderboardRole = 'Captain' | 'OS' | 'ME' | 'IS';
+
 // Raw data structure from the sale_view.
 // This must exactly match the columns output by your SQL view.
 export interface RawSalesLeaderboardData {
