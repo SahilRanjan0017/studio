@@ -18,6 +18,8 @@ export function BplHeader() {
       setChampionsText("Present League of Operation");
     } else if (pathname.startsWith('/bpl-channel-partner')) {
       setChampionsText("Present League of Channel Partner");
+    } else if (pathname.startsWith('/bpl-scm')) {
+      setChampionsText("Present League of SCM");
     } else {
       setChampionsText("Presents League of Sales");
     }
