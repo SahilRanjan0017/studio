@@ -84,7 +84,11 @@ export default function LandingPage() {
           </div>
 
           <header className="text-center mb-10 md:mb-12">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-[hsl(20,100%,98%)] mb-3 tracking-tight" style={{color: 'hsl(20, 100%, 98%)'}}>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 tracking-tight 
+                           text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-primary to-red-600
+                           animate-fadeInUp"
+                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
+            >
               <em>Brick & Bolt Premier League</em>
             </h1>
             <p className="text-lg sm:text-xl text-[hsl(20,100%,98%)] opacity-90" style={{color: 'hsl(20, 100%, 98%)'}}>
