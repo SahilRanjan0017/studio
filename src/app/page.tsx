@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ShoppingCart, Users, Briefcase, Building } from 'lucide-react';
 import CompanyLogo from '@/components/CompanyLogo';
@@ -98,8 +99,17 @@ export default function LandingPage() {
               hoveredButtonId && "animate-logo-glow"
             )}
           >
-            <Link href="/" aria-label="Home">
+            <Link href="/" aria-label="Home" className="flex items-center gap-2">
                 <CompanyLogo />
+                <span className="text-2xl font-light text-white/70">×</span>
+                <Image
+                  src="https://i.postimg.cc/pXt2P0wf/Screenshot-2025-07-17-at-4-51-05-PM.png"
+                  alt="Collaboration Logo"
+                  width={40}
+                  height={40}
+                  className="w-10 h-10 object-contain"
+                  data-ai-hint="company logo"
+                />
             </Link>
           </div>
 
@@ -118,8 +128,8 @@ export default function LandingPage() {
               "text-lg sm:text-xl text-white/80 mt-2 relative",
               hoveredButtonId && "animate-glitter"
               )}>
-              Drill Down into Team Stats
-            </p>
+              {/* Drill Down into Team Stats */}
+              Feel the fire. Play with heart. Win with honor.            </p>
           </header>
 
           <div 
