@@ -4,15 +4,16 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { X } from 'lucide-react';
+import { X, PartyPopper } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface PopupBannerProps {
   imageUrl: string;
   linkHref: string;
+  winnerText?: string;
 }
 
-export function PopupBanner({ imageUrl, linkHref }: PopupBannerProps) {
+export function PopupBanner({ imageUrl, linkHref, winnerText }: PopupBannerProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -48,23 +49,32 @@ export function PopupBanner({ imageUrl, linkHref }: PopupBannerProps) {
       >
         <button
           onClick={handleClose}
-          className="absolute -top-3 -right-3 z-10 p-1.5 bg-white rounded-full text-gray-800 hover:bg-gray-200 transition-colors shadow-lg"
+          className="absolute -top-3 -right-3 z-20 p-1.5 bg-white rounded-full text-gray-800 hover:bg-gray-200 transition-colors shadow-lg"
           aria-label="Close popup"
         >
           <X size={20} />
         </button>
-        <Link href={linkHref} passHref>
-          <div className="block cursor-pointer rounded-lg overflow-hidden shadow-2xl">
-            <Image
-              src={imageUrl}
-              alt="Promotional Banner"
-              width={600}
-              height={400}
-              className="max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl"
-              unoptimized // Use unoptimized for external images like from i.postimg.cc
-            />
-          </div>
-        </Link>
+        <div className="relative">
+          <Link href={linkHref} passHref>
+            <div className="block cursor-pointer rounded-lg overflow-hidden shadow-2xl border-4 border-amber-300">
+              <Image
+                src={imageUrl}
+                alt="Promotional Banner"
+                width={600}
+                height={400}
+                className="max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl"
+                unoptimized // Use unoptimized for external images like from i.postimg.cc
+              />
+            </div>
+          </Link>
+           {winnerText && (
+            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-400 to-yellow-500 text-white font-bold text-xl px-6 py-2 rounded-full shadow-lg border-2 border-white flex items-center gap-2">
+              <PartyPopper size={24} />
+              <span>{winnerText}</span>
+              <PartyPopper size={24} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
