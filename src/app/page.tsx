@@ -138,6 +138,11 @@ export default function LandingPage() {
                 Game Over — BLR-1, crowned in honor, champions forever.
               </p>
             )}
+            {(hoveredButtonId === 'cp' || hoveredButtonId === 'sales') && (
+              <p className="text-center text-lg font-semibold text-white/90 animate-fadeInUp animate-glow">
+                Live in Action — Write the Story They’ll Remember.
+              </p>
+            )}
           </div>
 
           <div 
