@@ -15,30 +15,36 @@ const portalButtons = [
         icon: <Building size={24} />,
         label: "Operations",
         id: "ops",
-        colorClasses: "border-red-500/50 hover:bg-red-500/20 hover:border-red-500 text-red-400 hover:text-red-300"
     },
     {
         href: "/bpl-channel-partner",
         icon: <Users size={24} />,
         label: "Channel Partner",
         id: "cp",
-        colorClasses: "border-orange-500/50 hover:bg-orange-500/20 hover:border-orange-500 text-orange-400 hover:text-orange-300"
     },
     {
         href: "/bpl-sales/dashboard",
         icon: <Briefcase size={24} />,
         label: "Orange Club",
         id: "sales",
-        colorClasses: "border-green-500/50 hover:bg-green-500/20 hover:border-green-500 text-green-400 hover:text-green-300"
     },
     {
         href: "/bpl-scm/dashboard",
         icon: <ShoppingCart size={24} />,
         label: "SCM",
         id: "scm",
-        colorClasses: "border-blue-500/50 hover:bg-blue-500/20 hover:border-blue-500 text-blue-400 hover:text-blue-300"
     }
 ];
+
+const unifiedColorClasses = `
+  border-white/30 text-white/80
+  hover:border-transparent hover:text-white
+  before:absolute before:inset-0
+  before:bg-gradient-to-r before:from-primary before:to-red-600
+  before:transition-transform before:duration-300 before:ease-in-out
+  before:scale-x-0 before:origin-left
+  hover:before:scale-x-100
+`;
 
 const PortalLinkButton = ({ href, children, icon, onMouseEnter, className, colorClasses }: { href: string, children: React.ReactNode, icon: React.ReactNode, onMouseEnter: () => void, className?: string, colorClasses?: string }) => (
     <div onMouseEnter={onMouseEnter} className={cn("transition-opacity duration-300", className)}>
@@ -110,8 +116,8 @@ export default function LandingPage() {
                       href={button.href} 
                       icon={button.icon}
                       onMouseEnter={() => setHoveredButton(button.id)}
-                      className={hoveredButton && hoveredButton !== button.id ? 'opacity-50' : 'opacity-100'}
-                      colorClasses={button.colorClasses}
+                      className={hoveredButton && hoveredButton !== button.id ? 'opacity-60' : 'opacity-100'}
+                      colorClasses={unifiedColorClasses}
                   >
                       {button.label}
                   </PortalLinkButton>
