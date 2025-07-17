@@ -132,6 +132,14 @@ export default function LandingPage() {
               Feel the fire. Play with heart. Win with honor.            </p>
           </header>
 
+          <div className="h-10 mb-2">
+            {hoveredButtonId === 'ops' && (
+              <p className="text-center text-lg font-semibold text-white/90 animate-fadeInUp animate-glow">
+                Game Over — BLR-1, crowned in honor, champions forever.
+              </p>
+            )}
+          </div>
+
           <div 
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 w-full"
             onMouseLeave={() => setHoveredButtonId(null)}
