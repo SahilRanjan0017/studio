@@ -1,6 +1,5 @@
 // @/app/bpl-scm/dashboard/page.tsx
 import { DashboardTitleBlock } from '@/components/bpl/dashboard-title-block';
-import { LeaderboardTable } from '@/components/bpl/leaderboard-table'; // Re-using for consistency
 import { ActivityFeedSection } from '@/components/bpl/activity-feed-section';
 import { ShoppingCart } from 'lucide-react';
 
@@ -15,10 +14,7 @@ export default function BplScmDashboardPage() {
         />
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <LeaderboardTable />
-          </div>
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-3">
             <ActivityFeedSection />
           </div>
         </div>
