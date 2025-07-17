@@ -30,27 +30,25 @@ export function BplHeader() {
   return (
     <header style={{ backgroundColor: '#5DB996' }} className="text-white shadow-lg">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-center justify-between py-4 md:py-5">
-          {/* Left side: Logo and Title */}
-          <div className="flex items-center gap-4 mb-3 md:mb-0">
-            <Link href="/" passHref aria-label="Go to homepage">
-              <div className="w-10 h-10 flex-shrink-0 -mt-3 cursor-pointer">
-                <CompanyLogo />
-              </div>
-            </Link>
-            <div>
-              <Link href="/" passHref>
-                <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-white cursor-pointer hover:opacity-90 transition-opacity">
-                  {headerTitle}
-                </h1>
-              </Link>
-              <p className="text-xs opacity-80 font-light text-white/90">{championsText}</p>
+        <div className="flex flex-col items-center justify-center py-4 md:py-5 text-center">
+          {/* Logo */}
+          <Link href="/" passHref aria-label="Go to homepage" className="mb-2">
+            <div className="w-10 h-10 flex-shrink-0 cursor-pointer">
+              <CompanyLogo />
             </div>
-          </div>
+          </Link>
 
-          {/* Right side: Date */}
+          {/* Title and Subtitle */}
+          <Link href="/" passHref>
+            <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-white cursor-pointer hover:opacity-90 transition-opacity">
+              {headerTitle}
+            </h1>
+          </Link>
+          <p className="text-sm opacity-80 font-light text-white/90">{championsText}</p>
+          
+          {/* Date */}
           {currentDate && (
-            <div className="text-2xl lg:text-3xl font-extrabold text-white/90 mt-2 md:mt-0 self-center md:self-auto">
+            <div className="text-2xl lg:text-3xl font-bold text-white/90 mt-2">
               {currentDate}
             </div>
           )}
