@@ -1,7 +1,7 @@
 // @/components/bpl/bpl-navbar.tsx
 'use client';
 
-import React from 'react'; 
+import React, { useEffect, useState } from 'react'; 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -14,6 +14,7 @@ import {
 import { LayoutDashboard, Award, BookOpen, Loader2, BarChartBig, ShoppingCart, Briefcase, Building } from 'lucide-react';
 import { useCityFilter } from '@/contexts/CityFilterContext'; 
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface NavLink {
   hrefRoot: string;
@@ -58,6 +59,7 @@ const navConfig: Record<string, { links: NavLink[]; basePath: string }> = {
 
 export function BplNavbar() {
   const pathname = usePathname();
+  const [isMounted, setIsMounted] = useState(false);
   const { 
     selectedCity, 
     setSelectedCity, 
@@ -66,52 +68,77 @@ export function BplNavbar() {
     cityError 
   } = useCityFilter(); 
 
-  const currentSectionKey = Object.keys(navConfig).find(key => pathname.startsWith(`/${key}`));
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const currentSectionKey = isMounted ? Object.keys(navConfig).find(key => pathname.startsWith(`/${key}`)) : undefined;
   const currentNav = currentSectionKey ? navConfig[currentSectionKey] : navConfig['bpl-ops'];
   const { links: currentNavLinks, basePath } = currentNav;
   
-  const isChannelPartnerSection = basePath === '/bpl-channel-partner';
+  const isChannelPartnerSection = isMounted && basePath === '/bpl-channel-partner';
 
-  const activeLink = currentNavLinks.find(link => {
+  const activeLink = isMounted ? currentNavLinks.find(link => {
     const fullLinkPath = `${basePath}${link.hrefRoot || ''}`;
     if (link.hrefRoot === "") {
       return pathname === basePath || pathname === `${basePath}/`;
     }
     return pathname.startsWith(fullLinkPath) && fullLinkPath !== basePath;
-  }) || (pathname === basePath && currentNavLinks[0]?.hrefRoot === "" ? currentNavLinks[0] : undefined) || (pathname === `${basePath}/` && currentNavLinks[0]?.hrefRoot === "" ? currentNavLinks[0] : undefined) ;
+  }) || (pathname === basePath && currentNavLinks[0]?.hrefRoot === "" ? currentNavLinks[0] : undefined) || (pathname === `${basePath}/` && currentNavLinks[0]?.hrefRoot === "" ? currentNavLinks[0] : undefined) : undefined;
   
   const activeLabel = activeLink?.label || (currentNavLinks[0]?.label || "");
 
+  const renderNavLinks = () => {
+    if (!isMounted) {
+      return (
+        <ul className="flex flex-wrap justify-center md:justify-start gap-1 md:gap-1.5">
+          <li className="flex items-center gap-2 font-medium px-3.5 py-2.5 rounded-md text-sm">
+            <Skeleton className="h-5 w-5 rounded-sm" />
+            <Skeleton className="h-4 w-20" />
+          </li>
+          <li className="flex items-center gap-2 font-medium px-3.5 py-2.5 rounded-md text-sm">
+            <Skeleton className="h-5 w-5 rounded-sm" />
+            <Skeleton className="h-4 w-20" />
+          </li>
+        </ul>
+      );
+    }
+
+    return (
+      <ul className="flex flex-wrap justify-center md:justify-start gap-1 md:gap-1.5">
+        {currentNavLinks.map((link) => {
+          const isActive = activeLabel === link.label;
+          return (
+            <li key={link.label}>
+              <Link
+                href={`${basePath}${link.hrefRoot || ''}`}
+                className={cn(
+                  `relative flex items-center gap-2 font-medium px-3.5 py-2.5 rounded-md transition-all duration-200 text-sm group`,
+                  isActive
+                    ? 'text-primary'
+                    : 'text-foreground hover:bg-muted hover:text-primary'
+                )}
+              >
+                {React.cloneElement(link.icon as React.ReactElement, { className: cn(isActive ? "text-primary" : "") })}
+                {link.label}
+                {isActive && (
+                  <span className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-full animate-fadeInUp" style={{animationDuration: '0.3s'}}></span>
+                )}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
 
   return (
     <nav className="bg-card shadow-sm sticky top-0 z-40 border-b border-border">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-end py-2.5">
           <div className="flex items-center justify-center md:justify-end gap-4 w-full">
-            <ul className="flex flex-wrap justify-center md:justify-start gap-1 md:gap-1.5">
-              {currentNavLinks.map((link) => {
-                const isActive = activeLabel === link.label;
-                return (
-                  <li key={link.label}>
-                    <Link
-                      href={`${basePath}${link.hrefRoot || ''}`}
-                      className={cn(
-                        `relative flex items-center gap-2 font-medium px-3.5 py-2.5 rounded-md transition-all duration-200 text-sm group`,
-                        isActive
-                          ? 'text-primary'
-                          : 'text-foreground hover:bg-muted hover:text-primary'
-                      )}
-                    >
-                      {React.cloneElement(link.icon as React.ReactElement, { className: cn(isActive ? "text-primary" : "") })}
-                      {link.label}
-                      {isActive && (
-                        <span className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-full animate-fadeInUp" style={{animationDuration: '0.3s'}}></span>
-                      )}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+            {renderNavLinks()}
+            
             {isChannelPartnerSection && (
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <label htmlFor="city-filter-nav" className="text-sm font-semibold text-foreground whitespace-nowrap sr-only md:not-sr-only">
