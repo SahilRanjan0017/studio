@@ -1,6 +1,5 @@
 // @/app/bpl-scm/dashboard/page.tsx
 import { DashboardTitleBlock } from '@/components/bpl/dashboard-title-block';
-import { ActivityFeedSection } from '@/components/bpl/activity-feed-section';
 import { ShoppingCart } from 'lucide-react';
 
 export default function BplScmDashboardPage() {
@@ -15,7 +14,10 @@ export default function BplScmDashboardPage() {
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-3">
-            <ActivityFeedSection />
+            {/* Content for SCM dashboard can be added here */}
+            <p className="text-center text-muted-foreground py-10">
+              Welcome to the SCM Dashboard.
+            </p>
           </div>
         </div>
       </div>
