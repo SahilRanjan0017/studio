@@ -10,7 +10,7 @@ export default function BplDashboardPage() {
   return (
     <>
       <PopupBanner
-        imageUrl="https://i.postimg.cc/mtGC2QGL/image.png"
+        imageUrl="https://i.postimg.cc/vTHHdh27/Whats-App-Image-2025-07-17-at-6-52-38-PM.jpg"
         linkHref="/bpl-ops/rewards"
         winnerText="WINNER!"
       />
