@@ -31,13 +31,6 @@ const navConfig: Record<string, { links: NavLink[]; basePath: string }> = {
       { hrefRoot: "/rules", label: "Rules", icon: <BookOpen size={18}/> },
     ],
   },
-  'bpl-channel-partner': {
-    basePath: '/bpl-channel-partner',
-    links: [
-      { hrefRoot: "", label: "Dashboard", icon: <BarChartBig size={18}/> }, 
-      { hrefRoot: "/rules", label: "Rules", icon: <BookOpen size={18}/> },
-    ],
-  },
   'bpl-sales': {
     basePath: '/bpl-sales',
     links: [

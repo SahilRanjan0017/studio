@@ -19,13 +19,6 @@ const portalButtons = [
         hoverText: "Game Over — BLR-1, crowned in honor, champions forever."
     },
     {
-        href: "/bpl-channel-partner",
-        icon: <Users size={24} />,
-        label: "Channel Partner",
-        id: "cp",
-        hoverText: "Game in Motion — The Crown Awaits the Worthy."
-    },
-    {
         href: "/bpl-sales/dashboard",
         icon: <Briefcase size={24} />,
         label: "Orange Club",
